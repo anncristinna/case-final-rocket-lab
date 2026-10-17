@@ -35,13 +35,14 @@ compartilhado** a partir desses `.md`.
 ├── analises/
 │   ├── README.md                  # lista de arquivos, responsáveis e status
 │   ├── analise_geral_corrigida.py # notebook base — carga, limpeza, panorama geral
+│   ├── milton_custos_pesquisa.py  # notebook de Milton (%run na base)
 │   ├── panorama_geral.md          # \
 │   ├── por_canal.md               #  \
-│   ├── top_motivos.md             #   > preenchidos — prontos para o Notion
-│   ├── por_regiao.md              #  /
-│   ├── top_atendentes.md          # /
-│   ├── custos_pesquisa.md         # \_ template a preencher
-│   └── tempos_abandono.md         # /
+│   ├── top_motivos.md             #   \
+│   ├── por_regiao.md              #    > preenchidos — prontos para o Notion
+│   ├── top_atendentes.md          #   /
+│   ├── custos_pesquisa.md         #  /
+│   └── tempos_abandono.md         # template a preencher (Juan)
 └── data/raw/                      # CSVs originais (fora do git)
 ```
 
