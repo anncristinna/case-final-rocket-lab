@@ -21,6 +21,7 @@ Comunicação em **português do Brasil**.
 - `medalhao_rascunho/`: rascunho do pipeline bronze/silver/gold, material para uma fase futura — não é a
   etapa atual, não rodar sem reconfirmar antes.
 - `docs/databricks-git-folder.md`: como sincronizar o repositório com o workspace Databricks (Git folder).
+- `docs/convencoes-git.md`: branches, commits (Conventional Commits) e Pull Requests.
 - `data/raw/`: CSVs locais (fora do git).
 
 ## Regras
