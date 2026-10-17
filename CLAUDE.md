@@ -19,9 +19,13 @@ documentos neste repositório.
 ## Estrutura
 - `README.md`: nome do projeto, grupo, link para `docs/convencoes-git.md`.
 - `docs/convencoes-git.md`: branches, commits (Conventional Commits) e Pull Requests.
+- `docs/achados_analise_geral.md`: o que foi corrigido no notebook em relação ao original do Juan,
+  indicadores gerais tratados e pendências — atualizar no mesmo commit se mudar alguma regra de limpeza.
+- `analises/analise_geral_corrigida.py`: o notebook (carga, limpeza, insights).
+- `analises/*.md` (exceto o README): conteúdo pronto para colar no Notion compartilhado do grupo —
+  atualizar junto se os números do notebook mudarem.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
-- `analises/`: ainda não existe neste commit inicial; é onde o notebook corrigido deve ser criado.
 
 ## Regras de dados
 - **Nunca** commitar CSV ou arquivo com token/segredo. Nunca ler/exibir `.env` e afins.
@@ -57,10 +61,13 @@ documentos neste repositório.
   bronze/silver/gold depois, reavaliar se vale a pena configurar o Git folder nessa hora.
 
 ## Fluxo de trabalho esperado do Claude
-1. Antes de alterar o notebook corrigido, reler as regras de dados acima (tempos, custo, notas, PII).
-2. Valide sintaxe (`python -m py_compile analises/*.py`, quando o arquivo existir) antes de comitar.
-3. Commits pequenos, em português no imperativo, seguindo `docs/convencoes-git.md`.
-4. Números que vão para o Notion devem sair de uma consulta reproduzível no notebook — citar a tabela de origem.
+1. Antes de alterar o notebook corrigido, reler as regras de dados acima (tempos, custo, notas, PII) e
+   `docs/achados_analise_geral.md`.
+2. Valide sintaxe (`python -m py_compile analises/*.py`) antes de comitar.
+3. Mudou um número do notebook? Atualize o `.md` correspondente em `analises/` e, se for uma regra de
+   limpeza, `docs/achados_analise_geral.md` também — no mesmo commit.
+4. Commits pequenos, em português no imperativo, seguindo `docs/convencoes-git.md`.
+5. Números que vão para o Notion devem sair de uma consulta reproduzível no notebook — citar a tabela de origem.
 
 ## Definições de KPI (confirmar com o grupo; mudar aqui se mudar)
 - **Taxa de resolução** = chamados `resolvido = true` / chamados totais.

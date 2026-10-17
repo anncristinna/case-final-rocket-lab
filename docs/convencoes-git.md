@@ -1,7 +1,6 @@
 # Convenções de Git — branches, commits e Pull Requests
 
-Regras de colaboração do grupo. Ver também [`databricks-git-folder.md`](databricks-git-folder.md) para
-sincronizar com o workspace Databricks.
+Regras de colaboração do grupo. O fluxo com o Databricks (sem Git folder por enquanto) está em `CLAUDE.md`.
 
 ## Regra geral
 
@@ -33,7 +32,7 @@ Exemplos: `feat: adiciona analise de custo por canal`, `update: refina faixas de
 
 - Título no mesmo padrão do commit (`tipo: descrição`); descrição curta do que mudou e por quê.
 - Peça revisão de **pelo menos 1 outra pessoa** do grupo antes do merge — especialmente se tocar em
-  regra de limpeza (atualize `analises/achados_qualidade_dados.md` no mesmo PR) ou em definição de KPI (`CLAUDE.md`).
+  regra de limpeza (atualize `docs/achados_analise_geral.md` no mesmo PR) ou em definição de KPI (`CLAUDE.md`).
 - Antes de abrir o PR, confira: `git status --ignored` sem CSV/segredo e nenhuma saída de célula com dado pessoal.
 - PR pequeno e focado numa tabela/tarefa — mais fácil de revisar que um PR com o trabalho de várias pessoas juntas.
 - Prefira *squash merge* para manter o histórico da `main` limpo (um commit por PR).
