@@ -15,6 +15,7 @@ execução local anterior (CSVs completos) — cada notebook deve reconfirmá-lo
 | `chamados_hora_juan.py` | Juan | `chamados_hora` |
 | `canais_richard.py` | Richard | `canais` |
 | `custos_pesquisa_milton.py` | Milton | `custos`, `pesquisa_satisfacao` (completo) |
+| `custos_pesquisa_milton.md` | Milton | leitura em texto/tabelas dos resultados do notebook acima (sem código) |
 | `achados_qualidade_dados.md` | — | inconsistências encontradas e tratamento sugerido (movido de `docs/qualidade_dados.md`) |
 | `achados_hipoteses.md` | — | afirmações dos stakeholders a validar com dados (movido de `docs/hipoteses.md`) |
 
