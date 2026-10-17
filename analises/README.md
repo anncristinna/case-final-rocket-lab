@@ -14,7 +14,7 @@ execução local anterior (CSVs completos) — cada notebook deve reconfirmá-lo
 | `atendentes_motivos_cris.py` | Cris | `base_atendentes`, `base_motivos` |
 | `chamados_hora_juan.py` | Juan | `chamados_hora` |
 | `canais_richard.py` | Richard | `canais` |
-| `custos_pesquisa_milton.py` | Milton | `custos`, `pesquisa_satisfacao` (completo) |
+| `custos_pesquisa_milton.py` | Milton | `custos`, `pesquisa_satisfacao` |
 | `achados_qualidade_dados.md` | — | inconsistências encontradas e tratamento sugerido (movido de `docs/qualidade_dados.md`) |
 | `achados_hipoteses.md` | — | afirmações dos stakeholders a validar com dados (movido de `docs/hipoteses.md`) |
 
