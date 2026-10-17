@@ -1,5 +1,15 @@
 # Análises
 
+Divisão da análise inicial (todos ficam com `chamados`, já coberto por `panorama_geral.md`):
+
+| Responsável | Tabela(s) | Arquivo(s) |
+|---|---|---|
+| Yuri | `clientes` | `por_regiao.md` |
+| Cris | `base_atendentes`, `base_motivos` | `top_atendentes.md`, `top_motivos.md` |
+| Juan | `chamados_hora` | `tempos_abandono.md` |
+| Richard | `canais` | `por_canal.md` |
+| Milton | `custos`, `pesquisa_satisfacao` | `custos_pesquisa.md` |
+
 | Arquivo | Conteúdo | Status |
 |---|---|---|
 | `analise_geral_corrigida.py` | notebook base (carga, limpeza, panorama geral) — **único, mudado só por PR combinado**; ver aviso no topo do arquivo | pronto |

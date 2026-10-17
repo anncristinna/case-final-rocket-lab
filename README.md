@@ -49,6 +49,18 @@ compartilhado** a partir desses `.md`.
 
 Yuri, Cris, Juan, Richard, Milton, Gabriel, Anna.
 
+## Divisão da análise inicial
+
+Todos ficam com `chamados` (já coberto por `analises/panorama_geral.md`); por tabela:
+
+| Responsável | Tabela(s) | Arquivo em `analises/` |
+|---|---|---|
+| Yuri | `clientes` | `por_regiao.md` |
+| Cris | `base_atendentes`, `base_motivos` | `top_atendentes.md`, `top_motivos.md` |
+| Juan | `chamados_hora` | `tempos_abandono.md` |
+| Richard | `canais` | `por_canal.md` |
+| Milton | `custos`, `pesquisa_satisfacao` | `custos_pesquisa.md` |
+
 ## Como começar
 
 1. Clone o repositório e crie sua branch: `git switch -c feat/<seu-nome>-<assunto>` (convenção completa em
