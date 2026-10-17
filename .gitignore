@@ -1,0 +1,35 @@
+# --- Dados do case (confidenciais, propriedade intelectual da Visagio) ---
+# NUNCA versionar as bases. Elas ficam só no Volume do Databricks e localmente.
+data/raw/*
+!data/raw/.gitkeep
+data/exports/*
+!data/exports/.gitkeep
+*.csv
+*.CSV
+*.xlsx
+*.parquet
+
+# --- Segredos ---
+.env
+.env.*
+!.env.example
+.mcp.json
+databrickscfg
+.databrickscfg
+
+# --- Python / Jupyter ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# --- Databricks / IDE / SO ---
+.databricks/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Claude Code (configs pessoais) ---
+.claude/settings.local.json
