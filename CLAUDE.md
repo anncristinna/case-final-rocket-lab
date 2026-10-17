@@ -6,11 +6,13 @@ Objetivo: a partir da análise dos dados de atendimento, chegar a recomendaçõe
 e justificadas com dados (pelo menos 2 com ganho quantificado e premissas explícitas) para o Comitê Executivo.
 Comunicação em **português do Brasil**.
 
-**Abordagem atual (recomeço, mais simples e direta):** em vez de um notebook por pessoa, o grupo parte
-do notebook exploratório inicial do Juan e constrói **um único notebook corrigido**, que vai para o
+**Abordagem atual (recomeço, mais simples e direta):** o grupo parte do notebook exploratório inicial do
+Juan e corrige num **notebook base único** (`analises/analise_geral_corrigida.py`), que fica só no
 workspace Databricks do grupo (por enquanto, **sem Git folder** — upload manual via Workspace, ver seção
-"Databricks" abaixo). Os resultados da análise vão para o **Notion compartilhado** do grupo, não para
-documentos neste repositório.
+"Databricks" abaixo). Esse notebook base muda só por PR combinado e revisado — **não criar um `.py` por
+pessoa**, cada um explora o seu tema no Databricks do jeito que preferir e leva o resultado pro `.md`
+correspondente em `analises/` (ver `analises/README.md` para a lista e quem é responsável por qual).
+Os resultados da análise vão para o **Notion compartilhado** do grupo a partir desses `.md`.
 
 ## Prazos
 - Quinta 22/10 às 18h: entregáveis técnicos.
@@ -21,9 +23,12 @@ documentos neste repositório.
 - `docs/convencoes-git.md`: branches, commits (Conventional Commits) e Pull Requests.
 - `docs/achados_analise_geral.md`: o que foi corrigido no notebook em relação ao original do Juan,
   indicadores gerais tratados e pendências — atualizar no mesmo commit se mudar alguma regra de limpeza.
-- `analises/analise_geral_corrigida.py`: o notebook (carga, limpeza, insights).
-- `analises/*.md` (exceto o README): conteúdo pronto para colar no Notion compartilhado do grupo —
-  atualizar junto se os números do notebook mudarem.
+- `analises/analise_geral_corrigida.py`: notebook base — carga, limpeza, panorama geral. Único arquivo
+  de código; não criar uma cópia por pessoa.
+- `analises/README.md`: lista de arquivos, responsáveis e status (preenchido/template).
+- `analises/*.md` (exceto o README): conteúdo pronto para colar no Notion compartilhado do grupo — alguns
+  já preenchidos, outros ainda são template a preencher (ver `analises/README.md`). Atualizar junto se os
+  números do notebook base mudarem.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
 
@@ -43,6 +48,9 @@ documentos neste repositório.
   inflou o custo total em quase 30× (R$ 42 mi em vez de ~R$ 1,45 mi).
 - `nota_atendimento` só é válida de 1 a 5; `-1`, `0`, `6` e vazio são inválidos (virar `null` + flag, não
   descartar a linha em silêncio).
+- **Duplicatas**: `chamados` tem 2.636 `id_chamado` duplicados (idênticos) e `custos` tem 781 `id_custo`
+  duplicados. **Sempre** `dropDuplicates` por esse id antes de qualquer agregação, em toda análise —
+  se cada tema tratar isso de um jeito diferente, os números não batem entre os `.md`.
 - Anomalias em geral viram flag/coluna `dq_*`, nunca descarte silencioso.
 - Ambiente Databricks **Free Edition**: só serverless, SQL warehouse 2X-Small, cota diária de uso. Evitar
   `collect()`/`toPandas()` em tabelas grandes (~130 mil linhas nas maiores); agregar no Spark antes de
@@ -55,6 +63,11 @@ documentos neste repositório.
 - Sugestão de pasta no workspace: algo como `/Workspace/Users/<seu-email>/vcredit/` (ou uma pasta
   compartilhada, se o workspace permitir), com o notebook corrigido dentro. Mantenha o nome do arquivo
   igual ao do repositório para não perder o rastro de qual versão está onde.
+- ⚠️ **Os CSVs têm que estar num Volume do Unity Catalog, não numa pasta do Workspace.** O Spark
+  serverless do Free Edition não lê CSV de pasta do Workspace com `spark.read` — só de
+  `/Volumes/<catalogo>/<schema>/<volume>`. O widget `base_path` do notebook já valida isso e dá erro
+  se não começar com `/Volumes`. Combinar com o grupo quem sobe os 8 arquivos no Volume e qual o
+  caminho exato (anotar aqui depois do primeiro teste).
 - Quando terminar de testar uma mudança no Databricks, traga a versão final de volta para o repositório
   (exportar/copiar o código) para o grupo não perder o trabalho.
 - Isso é um começo deliberadamente mais simples que a arquitetura medalhão original; se o grupo retomar

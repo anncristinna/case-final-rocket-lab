@@ -1,9 +1,17 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Análise de Chamados — versão corrigida
+# MAGIC # Base — carga, limpeza e panorama geral
+# MAGIC **Notebook base, único, mudado só por PR combinado e revisado pelo grupo** (evita conflito de
+# MAGIC merge de várias pessoas editando o mesmo arquivo). Cada pessoa explora o seu tema no Databricks do
+# MAGIC jeito que preferir — copiando este notebook, fazendo `%run` nele, ou outro notebook à parte — e leva
+# MAGIC o resultado final pro `.md` correspondente em `analises/` (ver `analises/README.md`), nunca pro
+# MAGIC Notion direto do notebook. Aqui ficam definidos `chamados`, `custos`, `pesquisa`, `horarios`,
+# MAGIC `atendentes`, `motivos`, `canais_dim`, `clientes` e `base` (a tabela consolidada, uma linha por
+# MAGIC chamado) — reaproveite a limpeza daqui pra não divergir dos outros `.md`.
+# MAGIC
 # MAGIC Parte do notebook exploratório inicial do Juan (`Análise de Chamados Insights Primários.ipynb`,
 # MAGIC mantido só localmente, fora do git — tem um e-mail pessoal embutido no `base_path`) e corrige os
-# MAGIC problemas encontrados nele:
+# MAGIC problemas encontrados nele — tabela completa em `docs/achados_analise_geral.md`. Resumo:
 # MAGIC
 # MAGIC | # | Problema no original | Correção aqui |
 # MAGIC |---|---|---|
@@ -11,28 +19,33 @@
 # MAGIC | 2 | Limpeza de `custo` remove **todo ponto** → `23.24` virava `2324`, `74.71reais` virava `7471` → custo total R$ 42,2 mi | regra que só remove ponto de milhar quando há vírgula → custo total correto ~R$ 1,45 mi |
 # MAGIC | 3 | `tempo_espera`/`tempo_atendimento` usados direto de `chamados`, rotulados como "min" | são **segundos**, e truncados para durações ≥ 1.000 s — tempos vêm de `chamados_hora` |
 # MAGIC | 4 | Notas de pesquisa -1/0/6 entram na média (só filtra nulo) | nota só é válida de 1 a 5, resto vira `null` + flag |
-# MAGIC | 5 | 2.636 `id_chamado` duplicados não removidos | `dropDuplicates` antes de qualquer agregação |
+# MAGIC | 5 | 2.636 `id_chamado` duplicados e 781 `id_custo` duplicados não removidos | `dropDuplicates` antes de qualquer agregação — **repita isso em toda análise de tema**, senão os números não batem entre os `.md` |
 # MAGIC | 6 | Não usa `chamados_hora`: sem abandono, sem correção do ano de abertura | abandono = sem hora de início; ano da abertura corrigido quando dá pra confirmar pela finalização |
 # MAGIC
-# MAGIC Resultado final: para o Notion do grupo. Nenhuma linha de `clientes` (CPF/nome/e-mail) é impressa.
+# MAGIC Nenhuma linha de `clientes` (CPF/nome/e-mail) é impressa em nenhuma análise.
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ## 1. Carga dos dados
-# MAGIC Widget `base_path` sem valor padrão (pra não embutir caminho/e-mail de ninguém). Exemplos:
-# MAGIC `/Workspace/Users/<seu-email>/projeto final/dados` ou `/Volumes/<catalogo>/<schema>/<volume>`.
+# MAGIC Widget `base_path` sem valor padrão (pra não embutir caminho/e-mail de ninguém).
+# MAGIC
+# MAGIC ⚠️ **Tem que ser um Volume** (`/Volumes/<catalogo>/<schema>/<volume>`) — o Spark serverless do Free
+# MAGIC Edition **não lê CSV de pasta do Workspace** (`/Workspace/...`) com `spark.read`, só de Volume.
+# MAGIC Suba os 8 CSVs num Volume do Unity Catalog antes de rodar (ex.: *Catalog → criar Volume → Upload*;
+# MAGIC combinar com o grupo quem sobe os arquivos e qual o caminho exato, e anotar aqui).
 
 # COMMAND ----------
 
 dbutils.widgets.text("base_path", "")
 BASE_PATH = dbutils.widgets.get("base_path")
 if not BASE_PATH:
+    raise ValueError("Preencha o widget 'base_path' com um caminho de Volume: '/Volumes/<catalogo>/<schema>/<volume>'.")
+if not BASE_PATH.startswith("/Volumes"):
     raise ValueError(
-        "Preencha o widget 'base_path'. Exemplos: "
-        "'/Workspace/Users/<seu-email>/projeto final/dados' ou '/Volumes/<catalogo>/<schema>/<volume>'."
+        f"'{BASE_PATH}' não é um Volume. O Spark serverless não lê CSV de pasta do Workspace — "
+        "suba os CSVs num Volume do Unity Catalog e use '/Volumes/<catalogo>/<schema>/<volume>'."
     )
-_prefixo = "" if BASE_PATH.startswith("/Volumes") else "file://"
 
 # COMMAND ----------
 
@@ -53,7 +66,7 @@ _FONTES = {
 _tabelas = {}
 _contagens = []
 for arquivo, (nome, encoding) in _FONTES.items():
-    caminho = f"{_prefixo}{BASE_PATH}/{arquivo}"
+    caminho = f"{BASE_PATH}/{arquivo}"
     leitor = spark.read.option("header", True).option("inferSchema", False).option("encoding", encoding)
     if arquivo != "Chamados_Hora.CSV":  # Chamados_Hora.CSV não tem aspas
         leitor = leitor.option("quote", '"').option("escape", '"')
@@ -254,7 +267,8 @@ horarios = (
     .withColumn("tempo_espera_s", F.when(~F.col("dq_ordem_invalida") & F.col("inicio_ts").isNotNull(), F.unix_timestamp("inicio_ts") - F.unix_timestamp("abertura_ts")))
     .withColumn("tempo_atendimento_s", F.when(~F.col("dq_ordem_invalida") & F.col("fim_ts").isNotNull() & F.col("inicio_ts").isNotNull(), F.unix_timestamp("fim_ts") - F.unix_timestamp("inicio_ts")))
     .withColumn("mes", F.trunc(F.to_date("fim_ts"), "month"))
-    .select("id_chamado", "mes", "abandonado", "tempo_espera_s", "tempo_atendimento_s", "dq_abertura_corrigida")
+    .withColumn("hora_abertura", F.hour("abertura_ts"))
+    .select("id_chamado", "mes", "hora_abertura", "abandonado", "tempo_espera_s", "tempo_atendimento_s", "dq_abertura_corrigida")
     .dropDuplicates(["id_chamado"])
     .cache()
 )
@@ -299,6 +313,7 @@ print("ok")
 
 # MAGIC %md
 # MAGIC ## 4. Base consolidada (uma linha por chamado)
+# MAGIC Reaproveitada por todas as análises de tema via `%run ./analise_geral_corrigida`.
 
 # COMMAND ----------
 
@@ -321,12 +336,7 @@ print(f"chamados na base consolidada: {base.count():,}")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 5. Insights (corrigidos)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Panorama geral
+# MAGIC ## 5. Panorama geral
 
 # COMMAND ----------
 
@@ -360,101 +370,6 @@ print(f"Nota média:                       {nota_media:>10,.2f}/5  ({base_csat.c
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Por canal
-
-# COMMAND ----------
-
-display(
-    base.groupBy("canal_key")
-    .agg(
-        F.count("*").alias("chamados"),
-        F.avg(F.col("resolvido").cast("int")).alias("taxa_resolucao"),
-        F.avg("tempo_espera_s").alias("tme_s"),
-        F.avg("tempo_atendimento_s").alias("tma_s"),
-        F.avg(F.col("abandonado").cast("int")).alias("pct_abandono"),
-        F.avg("custo").alias("custo_medio"),
-        F.avg((F.col("nota") >= 4).cast("int")).alias("csat"),
-    )
-    .orderBy(F.desc("chamados"))
-)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Top motivos
-
-# COMMAND ----------
-
-display(
-    base.groupBy("motivo_key", "categoria")
-    .agg(
-        F.count("*").alias("chamados"),
-        F.avg(F.col("resolvido").cast("int")).alias("taxa_resolucao"),
-        F.avg("tempo_espera_s").alias("tme_s"),
-    )
-    .orderBy(F.desc("chamados"))
-    .limit(10)
-)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Por região (atributo agregado de `clientes` — sem CPF/nome/e-mail)
-
-# COMMAND ----------
-
-display(
-    base.where(F.col("regiao").isNotNull())
-    .groupBy("regiao")
-    .agg(
-        F.count("*").alias("chamados"),
-        F.avg("idade").alias("idade_media"),
-        F.avg(F.col("resolvido").cast("int")).alias("taxa_resolucao"),
-        F.avg("tempo_espera_s").alias("tme_s"),
-    )
-    .orderBy(F.desc("chamados"))
-)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Top atendentes por volume e resolução
-
-# COMMAND ----------
-
-display(
-    base.where(F.col("id_atendente").isNotNull() & ~F.col("dq_atendente_invalido"))
-    .groupBy("id_atendente", "nome_atendente", "nivel_atendente")
-    .agg(
-        F.count("*").alias("chamados"),
-        F.avg(F.col("resolvido").cast("int")).alias("taxa_resolucao"),
-        F.avg("tempo_atendimento_s").alias("tma_s"),
-    )
-    .orderBy(F.desc("chamados"))
-    .limit(10)
-)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Distribuição de notas válidas e custo total por região
-
-# COMMAND ----------
-
-print("Distribuição de notas (1-5 válidas):")
-display(base_csat.groupBy("nota").count().orderBy("nota"))
-
-print("Custo total por região:")
-display(
-    base.where(F.col("regiao").isNotNull() & F.col("custo").isNotNull())
-    .groupBy("regiao")
-    .agg(F.sum("custo").alias("custo_total"), F.avg("custo").alias("custo_medio"), F.count("*").alias("chamados"))
-    .orderBy(F.desc("custo_total"))
-)
-
-# COMMAND ----------
-
-# MAGIC %md
 # MAGIC ## 6. Resumo — original (Juan) vs. corrigido
 # MAGIC
 # MAGIC | Métrica | No notebook original | Corrigido aqui |
@@ -466,9 +381,6 @@ display(
 # MAGIC | Abandono | não calculado | calculado pelos timestamps |
 # MAGIC | `id_cliente` (CPF) | risco de perder zero à esquerda (`inferSchema=True`) | lido como string, sempre |
 # MAGIC
-# MAGIC **Pontos corretos no original, mantidos aqui:** estrutura dos insights (panorama, por canal, por
-# MAGIC motivo, por região, por atendente), detecção de que `resolvido` e `canal` tinham grafias inconsistentes,
-# MAGIC e de que havia duplicatas em `chamados`.
-# MAGIC
-# MAGIC **Próximo passo:** levar estes números para o Notion compartilhado do grupo. Reconfirmar rodando no
-# MAGIC Databricks antes de usar em slides ou no Notion.
+# MAGIC **Próximo passo:** cada pessoa explora o seu tema no Databricks (reaproveitando `base` e as outras
+# MAGIC tabelas definidas aqui, ou do jeito que preferir) e leva o resultado pro `.md` correspondente em
+# MAGIC `analises/` — ver `analises/README.md` para a lista de arquivos e responsáveis.

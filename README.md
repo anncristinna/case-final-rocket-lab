@@ -9,11 +9,12 @@ dados (pelo menos 2 com ganho quantificado e premissas explícitas) para o Comit
 
 ## Abordagem atual
 
-Recomeço deliberadamente mais simples: em vez de um notebook por pessoa com arquitetura medalhão, o
-grupo parte do notebook exploratório inicial do Juan e constrói **um único notebook corrigido**
-(`analises/analise_geral_corrigida.py`), testado localmente e depois subido manualmente ao workspace
-Databricks do grupo (sem Git folder por enquanto). **Os resultados vão para o Notion compartilhado** —
-os arquivos `.md` em `analises/` já estão prontos para essa transcrição.
+Recomeço deliberadamente mais simples: em vez de arquitetura medalhão, o grupo parte do notebook
+exploratório inicial do Juan e corrige num **notebook base único** (`analises/analise_geral_corrigida.py`,
+mudado só por PR combinado — não há um `.py` por pessoa, pra não gerar conflito de merge). Cada um
+explora o seu tema no Databricks do jeito que preferir e leva o resultado pro `.md` correspondente em
+`analises/` (alguns já preenchidos, outros ainda são template). **Os resultados vão para o Notion
+compartilhado** a partir desses `.md`.
 
 ## Entregas e prazos
 
@@ -32,13 +33,15 @@ os arquivos `.md` em `analises/` já estão prontos para essa transcrição.
 │   ├── convencoes-git.md          # branches, commits (Conventional Commits) e Pull Requests
 │   └── achados_analise_geral.md   # o que foi corrigido no notebook e por quê, indicadores gerais
 ├── analises/
-│   ├── README.md
-│   ├── analise_geral_corrigida.py # notebook — carga, limpeza e insights
+│   ├── README.md                  # lista de arquivos, responsáveis e status
+│   ├── analise_geral_corrigida.py # notebook base — carga, limpeza, panorama geral
 │   ├── panorama_geral.md          # \
-│   ├── por_canal.md               #  > conteúdo pronto para o Notion
-│   ├── top_motivos.md             #  >
-│   ├── por_regiao.md              #  >
-│   └── top_atendentes.md          # /
+│   ├── por_canal.md               #  \
+│   ├── top_motivos.md             #   > preenchidos — prontos para o Notion
+│   ├── por_regiao.md              #  /
+│   ├── top_atendentes.md          # /
+│   ├── custos_pesquisa.md         # \_ template a preencher
+│   └── tempos_abandono.md         # /
 └── data/raw/                      # CSVs originais (fora do git)
 ```
 
@@ -52,9 +55,10 @@ Yuri, Cris, Juan, Richard, Milton, Gabriel, Anna.
    [`docs/convencoes-git.md`](docs/convencoes-git.md)).
 2. Copie os 8 CSVs para `data/raw/` (fora do git).
 3. Para testar localmente: PySpark 4.x (um venv isolado funciona bem) sobre os CSVs de `data/raw/`.
-4. Para rodar no Databricks: *Workspace → Import* do `analise_geral_corrigida.py`, preencha o widget
-   `base_path` e rode. Sem Git folder por enquanto — depois de testar, traga a versão final de volta
-   para o repositório.
+4. Para rodar no Databricks: *Workspace → Import* do `analise_geral_corrigida.py`, suba os 8 CSVs num
+   **Volume** do Unity Catalog (o Spark serverless não lê CSV de pasta do Workspace), preencha o widget
+   `base_path` com `/Volumes/<catalogo>/<schema>/<volume>` e rode. Sem Git folder por enquanto — depois
+   de testar, traga a versão final de volta para o repositório.
 
 ## Regras rápidas
 
@@ -62,4 +66,6 @@ Yuri, Cris, Juan, Richard, Milton, Gabriel, Anna.
   (ver `docs/convencoes-git.md`). Exceção já usada: a configuração inicial do repositório.
 - Sem CSV, sem dado pessoal (CPF/nome/e-mail de **clientes**) em output de célula, doc ou commit.
 - Tempos de atendimento sempre pelos timestamps de `chamados_hora` — nunca pelo campo
-  `tempo_atendimento` de `chamados` (truncado). Regras completas de dados em `CLAUDE.md`.
+  `tempo_atendimento` de `chamados` (truncado).
+- `chamados` e `custos` têm duplicatas — sempre `dropDuplicates` por `id_chamado`/`id_custo` antes de
+  agregar, senão os números não batem entre os `.md` de cada tema. Regras completas em `CLAUDE.md`.
