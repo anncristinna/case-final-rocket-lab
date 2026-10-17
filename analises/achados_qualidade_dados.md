@@ -43,10 +43,11 @@ não aceitou `windows-1252`, então o código usa `iso-8859-1`, idêntico ao cp1
 | 16 | clientes/chamados | Chamado de cliente sem cadastro | 1.330 chamados (1,0%) | left join; região/idade `null` |
 | 17 | custos | Formatos mistos: `9,9` · `9.9` · `R$ 9,9` · `9.9reais` · negativos | `9.9reais` em 10.580; negativos ~273 | remove tudo exceto dígitos/`,`/`.`/`-` e converte |
 | 18 | custos | Linhas duplicadas (idênticas) | 781 | `dropDuplicates` por `id_custo` |
-| 19 | custos | Custo ≤ 0 | 544 | mantido + `dq_custo_nao_positivo` (decidir se exclui) |
+| 19 | custos | Custo ≤ 0 | 544 (271 negativos + 273 zero) | mantido + `dq_custo_nao_positivo`; impacto quantificado: incluir soma R$ 1.447.671,52, excluir soma R$ 1.450.617,85 (diferença R$ 2.946,33, ~0,2% do total) — decisão do grupo, ver `custos_pesquisa_milton.py` seção (b) |
 | 20 | custos | Chamados sem custo | 1.550 (1,2%) | `custo_total` `null` na consolidação |
 | 21 | pesquisa | Notas inválidas: `-1` (421), `0` (393), `6` (407), vazias (5.678) | ~8,5% das linhas | nota fora de 1–5 → `null` + `dq_nota_invalida` |
-| 22 | pesquisa | Chamado com mais de uma pesquisa (mesma nota) | 802 | média por chamado na consolidação |
+| 22 | pesquisa | Chamado com mais de uma pesquisa | 802 chamados (1.604 linhas) | **refinado**: só 751 desses 802 têm de fato a mesma nota válida repetida; ~51 têm as duas linhas inválidas (em branco/fora da faixa) e um pequeno restante mistura uma linha válida com uma inválida. Dedup agora prioriza a linha com nota válida quando existe (antes a escolha era arbitrária); ver `custos_pesquisa_milton.py` seção (c) |
+| 25 | pesquisa | Notas inválidas contadas **antes** de deduplicar (linha a linha, 6.899) vs. **depois** de deduplicar por chamado (6.836) são números diferentes | diferença de 63 linhas | não é erro: a diferença vem dos ~51+ casos do problema #22 onde o dedup "recupera" uma nota válida que existia na outra linha duplicada. Reportar sempre qual das duas bases está sendo citada |
 | 23 | atendentes | `nivel_atendimento` em `1`, `Nível 1`, `N2`, `2`, `Nível 2` | 25 linhas | extrai o dígito |
 | 24 | motivos | `categoria` vazia (3 de 14) e `criticidade` com caixa mista | — | imputação por critério do enunciado (**premissa a validar**) + `categoria_imputada` |
 
@@ -74,7 +75,8 @@ os mais caros. Qualquer análise de produtividade que use o campo original **sub
 
 ## Pendente
 
-- Custo ≤ 0 (544): estorno ou erro? Decidir se entra na soma.
+- Custo ≤ 0 (544): estorno ou erro? Impacto já quantificado (diferença de R$ 2.946,33, ~0,2% do total) —
+  falta só a escolha final do grupo entre incluir ou excluir da soma.
 - Atendimentos antes da admissão / depois do desligamento do atendente (não testado).
 - Premissa de `categoria` imputada nos 3 motivos sem categoria.
 - Confirmar que os números batem rodando no Databricks.
