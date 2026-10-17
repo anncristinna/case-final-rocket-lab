@@ -2,12 +2,13 @@
 # NUNCA versionar as bases. Elas ficam só no Volume do Databricks e localmente.
 data/raw/*
 !data/raw/.gitkeep
-data/exports/*
-!data/exports/.gitkeep
 *.csv
 *.CSV
 *.xlsx
 *.parquet
+# Notebooks de referência soltos em data/ (ex.: o original do Juan) costumam trazer
+# caminho/e-mail pessoal no base_path — nunca versionar a partir daqui.
+data/*.ipynb
 
 # --- Segredos ---
 .env
