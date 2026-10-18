@@ -73,10 +73,11 @@ Todos ficam com `chamados` (já coberto por `analises/panorama_geral.md`); por t
    [`docs/convencoes-git.md`](docs/convencoes-git.md)).
 2. Copie os 8 CSVs para `data/raw/` (fora do git).
 3. Para testar localmente: PySpark 4.x (um venv isolado funciona bem) sobre os CSVs de `data/raw/`.
-4. Para rodar no Databricks: *Workspace → Import* do `analise_geral_corrigida.py`, suba os 8 CSVs num
-   **Volume** do Unity Catalog (o Spark serverless não lê CSV de pasta do Workspace), preencha o widget
-   `base_path` com `/Volumes/<catalogo>/<schema>/<volume>` e rode. Sem Git folder por enquanto — depois
-   de testar, traga a versão final de volta para o repositório.
+4. Para rodar no Databricks: *Workspace → Import*, ou use direto a pasta do grupo
+   (`Shared/case-final-rocket-lab/`). Os 8 CSVs ficam em `Shared/case-final-rocket-lab/dados` — uma
+   pasta do Workspace, não um Volume, então `bronze/Landing_To_Bronze.ipynb` lê com `pandas` (ver
+   `bronze/README.md`). Preencha o widget `base_path` com esse caminho e rode. Sem Git folder por
+   enquanto — depois de testar, traga a versão final de volta para o repositório.
 
 ## Regras rápidas
 
