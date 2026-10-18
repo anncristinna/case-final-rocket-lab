@@ -14,6 +14,10 @@ pessoa**, cada um explora o seu tema no Databricks do jeito que preferir e leva 
 correspondente em `analises/` (ver `analises/README.md` para a lista e quem é responsável por qual).
 Os resultados da análise vão para o **Notion compartilhado** do grupo a partir desses `.md`.
 
+Em paralelo, a camada **bronze** começou de verdade: `bronze/Landing_To_Bronze_template.ipynb` é o
+template (mesma regra do notebook base — não editar o original, cada um copia pra sua tabela). Ver
+`bronze/README.md`.
+
 ## Prazos
 - Quinta 22/10 às 18h: entregáveis técnicos.
 - Sexta 23/10: apresentação (20 min + 15 min de perguntas).
@@ -29,6 +33,8 @@ Os resultados da análise vão para o **Notion compartilhado** do grupo a partir
 - `analises/*.md` (exceto o README): conteúdo pronto para colar no Notion compartilhado do grupo — alguns
   já preenchidos, outros ainda são template a preencher (ver `analises/README.md`). Atualizar junto se os
   números do notebook base mudarem.
+- `bronze/Landing_To_Bronze_template.ipynb`: template de ingestão bronze (`.ipynb`, não `.py`), copiado
+  por tabela — ver `bronze/README.md`.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
 
@@ -70,13 +76,14 @@ Os resultados da análise vão para o **Notion compartilhado** do grupo a partir
   caminho exato (anotar aqui depois do primeiro teste).
 - Quando terminar de testar uma mudança no Databricks, traga a versão final de volta para o repositório
   (exportar/copiar o código) para o grupo não perder o trabalho.
-- Isso é um começo deliberadamente mais simples que a arquitetura medalhão original; se o grupo retomar
-  bronze/silver/gold depois, reavaliar se vale a pena configurar o Git folder nessa hora.
+- A camada bronze já começou (`bronze/`, ver acima) — ainda sem Git folder por enquanto; reavaliar se
+  vale configurar quando silver/gold entrarem, se o volume de notebooks crescer muito pra importar à mão.
 
 ## Fluxo de trabalho esperado do Claude
 1. Antes de alterar o notebook corrigido, reler as regras de dados acima (tempos, custo, notas, PII) e
    `docs/achados_analise_geral.md`.
-2. Valide sintaxe (`python -m py_compile analises/*.py`) antes de comitar.
+2. Valide sintaxe (`python -m py_compile analises/*.py`) antes de comitar. Para `.ipynb` em `bronze/`,
+   confira que o JSON é válido (`python -c "import json; json.load(open(arquivo, encoding='utf-8'))"`).
 3. Mudou um número do notebook? Atualize o `.md` correspondente em `analises/` e, se for uma regra de
    limpeza, `docs/achados_analise_geral.md` também — no mesmo commit.
 4. Commits pequenos, em português no imperativo, seguindo `docs/convencoes-git.md`.
