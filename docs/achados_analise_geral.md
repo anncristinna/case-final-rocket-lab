@@ -31,7 +31,7 @@ inconsistentes, e de que havia duplicatas em `chamados`.
 | chamados_hora | 131.838 | 131.838 |
 | clientes | 47.705 | 47.705 |
 | custos | 131.069 | 130.288 (781 duplicatas removidas) |
-| pesquisa_satisfacao | 81.021 | 80.219 únicas por chamado (6.899 notas inválidas no arquivo) |
+| pesquisa_satisfacao | 81.021 | 80.219 únicas por chamado (6.899 notas inválidas no arquivo: 421 com `-1`, 393 com `0`, 407 com `6`, 2.842 realmente vazias e **2.836 com a string literal `"NULL"` como texto**, não um campo vazio — `try_cast` trata as duas formas de ausência do mesmo jeito; ver `analises/perfil_custos_pesquisa.md`) |
 | base_atendentes / base_motivos / canais | 25 / 14 / 4 | idem |
 
 198 chamados tiveram o ano da abertura corrigido (+1/+2 anos); 3.414 chamados (2,6%) ficaram sem hora de

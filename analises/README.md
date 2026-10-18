@@ -20,6 +20,7 @@ Divisão da análise inicial (todos ficam com `chamados`, já coberto por `panor
 | `top_atendentes.md` | os 10 atendentes com mais chamados (Cris) | preenchido |
 | `por_regiao.md` | volume, resolução e custo por região do cliente (Yuri) | preenchido |
 | `custos_pesquisa.md` | custo mensal, por canal/motivo/nível/categoria, Pareto, CSAT, taxa de resposta, recomendação quantificada (Milton) | preenchido |
+| `perfil_custos_pesquisa.md` | perfil coluna a coluna de `custos` e `pesquisa_satisfacao` (tipo, nulos, unicidade, inconsistências) — mesmo padrão usado pra `base_motivos` (Milton) | preenchido |
 | `tempos_abandono.md` | TME/TMA por mês/canal/hora, abandono, picos de demanda (Juan) | **template a preencher** |
 
 Cada pessoa explora o seu tema no Databricks do jeito que preferir (copiando o notebook base, `%run`
