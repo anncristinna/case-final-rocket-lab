@@ -3,6 +3,9 @@
 > Preenchido a partir de `analises/milton_custos_pesquisa.py`, rodado localmente (PySpark) sobre os CSVs
 > completos de `data/raw/`. Destinado ao Notion compartilhado do grupo — reconfirmar rodando no Databricks
 > antes de publicar. Nenhuma linha de `clientes` (CPF/nome/e-mail) aparece aqui.
+>
+> Cada seção tem um bloco **"Como foi calculado"** com a definição do termo, as colunas de origem e o
+> raciocínio aplicado — pra quem for ler no Notion sem abrir o notebook entender de onde vem o número.
 
 ## Problemas já conhecidos (confirmados ao rodar)
 
@@ -14,6 +17,11 @@
 - 6.899 notas inválidas no arquivo (antes de deduplicar); 6.836 após dedup (ver nota na seção de pesquisa).
 - 802 chamados com mais de uma pesquisa registrada — dedup prioriza a nota válida quando existe.
 
+> **Como foi calculado:** tudo isso vem de `custos.custo` (texto bruto) e `pesquisa_satisfacao.nota_atendimento`
+> (texto bruto), lidos sem `inferSchema` (tudo string) no notebook base. "Duplicada" = mesma linha
+> repetida com o mesmo `id_custo`/não se aplica a `id_pesquisa`, mas a mesma combinação de `id_chamado` +
+> nota repetida é o caso de pesquisa duplicada.
+
 ## Custo total e a decisão pendente sobre custo ≤ 0
 
 | Cenário | Custo total |
@@ -22,6 +30,14 @@
 | Excluindo custo ≤ 0 (tratado como estorno/erro) | R$ 1.450.617,85 |
 
 Diferença: R$ 2.946,33 (~0,2% do total) — **decisão do grupo**, não decidimos por conta própria.
+
+> **Como foi calculado:** `custo_total` = soma de `custos.custo` (já convertido de texto pra número:
+> mantém só dígitos/`,`/`.`/`-`, trata vírgula como decimal brasileiro) após remover as 781 linhas
+> duplicadas por `id_custo`. `dq_custo_invalido` marca valores que não converteram pra número mesmo
+> depois da limpeza (ficam fora da soma nos dois cenários). `dq_custo_nao_positivo` marca `custo <= 0`
+> (negativo ou zero) — **"incluindo"** soma todo `custo` válido; **"excluindo"** filtra `custo > 0` antes
+> de somar. "Chamados sem custo" = `chamados.id_chamado` que não aparece em nenhuma linha válida de
+> `custos` (join `LEFT ANTI` entre as duas tabelas).
 
 ## Custo mensal x volume de chamados
 
@@ -50,6 +66,14 @@ naquele mês; `qtd_chamados` = volume total do mês (alguns chamados não têm c
 | 2026-05 | R$ 100.599,06 | 8.981 | R$ 11,20 |
 | 2026-06 | R$ 103.575,88 | 9.261 | R$ 11,18 |
 | 2026-07 | R$ 105.657,85 | 9.599 | R$ 11,01 |
+
+> **Como foi calculado:** `mes` = mês da **finalização** do chamado (`chamados_hora.hora_finalizacao_atendimento`,
+> truncado pro primeiro dia do mês) — não o mês da abertura, porque ~198 chamados têm o ano da abertura
+> errado. `qtd_chamados` conta **todos** os chamados daquele mês (`COUNT(*)` sobre a base consolidada,
+> sem filtrar custo); `qtd_lancamentos` conta só os que têm `custo` válido. `custo_medio_por_chamado` =
+> `custo_total / qtd_chamados` — divide pelo **volume total**, não só por quem tem lançamento (senão o
+> número fica artificialmente mais alto, diluindo errado o efeito dos chamados sem custo). `custo_acumulado`
+> = soma corrida mês a mês (window function ordenada por `mes`).
 
 ## Custo por canal, motivo, categoria e nível do atendente
 
@@ -80,6 +104,19 @@ quantificada abaixo.
 Motivo mais caro em média: "Renegociação de dívida" (R$ 16,64); mais barato: "Alteração de dados
 cadastrais" (R$ 6,11).
 
+> **Como foi calculado:** `canal_key` = `chamados.canal` normalizado (minúsculo, sem acento, `_`/`-` →
+> espaço) e mapeado pelos aliases conhecidos (`U.R.A`→`ura`, `Chat Bot`→`chatbot`, `Atend. Inicial`→
+> `atendimento inicial`, `Atend. Especializado`→`atendimento especializado`) — sem isso, a mesma grafia em
+> caixa/formato diferente contaria como canal separado. `motivo_key` é a mesma normalização aplicada a
+> `chamados.motivo`. `categoria` vem de `base_motivos.categoria` (ligado por `motivo_key`); quando vazia,
+> aparece como "(sem categoria — a confirmar)" em vez de descartar a linha. `nivel_atendente` = o dígito
+> extraído de `base_atendentes.nivel_atendimento` (regex, cobre `1`, `Nível 1`, `N2` etc.), ligado por
+> `chamados.id_atendente`. `custo_medio` = média de `custo` (soma de `custos` por chamado, já ligada à
+> base) dentro de cada grupo; `chamados` conta todos os chamados do grupo, inclusive quem não tem custo
+> (`AVG` do Spark ignora nulos automaticamente, `COUNT(*)` não). A diferença nível 2 − nível 1 é a base
+> da recomendação: tratamos `nivel_atendente` como uma **aproximação** de "este chamado foi escalado" —
+> não existe no dataset um campo que diga isso diretamente.
+
 ## Pareto: onde o gasto se concentra
 
 | Canal | % acumulado do custo | % dos chamados |
@@ -92,6 +129,11 @@ cadastrais" (R$ 6,11).
 Os 4 primeiros motivos ("Problema com aplicativo", "Compra não autorizada", "Renegociação de dívida",
 "Contestação de fatura") já respondem por **53,6%** do custo total.
 
+> **Como foi calculado:** agrupa por `canal_key` (ou `motivo_key`), soma `custo` por grupo, ordena do
+> maior pro menor custo e acumula essa soma (window function) dividindo pelo custo total geral — é o
+> clássico "80/20": mostra quantos grupos (ordenados do mais caro pro mais barato) já explicam a maior
+> parte do gasto.
+
 ## Pesquisa de satisfação — qualidade e taxa de resposta
 
 Taxa de resposta geral: **55,7%** dos chamados únicos. Cai de 65% (jan/25) para 48% (jul/26) — risco de
@@ -103,6 +145,15 @@ viés: quem responde hoje pode não representar mais quem respondia no início.
 | Chatbot | 56,0% |
 | Atendimento inicial | 55,1% |
 | Atendimento especializado | 52,9% |
+
+> **Como foi calculado:** `nota_atendimento` só é válida de 1 a 5; `-1`, `0`, `6` e vazio viram `null` +
+> flag `dq_nota_invalida` (6.899 linhas do arquivo, antes de deduplicar). Quando um `id_chamado` tem mais
+> de uma pesquisa (802 casos), o dedup usa `ROW_NUMBER()` particionado por `id_chamado`, ordenado pra
+> colocar nota válida primeiro — fica 1 linha por chamado, priorizando a nota válida quando existe (6.836
+> notas inválidas sobram após o dedup, um pouco menos que as 6.899 brutas, porque às vezes a segunda
+> linha duplicada tinha a nota válida). **Taxa de resposta** = chamados com `nota` não nula na base
+> consolidada (ou seja, com pesquisa válida) ÷ total de chamados únicos — **não é** "quantas pesquisas
+> existem", é "quantos chamados têm uma nota válida".
 
 ## CSAT por mês, canal, nível, motivo, categoria e resolução
 
@@ -127,6 +178,14 @@ CSAT mensal: **86,2% em jan/2025 caindo para 56,7% em jul/2026.**
 
 Por categoria do motivo: Cadastral (84,7%) e Benefícios (74,2%) no topo; Atendimento (61,3%) no fim.
 
+> **Como foi calculado:** **CSAT** = % de respostas com `nota >= 4` (ou seja, nota 4 ou 5) entre as
+> respostas **válidas** (`nota` não nula) — nunca entre o total de chamados, só entre quem respondeu com
+> nota válida. **Nota média** = média simples de `nota` no mesmo recorte. `resolvido` vem de
+> `chamados.resolvido`, um campo de texto livre (`Sim`, `Não`, `S`, `N`, `1`, `0`, `Nao resolvido`,
+> vazio) normalizado pro booleano `true`/`false`/`null` antes de agrupar. Cada tabela acima é o mesmo
+> cálculo de CSAT/nota média, só trocando a coluna de agrupamento (`canal_key`, `nivel_atendente`,
+> `motivo_key`, `categoria`, `resolvido`).
+
 ### Testando a fala do Marketing: "CSAT era 85% em jan/25; a piora é externa"
 
 | Canal | CSAT jan/2025 | CSAT jul/2026 | Queda |
@@ -138,6 +197,12 @@ Por categoria do motivo: Cadastral (84,7%) e Benefícios (74,2%) no topo; Atendi
 
 A queda é 3-4× maior nos canais humanos — **não parece uma causa externa e geral**, e sim um problema
 operacional concentrado no atendimento humano.
+
+> **Como foi calculado:** calcula o CSAT (mesma definição acima) por `mes` e `canal_key`, pega o primeiro
+> e o último mês com dado (jan/2025 e jul/2026) e usa `PIVOT` pra colocar os dois meses lado a lado por
+> canal. A lógica do teste: se a queda fosse por um motivo externo e geral (ex.: um problema do mercado,
+> sazonalidade), esperaríamos uma queda parecida em todos os canais; o fato de cair muito mais nos canais
+> com atendente humano do que no autosserviço (URA/Chatbot) aponta pra uma causa interna e operacional.
 
 ## Nota x tempo de espera, x TMA e x abandono
 
@@ -155,6 +220,14 @@ operacional concentrado no atendimento humano.
 
 Abandono reduz muito a chance de resposta, mas quando o cliente que desistiu responde, a nota é péssima.
 
+> **Como foi calculado:** **TME** (tempo médio de espera) = `hora_inicio_atendimento − hora_abertura_chamado`
+> em segundos, **sempre** pelos timestamps de `chamados_hora` (nunca pelo campo `tempo_espera` de
+> `chamados`, que vem truncado para durações ≥ 1.000 s). As faixas (0-1 min, 1-5 min, 5-15 min, 15+ min)
+> são cortes que escolhemos pra visualizar a relação, não uma definição oficial do case. **Abandonado** =
+> `hora_inicio_atendimento` vazia — o cliente abriu o chamado, ficou na espera, mas nunca chegou a ser
+> atendido. "Taxa de resposta" aqui é a mesma definição da seção de pesquisa, só recortada por
+> abandonado sim/não.
+
 ## Cruzamento custo x satisfação
 
 | Canal | Custo médio | Nota média |
@@ -165,6 +238,10 @@ Abandono reduz muito a chance de resposta, mas quando o cliente que desistiu res
 | Chatbot | R$ 0,57 | 4,40 |
 
 O canal mais caro é o de menor nota — custo alto não compra satisfação alta aqui.
+
+> **Como foi calculado:** mesma base (`custo` e `nota`, já definidos acima), só colocando as duas médias
+> lado a lado por canal, pra ver visualmente se gastar mais correlaciona com nota melhor (aqui, o
+> contrário: é uma correlação negativa).
 
 ## Recomendação quantificada: reduzir o escalonamento para o nível 2
 
@@ -179,6 +256,13 @@ custo de treinamento/script).
 | Conservador | 5% | 2.043 | **R$ 29.231,23** |
 | Base | 15% | 6.129 | **R$ 87.693,68** |
 | Otimista | 25% | 10.215 | **R$ 146.156,13** |
+
+> **Como foi calculado:** `chamados_nivel2` = contagem de chamados cujo `nivel_atendente` é `2`. A conta
+> é: `ganho = chamados_nivel2 × p% × diferença_de_custo` (R$ 14,31, calculada na seção de custo por
+> nível). `p%` é um número que **escolhemos** pra testar 3 cenários (5%, 15%, 25%) — não vem de nenhuma
+> coluna do dataset, é a fração de chamados do nível 2 que o grupo acredita que poderia ter sido resolvida
+> no nível 1 com script/treinamento. Por isso o resultado é uma **estimativa de sensibilidade**, não uma
+> previsão: o número certo depende de validar essa premissa com quem conhece a operação.
 
 ## Leitura
 
