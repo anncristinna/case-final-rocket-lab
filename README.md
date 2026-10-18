@@ -16,8 +16,8 @@ explora o seu tema no Databricks do jeito que preferir e leva o resultado pro `.
 `analises/` (alguns já preenchidos, outros ainda são template). **Os resultados vão para o Notion
 compartilhado** a partir desses `.md`.
 
-Em paralelo, começou a camada bronze de verdade: `bronze/Landing_To_Bronze_template.ipynb` é o template
-que cada um copia pra ingerir a sua tabela (ver `bronze/README.md`).
+Em paralelo, começou a camada bronze de verdade: `bronze/Landing_To_Bronze.ipynb` ingere as 8 tabelas
+num notebook único (mudado só por PR revisado — ver `bronze/README.md`).
 
 ## Entregas e prazos
 
@@ -47,7 +47,7 @@ que cada um copia pra ingerir a sua tabela (ver `bronze/README.md`).
 │   └── tempos_abandono.md         # /
 ├── bronze/                        # início da camada bronze de verdade
 │   ├── README.md                  # como usar o template, responsável por tabela
-│   └── Landing_To_Bronze_template.ipynb  # copiar por tabela, não editar o original
+│   └── Landing_To_Bronze.ipynb    # ingere as 8 tabelas — notebook único, mudado só por PR revisado
 └── data/raw/                      # CSVs originais (fora do git)
 ```
 

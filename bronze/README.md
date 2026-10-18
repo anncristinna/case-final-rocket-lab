@@ -3,21 +3,14 @@
 Início da camada bronze de verdade (não é mais rascunho — ver `medalhao_rascunho/` para o desenho
 original, mantido só como referência histórica).
 
-## Como usar o template
+## `Landing_To_Bronze.ipynb`
 
-1. Copie `Landing_To_Bronze_template.ipynb` para `Landing_To_Bronze_<tabela>_<seunome>.ipynb`
-   (ex.: `Landing_To_Bronze_custos_milton.ipynb`). **Não edite o template original** — ele é a base pra
-   todo mundo, mudanças nele só por PR combinado (mesma regra do notebook base em `analises/`).
-2. Preencha os `TODO` da célula de configuração: `ARQUIVO`, `ENCODING`, `TABELA`.
-3. Rode no Databricks com um Volume do Unity Catalog como `base_path` (não funciona com pasta do
-   Workspace — ver `CLAUDE.md`).
-4. Confira a checklist no final do notebook antes de commitar.
+Notebook **único** — ingere as 8 tabelas num loop (mesma lógica pra todas: ler fiel à origem, escrever
+com `overwrite`). Não tem lógica diferente por tabela, então, diferente de `analises/`, não faz sentido
+uma cópia por pessoa aqui. **Mudar só por PR revisado**, igual ao notebook base em `analises/`.
 
-## Responsável por tabela
-
-Ver `analises/README.md` — mesma divisão: Yuri (`clientes`), Cris (`base_atendentes`, `base_motivos`),
-Juan (`chamados_hora`), Richard (`canais`), Milton (`custos`, `pesquisa_satisfacao`). `chamados` pode
-ficar com quem sobrar ou ser combinado entre o grupo.
+Pra rodar: no Databricks, preencha o widget `base_path` com um Volume do Unity Catalog (não funciona
+com pasta do Workspace — ver `CLAUDE.md`) e rode todas as células.
 
 ## Regras da bronze (resumo — completo em `CLAUDE.md`)
 

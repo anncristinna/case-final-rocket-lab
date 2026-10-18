@@ -14,9 +14,9 @@ pessoa**, cada um explora o seu tema no Databricks do jeito que preferir e leva 
 correspondente em `analises/` (ver `analises/README.md` para a lista e quem é responsável por qual).
 Os resultados da análise vão para o **Notion compartilhado** do grupo a partir desses `.md`.
 
-Em paralelo, a camada **bronze** começou de verdade: `bronze/Landing_To_Bronze_template.ipynb` é o
-template (mesma regra do notebook base — não editar o original, cada um copia pra sua tabela). Ver
-`bronze/README.md`.
+Em paralelo, a camada **bronze** começou de verdade: `bronze/Landing_To_Bronze.ipynb` ingere as 8
+tabelas num notebook único (mesma regra do notebook base em `analises/` — mudado só por PR revisado;
+aqui não há lógica diferente por tabela, então não há cópia por pessoa). Ver `bronze/README.md`.
 
 ## Prazos
 - Quinta 22/10 às 18h: entregáveis técnicos.
@@ -33,8 +33,8 @@ template (mesma regra do notebook base — não editar o original, cada um copia
 - `analises/*.md` (exceto o README): conteúdo pronto para colar no Notion compartilhado do grupo — alguns
   já preenchidos, outros ainda são template a preencher (ver `analises/README.md`). Atualizar junto se os
   números do notebook base mudarem.
-- `bronze/Landing_To_Bronze_template.ipynb`: template de ingestão bronze (`.ipynb`, não `.py`), copiado
-  por tabela — ver `bronze/README.md`.
+- `bronze/Landing_To_Bronze.ipynb`: notebook único de ingestão bronze (`.ipynb`, não `.py`), as 8
+  tabelas num loop — ver `bronze/README.md`.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
 
