@@ -111,7 +111,7 @@ Se algo divergir, **não ajuste o código para forçar o número**: anote a dife
 
 | Sintoma | Causa provável | O que fazer |
 |---|---|---|
-| `INSUFFICIENT_PERMISSIONS ... SELECT on any file` | CSV lido de pasta do Workspace de forma distribuída (`spark.read`/Auto Loader) | Ler com `pandas` (funciona em Workspace e Volume) ou usar o Volume em `/Volumes/...` |
+| `INSUFFICIENT_PERMISSIONS ... SELECT on any file` | `spark.read` numa pasta do Workspace sem o esquema `file:` explícito no caminho | Usar `file:/Workspace/...` no `.load(...)` (testado, funciona em leitura distribuída) — ou, alternativas: ler com `pandas` (funciona sem o prefixo) ou usar um Volume em `/Volumes/...` |
 | Widget `base_path` não aparece | Widget criado só dentro de `%run` | Criar a célula do widget antes do `%run` |
 | `Path does not exist` | Caminho com texto de exemplo (`<seu-email>`) ou nome de Volume errado | Copiar o caminho pelo Catalog |
 | Erro de permissão no Volume | Falta `READ VOLUME` ou `USE SCHEMA` | Pedir a quem criou o Volume |

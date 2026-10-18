@@ -13,12 +13,15 @@ Notebook **único** — ingere as 8 tabelas num loop (mesma lógica pra todas: l
 com `overwrite`). Não tem lógica diferente por tabela, então, diferente de `analises/`, não faz sentido
 uma cópia por pessoa aqui. **Mudar só por PR revisado**, igual ao notebook base em `analises/`.
 
-Leitura 100% `spark.read` (padrão Databricks — segue o estilo que um colega já estava usando pra
-`base_motivos`, com `_source_file`/`_source_file_mod_ts` vindo da coluna oculta `_metadata` em vez de
-um valor fixo). **Exige um Volume do Unity Catalog** em `base_path`: o Spark serverless não lê CSV de
-pasta do Workspace de forma distribuída. (Antes deste notebook lia com `pandas`, que funcionava em
-qualquer caminho; voltamos pro `spark.read` puro a pedido do grupo, agora que os CSVs estão num Volume
-de verdade.)
+Leitura 100% `spark.read` (padrão Databricks, estilo do exemplo que um colega já estava usando pra
+`base_motivos`, com `_source_file`/`_source_file_mod_ts` vindo da coluna oculta `_metadata`). O grupo
+está ingerindo direto da **pasta do Workspace** (`Shared/case-final-rocket-lab/dados`) usando o esquema
+`file:` no caminho (`file:/Workspace/Shared/case-final-rocket-lab/dados/<arquivo>.csv`) — testado pelo
+grupo e funciona pra leitura distribuída. **Isso reverte o que a gente achava antes** (que serverless
+não lia CSV de Workspace de jeito nenhum) — aparentemente o problema era não usar o esquema `file:`
+explícito, não a origem do arquivo em si. O widget `base_path` aceita os dois formatos: pasta do
+Workspace (prefixo `file:` adicionado automaticamente no notebook) ou Volume do Unity Catalog
+(`/Volumes/...`, sem prefixo).
 
 ⚠️ **Catálogo/schema/sufixo de destino** (`CATALOGO = "dados_vcredit"`, `SCHEMA_BRONZE = "default"`,
 `SUFIXO = "_raw"`) seguem o exemplo que já estava em uso para uma tabela
@@ -26,19 +29,14 @@ de verdade.)
 8 tabelas antes de rodar em produção; é só mudar essas 3 constantes na célula de configuração se
 decidirem outro catálogo/schema.
 
-Validado localmente (fora do Databricks, simulando o Volume com os CSVs de `data/raw/`): as 8
-contagens batem exatamente com o esperado, e `_metadata.file_path`/`_metadata.file_modification_time`
-resolvem certinho (é recurso padrão do Spark, não específico do Databricks). Nuance: sem o `pandas`,
-célula vazia em `nota_atendimento` vira `NULL` de verdade (comportamento padrão do `spark.read` sem
-`nullValue`), então ela e a string literal `"NULL"` aparecem iguais no `display()` — continuam sendo
-valores diferentes por dentro, e isso não muda nada no tratamento (os dois já eram descartados como
-inválidos). A linha `CREATE SCHEMA IF NOT EXISTS` não dá pra testar localmente no Windows (precisa de
-`winutils.exe`) — é uma chamada Spark padrão, risco baixo, mas confirme que rodou sem erro na primeira
-execução no Databricks.
+Validado localmente (fora do Databricks, simulando a pasta com os CSVs de `data/raw/` e o mesmo esquema
+`file:`): as 8 contagens batem exatamente com o esperado, e `_source_file`/`_source_file_mod_ts`
+resolvem certinho. A linha `CREATE SCHEMA IF NOT EXISTS` não dá pra testar localmente no Windows
+(precisa de `winutils.exe`) — é uma chamada Spark padrão, risco baixo, mas confirme que rodou sem erro
+na primeira execução no Databricks.
 
-Pra rodar: no Databricks, preencha o widget `base_path` com o caminho do Volume — copie pelo **Catalog**
-pra não errar o nome do catálogo/schema (`/Volumes/<catalogo>/<schema>/<volume>`) — e rode todas as
-células.
+Pra rodar: no Databricks, preencha o widget `base_path` com `/Workspace/Shared/case-final-rocket-lab/dados`
+(ou o caminho de um Volume, se o grupo migrar pra lá) e rode todas as células.
 
 ## Regras da bronze (resumo — completo em `CLAUDE.md`)
 

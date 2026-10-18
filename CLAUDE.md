@@ -16,12 +16,12 @@ Os resultados da análise vão para o **Notion compartilhado** do grupo a partir
 
 Em paralelo, a camada **bronze** começou de verdade: `bronze/Landing_To_Bronze.ipynb` ingere as 8
 tabelas num notebook único (mesma regra do notebook base em `analises/` — mudado só por PR revisado;
-aqui não há lógica diferente por tabela, então não há cópia por pessoa). Os CSVs ficam num **Volume do
-Unity Catalog** (`dados_vcredit`) — passo a passo completo de como montar isso (pastas, Volume,
-permissões) em `docs/databricks-estrutura.md`. A leitura é `spark.read` puro (padrão Databricks),
-exige Volume (`spark.read` não lê pasta do Workspace de forma distribuída); destino
-`dados_vcredit.default.<tabela>_raw`, seguindo o padrão que um colega já estava usando — confirmar com
-o grupo se é definitivo. Ver `bronze/README.md`.
+aqui não há lógica diferente por tabela, então não há cópia por pessoa). O grupo está ingerindo direto
+da pasta do Workspace (`Shared/case-final-rocket-lab/dados`) com `spark.read` usando o esquema `file:`
+no caminho (`file:/Workspace/Shared/case-final-rocket-lab/dados/<arquivo>.csv`) — testado pelo grupo,
+funciona pra leitura distribuída (reverte o que a gente achava antes sobre Workspace não funcionar; ver
+nota em `bronze/README.md`). Destino `dados_vcredit.default.<tabela>_raw`, seguindo o padrão que um
+colega já estava usando — confirmar com o grupo se é definitivo. Ver `bronze/README.md`.
 
 ## Prazos
 - Quinta 22/10 às 18h: entregáveis técnicos.
@@ -41,8 +41,8 @@ o grupo se é definitivo. Ver `bronze/README.md`.
   já preenchidos, outros ainda são template a preencher (ver `analises/README.md`). Atualizar junto se os
   números do notebook base mudarem.
 - `bronze/Landing_To_Bronze.ipynb`: notebook único de ingestão bronze (`.ipynb`, não `.py`), as 8
-  tabelas num loop, lê via `spark.read` (Volume `dados_vcredit`, exige `/Volumes/...`) e grava com
-  `overwrite` em `dados_vcredit.default.<tabela>_raw` — ver `bronze/README.md`.
+  tabelas num loop, lê via `spark.read` (pasta do Workspace com esquema `file:`, ou Volume sem prefixo)
+  e grava com `overwrite` em `dados_vcredit.default.<tabela>_raw` — ver `bronze/README.md`.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
 
@@ -78,15 +78,16 @@ o grupo se é definitivo. Ver `bronze/README.md`.
 - Fluxo simplificado: editar o notebook localmente (`.py`/`.ipynb`) → *Workspace → Import* manual no
   workspace do grupo → rodar e testar lá. Passo a passo completo em `docs/databricks-estrutura.md`.
 - Pasta real do grupo: `Shared/case-final-rocket-lab/`, com `analises/` (notebooks de análise, inclusive
-  o base), `medalhao/` (`Landing_To_Bronze`) e `resultados/`. Os CSVs já migraram pra um **Volume do
-  Unity Catalog** (`dados_vcredit`) — a pasta `dados/` antiga do Workspace deve ser removida depois de
-  confirmar que os 8 arquivos estão no Volume (os CSVs têm CPF/nome/e-mail, não deixar cópia solta).
+  o base), `medalhao/` (`Landing_To_Bronze`) e `resultados/`. Os CSVs estão em
+  `Shared/case-final-rocket-lab/dados` (pasta do Workspace) — ver nota abaixo sobre como ler isso com
+  `spark.read`. Existe também um catálogo `dados_vcredit` no Unity Catalog, usado hoje como destino das
+  tabelas bronze (`dados_vcredit.default.<tabela>_raw`), não necessariamente pros CSVs de origem.
   Mantenha o nome do arquivo igual ao do repositório para não perder o rastro de qual versão está onde.
-- O Spark serverless do Free Edition não lê CSV de pasta do Workspace **de forma distribuída**
-  (`spark.read`/Auto Loader falham nisso — já tentamos) — por isso o Volume é obrigatório pro
-  `base_path` de qualquer notebook que use `spark.read` (todos, atualmente). Já tentamos ler com
-  `pandas` pra contornar isso (funciona em Volume ou Workspace sem diferença de código), mas voltamos
-  pro `spark.read` puro a pedido do grupo, seguindo o padrão já em uso por um colega.
+- `spark.read` numa pasta do Workspace só funciona em leitura distribuída usando o **esquema `file:`
+  explícito** no caminho (`file:/Workspace/...`) — sem isso, dá erro de permissão (é o que intrigava a
+  gente antes: não é que Workspace nunca funcione, é que faltava esse prefixo). `bronze/Landing_To_Bronze.ipynb`
+  adiciona esse prefixo automaticamente quando `base_path` não é um Volume. Também aceita um Volume
+  (`/Volumes/...`, sem prefixo) se o grupo migrar os CSVs pra lá no futuro.
 - Quando terminar de testar uma mudança no Databricks, traga a versão final de volta para o repositório
   (exportar/copiar o código) para o grupo não perder o trabalho.
 - A camada bronze já começou (`bronze/`, ver acima) — ainda sem Git folder por enquanto; reavaliar se
