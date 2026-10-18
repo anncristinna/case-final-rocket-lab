@@ -16,10 +16,11 @@ Os resultados da análise vão para o **Notion compartilhado** do grupo a partir
 
 Em paralelo, a camada **bronze** começou de verdade: `bronze/Landing_To_Bronze.ipynb` ingere as 8
 tabelas num notebook único (mesma regra do notebook base em `analises/` — mudado só por PR revisado;
-aqui não há lógica diferente por tabela, então não há cópia por pessoa). Os CSVs ficam numa pasta do
-**Workspace** (`Shared/case-final-rocket-lab/dados`), não um Volume — por isso a leitura usa `pandas`
-em vez de `spark.read` (serverless não lê CSV de Workspace de forma distribuída, mas o driver acessa
-como arquivo local normal). Ver `bronze/README.md`.
+aqui não há lógica diferente por tabela, então não há cópia por pessoa). Os CSVs ficam num **Volume do
+Unity Catalog** (`dados_vcredit`) — passo a passo completo de como montar isso (pastas, Volume,
+permissões) em `docs/databricks-estrutura.md`. A leitura usa `pandas` em vez de `spark.read` (funciona
+igual em Volume ou pasta do Workspace, sem mudar código — foi assim que sobrevivemos à migração de um
+pra outro). Ver `bronze/README.md`.
 
 ## Prazos
 - Quinta 22/10 às 18h: entregáveis técnicos.
@@ -30,6 +31,8 @@ como arquivo local normal). Ver `bronze/README.md`.
 - `docs/convencoes-git.md`: branches, commits (Conventional Commits) e Pull Requests.
 - `docs/achados_analise_geral.md`: o que foi corrigido no notebook em relação ao original do Juan,
   indicadores gerais tratados e pendências — atualizar no mesmo commit se mudar alguma regra de limpeza.
+- `docs/databricks-estrutura.md`: passo a passo de pastas/Volume/permissões no workspace do grupo,
+  valores de referência e troubleshooting comum.
 - `analises/analise_geral_corrigida.py`: notebook base — carga, limpeza, panorama geral. Único arquivo
   de código; não criar uma cópia por pessoa.
 - `analises/README.md`: lista de arquivos, responsáveis e status (preenchido/template).
@@ -37,7 +40,7 @@ como arquivo local normal). Ver `bronze/README.md`.
   já preenchidos, outros ainda são template a preencher (ver `analises/README.md`). Atualizar junto se os
   números do notebook base mudarem.
 - `bronze/Landing_To_Bronze.ipynb`: notebook único de ingestão bronze (`.ipynb`, não `.py`), as 8
-  tabelas num loop, lê via `pandas` (pasta do Workspace) e grava com `overwrite` — ver `bronze/README.md`.
+  tabelas num loop, lê via `pandas` (Volume `dados_vcredit`) e grava com `overwrite` — ver `bronze/README.md`.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
 
@@ -70,16 +73,17 @@ como arquivo local normal). Ver `bronze/README.md`.
 
 ## Databricks (workspace, sem Git folder por enquanto)
 - Fluxo simplificado: editar o notebook localmente (`.py`/`.ipynb`) → *Workspace → Import* manual no
-  workspace do grupo → rodar e testar lá.
-- Pasta real do grupo (ver captura de tela de 18/10): `Shared/case-final-rocket-lab/`, com os CSVs em
-  `Shared/case-final-rocket-lab/dados`. Mantenha o nome do arquivo igual ao do repositório para não
-  perder o rastro de qual versão está onde.
-- Os CSVs ficam numa **pasta do Workspace**, não um Volume do Unity Catalog. O Spark serverless do Free
-  Edition não lê CSV de pasta do Workspace **de forma distribuída** (`spark.read`/Auto Loader falham
-  nisso — já tentamos) — por isso `bronze/Landing_To_Bronze.ipynb` lê com `pandas` (acessa o caminho
-  como arquivo local, sem essa limitação) e só depois converte pra Spark. Os outros notebooks
-  (`analises/`) ainda pedem um Volume no widget `base_path` — se também forem rodar com os CSVs no
-  Workspace, usem o mesmo truque do pandas ou movam os CSVs pra um Volume antes.
+  workspace do grupo → rodar e testar lá. Passo a passo completo em `docs/databricks-estrutura.md`.
+- Pasta real do grupo: `Shared/case-final-rocket-lab/`, com `analises/` (notebooks de análise, inclusive
+  o base), `medalhao/` (`Landing_To_Bronze`) e `resultados/`. Os CSVs já migraram pra um **Volume do
+  Unity Catalog** (`dados_vcredit`) — a pasta `dados/` antiga do Workspace deve ser removida depois de
+  confirmar que os 8 arquivos estão no Volume (os CSVs têm CPF/nome/e-mail, não deixar cópia solta).
+  Mantenha o nome do arquivo igual ao do repositório para não perder o rastro de qual versão está onde.
+- O Spark serverless do Free Edition não lê CSV de pasta do Workspace **de forma distribuída**
+  (`spark.read`/Auto Loader falham nisso — já tentamos). Por isso `bronze/Landing_To_Bronze.ipynb` lê
+  com `pandas` (acessa qualquer caminho montado localmente — Volume ou Workspace — sem essa limitação)
+  e só depois converte pra Spark; funcionou sem mudar nada quando os CSVs saíram do Workspace e foram
+  pro Volume. Os outros notebooks (`analises/`) ainda pedem um Volume no widget `base_path`.
 - Quando terminar de testar uma mudança no Databricks, traga a versão final de volta para o repositório
   (exportar/copiar o código) para o grupo não perder o trabalho.
 - A camada bronze já começou (`bronze/`, ver acima) — ainda sem Git folder por enquanto; reavaliar se
