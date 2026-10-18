@@ -15,8 +15,10 @@ correspondente em `analises/` (ver `analises/README.md` para a lista e quem é r
 Os resultados da análise vão para o **Notion compartilhado** do grupo a partir desses `.md`.
 
 Em paralelo, a camada **bronze** começou de verdade: `bronze/Landing_To_Bronze.ipynb` ingere as 8
-tabelas num notebook único (mesma regra do notebook base em `analises/` — mudado só por PR revisado;
-aqui não há lógica diferente por tabela, então não há cópia por pessoa). Ver `bronze/README.md`.
+tabelas num notebook único com **Auto Loader** (`cloudFiles`), não lote (mesma regra do notebook base
+em `analises/` — mudado só por PR revisado; aqui não há lógica diferente por tabela, então não há cópia
+por pessoa). `cloudFiles` é específico do Databricks — **não dá pra testar localmente**, diferente do
+resto do repositório. Ver `bronze/README.md`.
 
 ## Prazos
 - Quinta 22/10 às 18h: entregáveis técnicos.
@@ -33,8 +35,8 @@ aqui não há lógica diferente por tabela, então não há cópia por pessoa). 
 - `analises/*.md` (exceto o README): conteúdo pronto para colar no Notion compartilhado do grupo — alguns
   já preenchidos, outros ainda são template a preencher (ver `analises/README.md`). Atualizar junto se os
   números do notebook base mudarem.
-- `bronze/Landing_To_Bronze.ipynb`: notebook único de ingestão bronze (`.ipynb`, não `.py`), as 8
-  tabelas num loop — ver `bronze/README.md`.
+- `bronze/Landing_To_Bronze.ipynb`: notebook único de ingestão bronze com Auto Loader (`.ipynb`, não
+  `.py`), as 8 tabelas num loop, idempotente via checkpoint (não `overwrite`) — ver `bronze/README.md`.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
 
@@ -61,7 +63,9 @@ aqui não há lógica diferente por tabela, então não há cópia por pessoa). 
 - Ambiente Databricks **Free Edition**: só serverless, SQL warehouse 2X-Small, cota diária de uso. Evitar
   `collect()`/`toPandas()` em tabelas grandes (~130 mil linhas nas maiores); agregar no Spark antes de
   qualquer `display()`.
-- Para testar localmente, use PySpark (Spark 4.x) com os CSVs de `data/raw/`.
+- Para testar localmente, use PySpark (Spark 4.x) com os CSVs de `data/raw/` — exceto
+  `bronze/Landing_To_Bronze.ipynb`, que usa Auto Loader (`cloudFiles`, específico do Databricks) e só
+  pode ser validado rodando lá.
 
 ## Databricks (workspace, sem Git folder por enquanto)
 - Fluxo simplificado: editar o notebook localmente (`.py`, formato fonte `# Databricks notebook source`)
