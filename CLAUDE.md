@@ -18,9 +18,10 @@ Em paralelo, a camada **bronze** começou de verdade: `bronze/Landing_To_Bronze.
 tabelas num notebook único (mesma regra do notebook base em `analises/` — mudado só por PR revisado;
 aqui não há lógica diferente por tabela, então não há cópia por pessoa). Os CSVs ficam num **Volume do
 Unity Catalog** (`dados_vcredit`) — passo a passo completo de como montar isso (pastas, Volume,
-permissões) em `docs/databricks-estrutura.md`. A leitura usa `pandas` em vez de `spark.read` (funciona
-igual em Volume ou pasta do Workspace, sem mudar código — foi assim que sobrevivemos à migração de um
-pra outro). Ver `bronze/README.md`.
+permissões) em `docs/databricks-estrutura.md`. A leitura é `spark.read` puro (padrão Databricks),
+exige Volume (`spark.read` não lê pasta do Workspace de forma distribuída); destino
+`dados_vcredit.default.<tabela>_raw`, seguindo o padrão que um colega já estava usando — confirmar com
+o grupo se é definitivo. Ver `bronze/README.md`.
 
 ## Prazos
 - Quinta 22/10 às 18h: entregáveis técnicos.
@@ -40,7 +41,8 @@ pra outro). Ver `bronze/README.md`.
   já preenchidos, outros ainda são template a preencher (ver `analises/README.md`). Atualizar junto se os
   números do notebook base mudarem.
 - `bronze/Landing_To_Bronze.ipynb`: notebook único de ingestão bronze (`.ipynb`, não `.py`), as 8
-  tabelas num loop, lê via `pandas` (Volume `dados_vcredit`) e grava com `overwrite` — ver `bronze/README.md`.
+  tabelas num loop, lê via `spark.read` (Volume `dados_vcredit`, exige `/Volumes/...`) e grava com
+  `overwrite` em `dados_vcredit.default.<tabela>_raw` — ver `bronze/README.md`.
 - `data/raw/`: CSVs locais (fora do git). Notebooks de referência soltos em `data/` (ex.: o original do
   Juan) também ficam fora do git — ver `.gitignore`.
 
@@ -67,9 +69,10 @@ pra outro). Ver `bronze/README.md`.
 - Ambiente Databricks **Free Edition**: só serverless, SQL warehouse 2X-Small, cota diária de uso. Evitar
   `collect()`/`toPandas()` em tabelas grandes (~130 mil linhas nas maiores); agregar no Spark antes de
   qualquer `display()`.
-- Para testar localmente, use PySpark (Spark 4.x) com os CSVs de `data/raw/`. `bronze/Landing_To_Bronze.ipynb`
-  também dá pra testar local (precisa de `pandas`/`pyarrow` no ambiente além do PySpark) — já validado
-  assim, contagens batendo com `docs/achados_analise_geral.md`.
+- Para testar localmente, use PySpark (Spark 4.x) com os CSVs de `data/raw/` — inclusive
+  `bronze/Landing_To_Bronze.ipynb` (`_metadata.file_path`/`_metadata.file_modification_time` são
+  recurso padrão do Spark, não específico do Databricks); só a escrita em tabela gerenciada
+  (`CREATE SCHEMA`/`saveAsTable`) não dá pra testar no Windows local sem `winutils.exe`.
 
 ## Databricks (workspace, sem Git folder por enquanto)
 - Fluxo simplificado: editar o notebook localmente (`.py`/`.ipynb`) → *Workspace → Import* manual no
@@ -80,10 +83,10 @@ pra outro). Ver `bronze/README.md`.
   confirmar que os 8 arquivos estão no Volume (os CSVs têm CPF/nome/e-mail, não deixar cópia solta).
   Mantenha o nome do arquivo igual ao do repositório para não perder o rastro de qual versão está onde.
 - O Spark serverless do Free Edition não lê CSV de pasta do Workspace **de forma distribuída**
-  (`spark.read`/Auto Loader falham nisso — já tentamos). Por isso `bronze/Landing_To_Bronze.ipynb` lê
-  com `pandas` (acessa qualquer caminho montado localmente — Volume ou Workspace — sem essa limitação)
-  e só depois converte pra Spark; funcionou sem mudar nada quando os CSVs saíram do Workspace e foram
-  pro Volume. Os outros notebooks (`analises/`) ainda pedem um Volume no widget `base_path`.
+  (`spark.read`/Auto Loader falham nisso — já tentamos) — por isso o Volume é obrigatório pro
+  `base_path` de qualquer notebook que use `spark.read` (todos, atualmente). Já tentamos ler com
+  `pandas` pra contornar isso (funciona em Volume ou Workspace sem diferença de código), mas voltamos
+  pro `spark.read` puro a pedido do grupo, seguindo o padrão já em uso por um colega.
 - Quando terminar de testar uma mudança no Databricks, traga a versão final de volta para o repositório
   (exportar/copiar o código) para o grupo não perder o trabalho.
 - A camada bronze já começou (`bronze/`, ver acima) — ainda sem Git folder por enquanto; reavaliar se
