@@ -155,6 +155,34 @@ viés: quem responde hoje pode não representar mais quem respondia no início.
 > consolidada (ou seja, com pesquisa válida) ÷ total de chamados únicos — **não é** "quantas pesquisas
 > existem", é "quantos chamados têm uma nota válida".
 
+## Nota ajustada — cenário alternativo (6→5, -1/0→1)
+
+Testamos um critério alternativo pra nota, pra ver o quanto isso move os números: `6` vira `5` (um
+passo acima do teto da escala, parece erro de clique) e `-1`/`0` virem `1` (um passo abaixo do piso);
+quando a nota vem vazia ou como o texto `"NULL"`, continua `NULL` nas duas versões — aqui entendemos
+isso como "não teve avaliação", não como nota ruim. Essa coluna extra (`nota_ajustada`) fica lado a
+lado da nota estrita no notebook de silver, sem substituir ela.
+
+| Cenário | Respostas válidas | Taxa de resposta | CSAT | Nota média |
+|---|---|---|---|---|
+| Nota estrita (usada nos números deste documento) | 73.383 | 55,7% | 71,6% | 3,98 |
+| Nota ajustada | 74.592 | 56,6% | 71,0% | 3,95 |
+
+Dos 6.836 registros inválidos pela regra estrita (após dedup), 405 eram `6` (resgatados pra `5`) e
+804 eram `-1` ou `0` (resgatados pra `1`) — os outros 5.627 continuam sem nota (vazio/`"NULL"`
+literal) e ficam de fora nos dois cenários.
+
+**O que isso muda:** a taxa de resposta sobe 0,9 p.p. (mais gente "respondeu"), mas o CSAT cai 0,6
+p.p. e a nota média cai 0,03 — contra-intuitivo à primeira vista, mas faz sentido: tem quase o dobro
+de registros resgatados pro piso (`-1`/`0` → `1`, 804) do que pro topo (`6` → `5`, 405), então o
+efeito líquido de incluir esses registros "ambíguos" é puxar a média pra baixo, não pra cima.
+
+> **Como foi calculado:** mesma base de `pesquisa_satisfacao` (1 linha por `id_chamado`, dedup
+> priorizando nota válida), só trocando qual coluna entra no CSAT/nota média/taxa de resposta — `nota`
+> (estrita) no cenário A, `nota_ajustada` no cenário B. "Respostas válidas" conta quem tem valor não
+> nulo na coluna usada em cada cenário; "resgatados" = quem era `dq_nota_invalida = true` na regra
+> estrita e ganhou um valor em `nota_ajustada` (ou seja, era `-1`, `0` ou `6` — nunca vazio/`"NULL"`).
+
 ## CSAT por mês, canal, nível, motivo, categoria e resolução
 
 CSAT mensal: **86,2% em jan/2025 caindo para 56,7% em jul/2026.**
@@ -277,6 +305,8 @@ de reduzir escalonamento para o nível 2 já tem ganho estimado em 3 cenários, 
 ## Pontos a validar com o grupo
 
 - Custo ≤ 0 (544 lançamentos): incluir ou excluir da soma — as duas versões já calculadas acima.
+- Nota estrita (1-5) ou nota ajustada (6→5, -1/0→1) nos KPIs de satisfação — as duas versões já
+  calculadas acima; a ajustada puxa o CSAT e a nota média um pouco pra baixo, não pra cima.
 - Critério de dedup da pesquisa (prioriza nota válida quando há duplicata).
 - `nivel_atendente` como proxy de escalonamento e a premissa `p%` da recomendação.
 - Mês de referência: custo/CSAT mensal usam o mês de finalização — chamados abandonados (sem
