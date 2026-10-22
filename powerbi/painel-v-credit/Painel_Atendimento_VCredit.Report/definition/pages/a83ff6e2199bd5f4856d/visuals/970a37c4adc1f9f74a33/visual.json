@@ -373,7 +373,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'% de chamados afetados. Indicadores informativos não são defeitos.'"
+                  "Value": "'% de chamados afetados (só defeitos acima de 5%; indicadores informativos não aparecem)'"
                 }
               }
             },

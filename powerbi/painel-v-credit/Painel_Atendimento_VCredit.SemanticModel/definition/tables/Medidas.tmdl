@@ -218,7 +218,7 @@ table Medidas
 		lineageTag: 1fa992e6-f329-5c68-bb29-7037133ce164
 
 	measure 'Valor Heatmap' = SWITCH(SELECTEDVALUE('Metrica Heatmap'[Metrica], "Volume"), "Volume", [Chamados Hora], "Sem início (proxy)", [Abandono Hora], "Espera média", [TME Hora])
-		formatString: #,0.0
+		formatString: #,0
 		displayFolder: Demanda
 		lineageTag: d93bd429-aa94-5742-b76e-8c2422a41699
 
@@ -328,7 +328,16 @@ table Medidas
 		displayFolder: Tecnologia
 		lineageTag: 1366f4d2-9495-5fab-b6c6-1a4af80d5511
 
-	measure 'Pct Dados' = SUM(qualidade_dados[pct_chamados])
+	measure 'Limite Qualidade' = 5
+		formatString: 0
+		isHidden
+		displayFolder: Tecnologia
+		lineageTag: 20644916-6dba-4c4f-b1c5-eeea6b3b14e7
+
+	measure 'Pct Dados' =
+			VAR _p = SUM(qualidade_dados[pct_chamados])
+			VAR _inf = COUNTROWS(FILTER(qualidade_dados, qualidade_dados[informativo])) > 0
+			RETURN IF(NOT _inf && _p > [Limite Qualidade], _p)
 		formatString: 0.0"%"
 		displayFolder: Tecnologia
 		lineageTag: 5adde3fc-2c5a-597f-b84a-21a0f6f461d7
@@ -1087,13 +1096,13 @@ table Medidas
 			VAR _t = ADDCOLUMNS(CALCULATETABLE(VALUES(perfil_cliente[valor_rotulo]), perfil_cliente[dimensao] = "regiao"), "h", CALCULATE(SUM(perfil_cliente[pct_da_dimensao]), perfil_cliente[etapa_funil] <> "Autosserviço"))
 			VAR _hi = TOPN(1, _t, [h], DESC)
 			VAR _lo = TOPN(1, _t, [h], ASC)
-			RETURN "A região " & MAXX(_hi, perfil_cliente[valor_rotulo]) & " tem o maior percentual no humano (" & FORMAT(MAXX(_hi, [h]), "0") & "%); " & MAXX(_lo, perfil_cliente[valor_rotulo]) & ", o menor (" & FORMAT(MAXX(_lo, [h]), "0") & "%)"
+			RETURN IF(MAXX(_hi, [h]) - MAXX(_lo, [h]) < 1, "Não há diferença relevante entre as regiões no percentual de chamados que chegam ao humano (de " & FORMAT(MAXX(_lo, [h]), "0.0") & "% a " & FORMAT(MAXX(_hi, [h]), "0.0") & "%)", "A região " & MAXX(_hi, perfil_cliente[valor_rotulo]) & " tem o maior percentual no humano (" & FORMAT(MAXX(_hi, [h]), "0") & "%); " & MAXX(_lo, perfil_cliente[valor_rotulo]) & ", o menor (" & FORMAT(MAXX(_lo, [h]), "0") & "%)")
 		displayFolder: Títulos
 		lineageTag: e21b62e9-d6ad-50fd-a62a-98e45cd87bea
 
 	measure 'Título Qualidade' =
-			VAR _n = COUNTROWS(FILTER(qualidade_dados, NOT qualidade_dados[informativo] && qualidade_dados[pct_chamados] > 5))
-			RETURN IF(_n > 0, _n & " indicadores de qualidade afetam mais de 5% dos chamados", "Nenhum indicador de qualidade passa de 5% dos chamados")
+			VAR _n = COUNTX(VALUES(qualidade_dados[indicador_rotulo]), [Pct Dados])
+			RETURN IF(_n > 0, _n & " indicadores de qualidade afetam mais de " & [Limite Qualidade] & "% dos chamados", "Nenhum indicador de qualidade passa de " & [Limite Qualidade] & "% dos chamados")
 		displayFolder: Títulos
 		lineageTag: fff5f18f-90de-509e-996a-672bad0990cc
 
@@ -1105,7 +1114,7 @@ table Medidas
 		lineageTag: 39f1f518-b9bc-5384-b438-ffb8707fdadc
 
 	measure 'Título YoY' =
-			VAR _d = [CSAT YoY Média]
+			VAR _d = [CSAT YoY pp]
 			RETURN IF(ISBLANK(_d), "CSAT de 2026 contra 2025, mês a mês", "Mês a mês, o CSAT de 2026 está " & FORMAT(ABS(_d), "0.0") & " p.p. " & IF(_d < 0, "abaixo", "acima") & " do de 2025")
 		displayFolder: Títulos
 		lineageTag: 30df8f1c-d1d8-52d0-bbc0-246b19417f47

@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Sem seleção, valem as premissas do notebook (20% e 30%). Os cenários A e B podem se sobrepor, então não some os dois sem revisar.",
+                    "value": "Sem seleção, valem as premissas do notebook (20% e 30%). Os cenários se sobrepõem (98% da base de A já está em B): não somar.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

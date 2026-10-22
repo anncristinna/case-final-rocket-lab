@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.rotulo_atendente",
-              "nativeQueryRef": "rotulo_atendente"
+              "nativeQueryRef": "rotulo_atendente",
+              "displayName": "Atendente"
             },
             {
               "field": {
@@ -41,7 +42,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.nivel_rotulo",
-              "nativeQueryRef": "nivel_rotulo"
+              "nativeQueryRef": "nivel_rotulo",
+              "displayName": "Nível"
             },
             {
               "field": {
@@ -55,7 +57,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.chamados",
-              "nativeQueryRef": "chamados"
+              "nativeQueryRef": "chamados",
+              "displayName": "Chamados"
             },
             {
               "field": {
@@ -69,7 +72,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.tma_min",
-              "nativeQueryRef": "tma_min"
+              "nativeQueryRef": "tma_min",
+              "displayName": "TMA (min)"
             },
             {
               "field": {
@@ -83,7 +87,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.p90_tma_min",
-              "nativeQueryRef": "p90_tma_min"
+              "nativeQueryRef": "p90_tma_min",
+              "displayName": "P90 TMA (min)"
             },
             {
               "field": {
@@ -97,7 +102,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.pct_resolucao",
-              "nativeQueryRef": "pct_resolucao"
+              "nativeQueryRef": "pct_resolucao",
+              "displayName": "Resolução"
             },
             {
               "field": {
@@ -111,7 +117,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.pct_resolucao_vs_media_nivel",
-              "nativeQueryRef": "pct_resolucao_vs_media_nivel"
+              "nativeQueryRef": "pct_resolucao_vs_media_nivel",
+              "displayName": "vs média do nível"
             },
             {
               "field": {
@@ -125,7 +132,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.csat_pct",
-              "nativeQueryRef": "csat_pct"
+              "nativeQueryRef": "csat_pct",
+              "displayName": "CSAT"
             },
             {
               "field": {
@@ -139,7 +147,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.tempo_casa_meses_no_ultimo_chamado",
-              "nativeQueryRef": "tempo_casa_meses_no_ultimo_chamado"
+              "nativeQueryRef": "tempo_casa_meses_no_ultimo_chamado",
+              "displayName": "Tempo de casa"
             },
             {
               "field": {
@@ -153,7 +162,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.amostra_rotulo",
-              "nativeQueryRef": "amostra_rotulo"
+              "nativeQueryRef": "amostra_rotulo",
+              "displayName": "Amostra"
             },
             {
               "field": {
@@ -167,7 +177,8 @@
                 }
               },
               "queryRef": "atendentes_desempenho.chamados_fora_vigencia",
-              "nativeQueryRef": "chamados_fora_vigencia"
+              "nativeQueryRef": "chamados_fora_vigencia",
+              "displayName": "Chamados fora da vigência"
             }
           ]
         }
