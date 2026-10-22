@@ -1331,7 +1331,7 @@ table Medidas
 	measure 'Alerta 7 Texto' =
 			VAR _v = [Maior Inconsistência]
 			VAR _ind = MAXX(TOPN(1, FILTER(qualidade_dados, NOT qualidade_dados[informativo]), qualidade_dados[pct_chamados], DESC), qualidade_dados[indicador])
-			RETURN IF(ISBLANK(_v) || _v <= 0, BLANK(), IF(_ind = "autosservico_com_atendente", "O campo atendente vem preenchido em " & FORMAT([Pct Auto Com Atendente], "0.0") & "% dos chamados de autosserviço, onde não deveria haver atendente humano; até confirmarmos o significado do campo, trate os números por atendente como indicativos.", "Maior inconsistência de dados: " & LOWER([Maior Inconsistência Nome]) & ", em " & FORMAT(_v, "0.0") & "% dos chamados."))
+			RETURN IF(ISBLANK(_v) || _v <= 0, BLANK(), IF(_ind = "autosservico_com_atendente", "O campo atendente vem preenchido em " & FORMAT([Pct Auto Com Atendente], "0.0") & "% dos chamados de autosserviço; trate os números por atendente como indicativos.", "Maior inconsistência de dados: " & LOWER([Maior Inconsistência Nome]) & ", em " & FORMAT(_v, "0.0") & "% dos chamados."))
 		isHidden
 		displayFolder: Alertas
 		lineageTag: 79385a17-faf7-5b60-bb42-8d4e158d13ce
