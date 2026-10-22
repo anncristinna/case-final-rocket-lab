@@ -72,6 +72,79 @@ porque o Free Edition não tem integração nativa com o Power BI (enunciado, p.
 | Idempotência | `overwrite` / `CREATE OR REPLACE` em toda tabela; CSVs regravados por inteiro, em ordem fixa, com checksum independente da ordem |
 | Segurança / privacidade | `id_cliente` (CPF) só como chave interna na silver e **nunca exibido**; na gold e na exportação existe apenas `id_cliente_hash`; nome, e-mail e CPF não existem na gold |
 
+## Colunas de linhagem
+
+Quatro colunas existem só para rastrear a execução e **mudam a cada rodada por definição**; todas ficam fora do checksum de idempotência
+(ver [`notebooks-e-jobs.md`](notebooks-e-jobs.md)):
+
+| Coluna | Onde | O que guarda |
+|---|---|---|
+| `_source_file`, `_source_file_mod_ts` | Todas as tabelas `*_raw` | Arquivo de origem e a data de modificação dele (não mudam se o CSV não mudar) |
+| `_ingestion_ts` | Todas as tabelas `*_raw` | Hora da ingestão |
+| `_treatment_ts` | `canais_silver` | `current_timestamp()` do tratamento; **não** é levada para a gold |
+| `versao_bronze` | `chamados_hora_silver` | Versão Delta de `chamados_hora_raw` usada no tratamento (sobe a cada ingestão) |
+
+## Tabelas no catálogo fora do pipeline
+
+O Job escreve **41** tabelas (8 `*_raw`, 10 `*_silver` com a `base_silver` e 23 `*_gold`). O schema `dados_vcredit.default` tem **47** tabelas
+`*_raw/_silver/_gold`: as 6 a mais são `canal_escalonamento_gold`, `canal_faixa_espera_gold`, `canal_faixa_horaria_gold`,
+`canal_kpi_mensal_gold`, `canal_perfil_gold` e `canal_qualidade_gold`. **Nenhum dos 4 notebooks de `medalhao/` as cria** e o `Gold_To_CSV` não as exporta.
+Origem a confirmar com o grupo: ou o notebook que as gera entra em `medalhao/` (e na contagem desta documentação), ou as tabelas são removidas.
+
+## Fonte da verdade dos tempos
+
+O enunciado (consideração 6) pede que o grupo decida e documente qual fonte vale quando um campo calculado diverge do registro de horário.
+
+**Decisão:** todos os tempos (TME, TMA e tempo total) vêm **somente dos timestamps de `chamados_hora`** (abertura, início e finalização),
+tratados na silver (`chamados_hora_silver`). O campo `tempo_atendimento` de `chamados` **nunca é usado em indicador**.
+
+**Por quê:** o campo está truncado para durações a partir de 1.000 s, então subestima o TMA humano.
+
+**Valores preliminares, a confirmar.** Foram calculados fora do Databricks, a partir do `chamados.csv` local e do `fato_atendimento.csv` do pacote. Até a
+query abaixo ser rodada, não devem ser citados como números finais:
+
+| Medida (preliminar) | Campo `chamados.tempo_atendimento` | Timestamps (`fato_atendimento_gold`) |
+|---|---|---|
+| Chamados com os dois valores | 127.375 | 127.375 |
+| Média | 216,6 s (3,6 min) | 662,3 s (11,0 min) |
+| Chamados com duração ≥ 1.000 s | — | 27.987 (22,0%) |
+| Média nesses chamados | 1,6 s | 2.030 s |
+| Valor máximo | 999 s | 9.000 s |
+| Campo maior que os timestamps | 0 chamados | — |
+
+Query de conferência no Databricks (substituir a tabela acima pelos valores dela):
+
+```sql
+WITH r AS (
+  SELECT DISTINCT id_chamado, try_cast(tempo_atendimento AS DOUBLE) AS campo_s
+  FROM dados_vcredit.default.chamados_raw
+), j AS (
+  SELECT r.campo_s, f.tempo_atendimento_seg AS ts_s
+  FROM r JOIN dados_vcredit.default.fato_atendimento_gold f USING (id_chamado)
+  WHERE r.campo_s IS NOT NULL AND f.tempo_atendimento_seg IS NOT NULL
+)
+SELECT COUNT(*) AS n,
+       ROUND(AVG(campo_s), 1) AS media_campo_s,
+       ROUND(AVG(ts_s), 1) AS media_timestamp_s,
+       COUNT_IF(ts_s >= 1000) AS duracao_ge_1000s,
+       ROUND(AVG(CASE WHEN ts_s >= 1000 THEN campo_s END), 1) AS media_campo_ge_1000s,
+       ROUND(AVG(CASE WHEN ts_s >= 1000 THEN ts_s END), 1) AS media_timestamp_ge_1000s,
+       MAX(campo_s) AS max_campo_s,
+       MAX(ts_s) AS max_timestamp_s,
+       COUNT_IF(campo_s > ts_s) AS campo_maior_que_timestamp
+FROM j
+```
+
+## Escalabilidade
+
+Hoje todas as tabelas são regravadas por inteiro (`overwrite` / `CREATE OR REPLACE`) a cada 12 h, o que é adequado ao volume atual (~130 mil chamados, execução de 7 a 8 min no serverless).
+Para volumes maiores, o caminho é:
+
+- **Carga incremental** na bronze e na silver (por exemplo, `MERGE` por `id_chamado`/`id_custo` e ingestão por arquivo novo), no lugar do `overwrite` completo.
+- **Particionamento por data** na fato e nas tabelas de grande volume, e `OPTIMIZE` periódico das tabelas Delta.
+- **Parâmetros de Job** (por exemplo, `anonimizar_atendente`) em vez de editar notebook.
+- O desenho em camadas e a idempotência por chave seguem valendo: só muda como cada camada atualiza as tabelas.
+
 ## Decisões do grupo
 
 | Decisão | Escolha | Motivo |
@@ -81,6 +154,7 @@ porque o Free Edition não tem integração nativa com o Power BI (enunciado, p.
 | `status_atendente` | Mantido com esse nome em `chamados_silver`; só vira `status_id_atendente` na `base_silver` | Evita colisão com `atendentes_silver.status_atendente` (significado diferente: ativo/inativo no cadastro) |
 | Clientes sem cadastro (1.330 chamados, 1,0%) | Membro `SEM_CADASTRO` criado na exportação para o Power BI (`dim_cliente` do modelo de consumo) | Esses chamados não somem dos relatórios |
 | Tipos em `dim_cliente_gold` | `data_cadastro` vira `date`, `dia_vencimento_fatura` vira `int` | A silver entrega string |
+| Fonte da verdade dos tempos | Só os timestamps de `chamados_hora`; `chamados.tempo_atendimento` nunca entra em indicador | Campo truncado (seção "Fonte da verdade dos tempos") |
 
 Pendente: decidir se o material do Comitê mostra o nome real do atendente ou um rótulo anônimo
 (`anonimizar_atendente`). Ver também [`../analitico/confiabilidade-dos-dados.md`](../analitico/confiabilidade-dos-dados.md).

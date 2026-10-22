@@ -4,9 +4,10 @@ Entregável técnico: *painel de indicadores consolidado, com as principais mét
 tratamentos*. O Databricks Free Edition não integra com o Power BI; o caminho previsto pelo enunciado é exportar a
 camada gold em CSV e importar no Power BI Desktop. É o que faz o `Gold_To_CSV.ipynb`.
 
-> ⚠️ O pacote que está no repositório de trabalho (`data/powerbi/pacote_powerbi.zip`, fora do git) traz **só os CSVs**.
-> O arquivo `.pbix` do painel **não está** na pasta; ele também fica fora do git (embute dados). Guardar
-> o `.pbix` no drive do grupo e anexar prints/PDF das páginas à entrega.
+> ⚠️ O pacote do Power BI (`data/powerbi/pacote_powerbi.zip`, fora do git) traz **só os CSVs**. O arquivo `.pbix` embute dados e também fica fora do git.
+> **Onde o `.pbix` será entregue:** drive compartilhado do grupo (link: _a preencher_). No repositório entram só o **PDF exportado** das páginas e os
+> **prints**, em `docs/tecnico/evidencias/painel/` (a criar quando o painel ficar pronto). Antes de versionar, confira que as páginas não mostram
+> nomes de atendentes nem qualquer dado de cliente.
 
 ## Conteúdo do pacote (`exp_20261022_012729`, exportado em 22/10/2026 01:27 UTC)
 
@@ -56,14 +57,84 @@ Chaves negativas (`-1`, `-2`, `-3`) são membros desconhecidos, por desenho; ela
 | Custo por chamado | `custo` ÷ chamados com custo válido | R$ 11,18 |
 | Reincidência (7d) | Média de `reincidente_7d` (usar `recontato_elegivel = true` como base) | Mesmo cliente e motivo em até 7 dias |
 
-## Páginas sugeridas (mesma história da apresentação)
+## Painel mínimo da entrega (2 páginas)
 
-1. **Visão geral**: cartões (chamados, resolução, TME, TMA, CSAT, abandono, custo) e evolução mensal. Fonte: `visao_geral`, `kpi_mensal`.
-2. **Funil e canais**: volume, custo e CSAT por etapa; TME por etapa ao longo do tempo. Fonte: `funil_atendimento`, `etapa_mensal`.
+Importe os CSVs com a localidade **Inglês (Estados Unidos)**: o pacote usa ponto decimal e datas `yyyy-MM-dd`. Se a localidade ficar em pt-BR, `1450617.85`
+vira `145061785`. Os nomes de tabela abaixo são os dos arquivos; adapte as medidas se renomear (por exemplo, `fAtendimento`).
+
+### Página 1: Visão geral
+
+- **Tabelas:** `fato_atendimento`, `dim_calendario`, `dim_canal` (relacionamentos 1 → N de `dim_calendario[id_data]` e `dim_canal[id_canal]` para a fato).
+- **Visuais:** cartões (Chamados, Taxa de resolução, TME, TMA, CSAT, Abandono, Custo e Custo por chamado); linha mensal por `dim_calendario[ano_mes]`
+  (chamados em colunas, CSAT e TME em linhas); barras por `dim_canal[etapa_funil]` com % dos chamados, % do custo e CSAT.
+- **Conferência:** os cartões têm que bater com `analiticas/visao_geral.csv`.
+
+| Cartão | Valor esperado |
+|---|---|
+| Chamados | 131.838 |
+| Taxa de resolução | 50,88% |
+| TME | 3,60 min |
+| TMA | 11,03 min |
+| CSAT | 71,57% |
+| Abandono | 2,59% |
+| Custo | R$ 1.450.617,85 |
+| Custo por chamado | R$ 11,18 |
+
+### Página 2: Qualidade e tratamentos
+
+- **Tabelas:** `analiticas/impacto_indicadores.csv` e `analiticas/qualidade_dados.csv`, sem relacionamento com o modelo.
+- **Visuais:**
+  - **Impacto dos tratamentos** (tabela, não gráfico, porque cada linha tem unidade diferente): `indicador`, `metodo_a`, `valor_a`, `metodo_b`, `valor_b`, `diferenca`. Destaque para o TME (−1.211,93 min bruto contra 3,60 min tratado) e para o CSAT (71,57% contra 70,96% com nota ajustada).
+  - **Inconsistências** (barras por `grupo` e `indicador`, valor `pct_chamados`, com `qtd` na dica): as linhas marcadas `(informativo)` não são erro; **os indicadores se sobrepõem, não some**.
+- **Mensagem da página:** o tratamento muda muito o custo e o TME, e pouco o TMA, o CSAT e a resolução.
+
+### Medidas DAX (proposta, ainda não testada no Power BI)
+
+Use `COUNTROWS(FILTER(...))` com `ISBLANK` nos denominadores. Em DAX, `BLANK() = FALSE()` é verdadeiro, e um filtro `<> BLANK()` descartaria os `false`.
+Valide cada medida contra a tabela de valores esperados acima.
+
+```dax
+Chamados = COUNTROWS(fato_atendimento)
+
+Taxa de resolução =
+DIVIDE(
+    COUNTROWS(FILTER(fato_atendimento, fato_atendimento[resolvido] = TRUE())),
+    COUNTROWS(FILTER(fato_atendimento, NOT ISBLANK(fato_atendimento[resolvido])))
+)
+
+TME (min) = DIVIDE(AVERAGE(fato_atendimento[tempo_espera_seg]), 60)
+
+TMA (min) = DIVIDE(AVERAGE(fato_atendimento[tempo_atendimento_seg]), 60)
+
+Abandono =
+DIVIDE(
+    COUNTROWS(FILTER(fato_atendimento, fato_atendimento[abandonado] = TRUE())),
+    [Chamados]
+)
+
+CSAT =
+DIVIDE(
+    COUNTROWS(FILTER(fato_atendimento, fato_atendimento[satisfeito] = TRUE())),
+    COUNTROWS(FILTER(fato_atendimento, NOT ISBLANK(fato_atendimento[satisfeito])))
+)
+
+Custo = SUM(fato_atendimento[custo])
+
+Custo por chamado =
+DIVIDE(
+    [Custo],
+    COUNTROWS(FILTER(fato_atendimento, NOT ISBLANK(fato_atendimento[custo])))
+)
+```
+
+`recontato_elegivel` hoje vale `true` para os 131.838 chamados (todos têm id de cliente, motivo mapeado e abertura conhecida), então filtrar por ele não exclui ninguém nesta base.
+
+## Páginas adicionais (opcionais, mesma história da apresentação)
+
 3. **Motivos**: Pareto, reincidência e custo por motivo. Fonte: `motivos_pareto`, `motivo_etapa`.
-4. **Satisfação**: CSAT por faixa de espera, etapa, reincidência. Fonte: `satisfacao_drivers`.
-5. **Operação**: demanda por dia e hora, atendentes. Fonte: `demanda_dia_hora`, `atendentes_desempenho`.
-6. **Qualidade dos dados**: inconsistências e impacto nos KPIs. Fonte: `qualidade_dados`, `impacto_indicadores`.
-7. **Simulação de ganhos**: cenários A e B com premissas editáveis. Fonte: `simulacao_ganhos`.
+4. **Satisfação**: CSAT por faixa de espera, etapa e reincidência. Fonte: `satisfacao_drivers`.
+5. **Operação**: demanda por dia e hora e atendentes. Fonte: `demanda_dia_hora`, `atendentes_desempenho`.
+6. **Funil por etapa ao longo do tempo**: `etapa_mensal`.
+7. **Simulação de ganhos**: cenários A e B com as premissas visíveis (e a ressalva de que **não se somam**). Fonte: `simulacao_ganhos`.
 
 Cada página corresponde a um arquivo de [`../../resultados/`](../../resultados/), que traz os números de conferência.
