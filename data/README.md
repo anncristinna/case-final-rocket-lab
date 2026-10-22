@@ -19,6 +19,6 @@ Os números agregados que importam para a apresentação estão em [`../resultad
 
 1. Descompacte `powerbi/pacote_powerbi.zip` numa pasta qualquer (ela traz `modelo/`, `analiticas/` e o
    manifesto `_manifesto.csv`/`_manifesto.json`).
-2. No Power BI Desktop: *Obter dados > Texto/CSV* e importe as 8 tabelas de `modelo/` (UTF-8, vírgula,
-   ponto decimal). Relacionamentos e medidas: [`../docs/tecnico/painel-indicadores.md`](../docs/tecnico/painel-indicadores.md).
+2. O painel do repositório ([`../powerbi/`](../powerbi/)) lê só a pasta `analiticas/`: abra o `.pbip` no Power BI Desktop e aponte o parâmetro `PastaCSV` para ela
+   (passo a passo em [`../docs/tecnico/painel-indicadores.md`](../docs/tecnico/painel-indicadores.md)). As 8 tabelas de `modelo/` (estrela, uma linha por chamado) ficam para análises mais detalhadas.
 3. Descompacte sempre em pasta nova e vazia, fora do repositório.

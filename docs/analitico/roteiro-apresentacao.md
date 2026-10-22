@@ -45,6 +45,6 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 - [x] Prova de idempotência feita e registrada em [`../tecnico/notebooks-e-jobs.md`](../tecnico/notebooks-e-jobs.md) (evidências em `../tecnico/evidencias/`).
 - [ ] Não baixar o `pacote_powerbi.zip` entre 12:00 e 12:10 (nem entre 00:00 e 00:10), quando o Job regrava o pacote.
 - [ ] Decidir `anonimizar_atendente` (nome real ou "Atendente <id>") e regerar o pacote se for `true`.
-- [ ] Anexar prints do painel (as 2 páginas mínimas, mais as opcionais que ficarem prontas) e do Job no Databricks.
+- [ ] Anexar prints das 7 páginas do painel (sem nomes de atendentes, se a decisão for anonimizar) e do Job no Databricks.
 - [ ] Conferir cada número do deck contra o arquivo de `resultados/` correspondente.
 - [ ] Ensaiar em 18 min (deixar 2 min de folga).

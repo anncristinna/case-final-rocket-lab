@@ -21,6 +21,7 @@ localmente → *Workspace → Import* → testar → trazer a versão final de v
 - `README.md`: visão geral, entregas, estrutura e como começar.
 - `medalhao/`: 4 notebooks `.ipynb` (um por camada, mesmos nomes do Databricks), `README.md` (ordem e
   tabelas) e `modelagem/` (diagramas `modelagem-silver.png`/`modelagem-gold.png` e o guia da gold em PDF).
+- `powerbi/painel-v-credit/`: painel Power BI em formato **PBIP** (texto, versionável): `.pbip`, `.Report` (7 páginas) e `.SemanticModel` (14 tabelas analíticas, medidas, parâmetro `PastaCSV`). **Sem dados**: nunca commitar CSV, `.pbix`, `cache.abf` nem `localSettings.json`; o `PastaCSV` fica com caminho genérico (ver `docs/tecnico/painel-indicadores.md`).
 - `resultados/`: `README.md` + 7 arquivos numerados (`01-visao-geral` … `07-custos-e-simulacao`), cada um
   citando a tabela gold de origem. **Se mudar um número, atualize o arquivo correspondente.**
 - `docs/README.md`: mapa "item do enunciado → arquivo".
