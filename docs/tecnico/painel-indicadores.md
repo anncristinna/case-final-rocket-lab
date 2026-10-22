@@ -63,7 +63,7 @@ Cada página tem um quadro "Sobre esta página" (objetivo, público, perguntas e
 2. No Power BI Desktop, **abra o arquivo** `powerbi/painel-v-credit/Painel_Atendimento_VCredit.pbip`. Se o Desktop não abrir o formato, habilite o recurso de projeto (`.pbip`) em *Opções → Recursos em versão prévia*.
 3. **Transformar dados → Gerenciar parâmetros → `PastaCSV`**: informe a pasta `analiticas` descompactada.
 4. **Atualizar**. Confira os cartões abaixo.
-5. Para entregar, salve também como `.pbix` no drive do grupo e exporte PDF e prints das páginas (sem nomes de atendentes, se a decisão for anonimizar).
+5. Para entregar, salve também como `.pbix` no drive do grupo e exporte PDF e prints das páginas.
 
 Não baixe o zip entre 12:00 e 12:10 (nem entre 00:00 e 00:10): o Job regrava o pacote nesses horários.
 
@@ -93,5 +93,6 @@ Se o custo aparecer 100 vezes maior (por exemplo `145061785`), a localidade de l
 - **Abandono é um proxy.** O indicador conta chamados **sem hora de início de atendimento**; não confirma que o cliente desistiu. Por isso os cartões, eixos, títulos e alertas se chamam "sem início de atendimento (proxy)"; no mapa de calor a métrica é "Sem início (proxy)". Só os **nomes internos** das medidas e das colunas ainda usam "abandono" (`Abandono`, `Abandono CS`, `pct_abandono` etc.), e a definição na página 7 explica a equivalência.
 - **Sem receita.** Não dá para dizer se o custo acompanha a receita, a preocupação do Gerente Financeiro.
 - **Valores de período parcial são aproximados** (média de médias ponderada).
-- **Nomes de atendentes.** A página "Customer Success" mostra `rotulo_atendente`. Com `anonimizar_atendente = false` no `Gold_To_CSV` (padrão), aparecem nomes reais. A decisão sobre o material do Comitê segue em aberto; se for anonimizar, regere o pacote antes de exportar PDF e prints.
+- **Nomes de atendentes mantidos; base fictícia.** A página "Customer Success" mostra `rotulo_atendente` (`anonimizar_atendente = false`, o padrão do `Gold_To_CSV`). Decisão do grupo, registrada aqui para não parecer esquecimento.
+- **Campo atendente em chamados de autosserviço.** Vem preenchido em 99,4% dos chamados de URA e chatbot, onde não deveria haver atendente humano. Até confirmarmos o significado do campo (pergunta à V-Credit, em [`../analitico/confiabilidade-dos-dados.md`](../analitico/confiabilidade-dos-dados.md)), os números por atendente são indicativos e a tabela da página "Customer Success" é uma associação, não um ranking de desempenho.
 - **Prevenção (site e app)** não existe nos dados; o painel não a mostra.

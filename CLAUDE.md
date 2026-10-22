@@ -38,8 +38,8 @@ localmente → *Workspace → Import* → testar → trazer a versão final de v
   `data/powerbi/`, ignorado). Nunca ler/exibir `.env` e afins.
 - Dados têm CPF (o próprio `id_cliente`), nome e e-mail em `clientes`: nunca imprimir essas colunas em outputs,
   docs ou commits. `id_cliente` só serve de chave de junção na silver; a gold só tem `id_cliente_hash` (SHA-256
-  puro, decisão do grupo: o id do case é fictício). `nome_atendente` **não** é dado restrito (decisão sobre
-  mostrar o nome no material do Comitê ainda em aberto; parâmetro `anonimizar_atendente` do `Gold_To_CSV`).
+  puro, decisão do grupo: o id do case é fictício). `nome_atendente` **não** é dado restrito (decisão do grupo:
+  nomes mantidos, base fictícia; `anonimizar_atendente` do `Gold_To_CSV` fica `false`).
   O notebook exploratório original do Juan tem um e-mail pessoal embutido no `base_path`: nunca comitar.
 - Encoding: `clientes.csv` e `Chamados_Hora.csv` são `cp1252`/`ISO-8859-1`; os demais `utf-8`. (O
   arquivo era `Chamados_Hora.CSV`, maiúsculo; o grupo padronizou pra `.csv` minúsculo — tabela de

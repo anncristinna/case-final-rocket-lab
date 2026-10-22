@@ -33,9 +33,10 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 |---|---|
 | De onde vêm os 20% e 30%? | São **hipóteses**, com sensibilidade em 10%/20%/30% (`07-custos-e-simulacao`); por isso propomos piloto |
 | A economia inclui o custo de implantar? | Não; é um limite explícito (`07`). Para P2 o ganho direto é pequeno; o valor é CSAT e capacidade |
-| Por que não só contratar? | O quadro está parado, mas P1 e P2 reduzem a necessidade; contratação (P3) vem com dados de escala |
+| Por que não só contratar? | O cadastro não mostra aumento da equipe, mas P1 e P2 reduzem a necessidade; contratação (P3) vem com dados de escala |
 | Dá para confiar no CSAT? | Só com ressalva: 39% sem pesquisa e cobertura caindo; provável superestimativa (`confiabilidade`) |
-| E o desempenho individual dos atendentes? | Indicativo apenas: 12% dos chamados estão fora do vínculo e o autosserviço traz atendente (`resultados/04`) |
+| E o desempenho individual dos atendentes? | Indicativo apenas: 12% dos chamados estão fora do vínculo e o campo atendente vem preenchido em 99,4% dos chamados de autosserviço (`resultados/04`); pergunta em aberto à V-Credit |
+| O que o `ID_Atendente` representa em chamados de URA e chatbot? | Ainda não sabemos: o campo vem preenchido em 99,4% desses chamados, onde não deveria haver atendente humano. É pergunta em aberto à V-Credit (`confiabilidade`, perguntas em aberto) |
 | O pipeline reproduz o mesmo resultado? | Sim, idempotente; checksum por tabela no manifesto (`tecnico/notebooks-e-jobs.md`) |
 | E a Prevenção (site e app)? | Não há dados dela; ficou como oportunidade com telemetria (`oportunidades`) |
 | O que é o `SEM_CADASTRO`? | 1.330 chamados (1%) com cliente inexistente na base; ficam visíveis no painel em vez de sumir |
@@ -44,7 +45,7 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 
 - [x] Prova de idempotência feita e registrada em [`../tecnico/notebooks-e-jobs.md`](../tecnico/notebooks-e-jobs.md) (evidências em `../tecnico/evidencias/`).
 - [ ] Não baixar o `pacote_powerbi.zip` entre 12:00 e 12:10 (nem entre 00:00 e 00:10), quando o Job regrava o pacote.
-- [ ] Decidir `anonimizar_atendente` (nome real ou "Atendente <id>") e regerar o pacote se for `true`.
-- [ ] Anexar prints das 7 páginas do painel (sem nomes de atendentes, se a decisão for anonimizar) e do Job no Databricks.
+- [x] Nomes dos atendentes mantidos (base fictícia): `anonimizar_atendente` fica `false`, sem regerar o pacote.
+- [ ] Anexar prints das 7 páginas do painel e do Job no Databricks.
 - [ ] Conferir cada número do deck contra o arquivo de `resultados/` correspondente.
 - [ ] Ensaiar em 18 min (deixar 2 min de folga).

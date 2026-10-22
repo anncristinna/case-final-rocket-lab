@@ -49,6 +49,6 @@ aqui ficam as oportunidades adicionais, o que aprendemos e o que ainda não sabe
 ## Próximos passos
 
 1. Fechar o painel com as sete páginas e anexar prints à entrega.
-2. Decidir com o grupo se o nome do atendente aparece no material do Comitê.
+2. Nomes dos atendentes mantidos no material do Comitê (base fictícia): decisão do grupo registrada.
 3. Desenhar o piloto de P1 (motivos, duração, métrica de sucesso, grupo de controle).
-4. Levantar os dados que faltam: escala e jornada, telemetria de app e URA, receita.
+4. Levantar os dados que faltam: escala e jornada, telemetria de app e URA, receita, e o significado do campo `ID_Atendente` em chamados de URA e chatbot (pergunta à V-Credit).
