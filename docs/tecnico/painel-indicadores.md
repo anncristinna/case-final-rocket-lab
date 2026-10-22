@@ -11,7 +11,8 @@ Edition não integra com o Power BI; o caminho previsto pelo enunciado é export
 | **Projeto PBIP** (texto, versionável) | [`../../powerbi/painel-v-credit/`](../../powerbi/painel-v-credit/): `Painel_Atendimento_VCredit.pbip` abre o projeto |
 | Relatório (páginas e visuais, em JSON) | `Painel_Atendimento_VCredit.Report/definition/` (7 páginas) |
 | Modelo semântico (tabelas, medidas, relacionamentos, parâmetro, em TMDL) | `Painel_Atendimento_VCredit.SemanticModel/definition/` |
-| **Arquivo `.pbix`** | Drive compartilhado do grupo (link: _a preencher_). **Não** é versionado, porque embute dados |
+| **Arquivo `.pbix`** | Disponível no drive do grupo. **Não** é versionado, porque embute dados |
+| **PDF do painel** (7 páginas, versão de 22/10/2026) | [`evidencias/painel/painel-atendimento-v-credit.pdf`](evidencias/painel/painel-atendimento-v-credit.pdf) |
 | Dados (CSV, cache `.abf`, `localSettings.json`) | **Não vão para o git**: o `.gitignore` bloqueia CSV, `.pbix`, `.zip`, o cache (`cache.abf`) e as configurações locais (`localSettings.json`) do Power BI |
 
 O PBIP guarda só definição, sem dados. Quem abre o projeto precisa apontar o parâmetro `PastaCSV` para uma exportação e **atualizar** para carregar os dados.
