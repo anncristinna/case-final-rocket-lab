@@ -14,7 +14,7 @@ case não aparece nos dados: a base de canais só traz os quatro canais de atend
 
 Leitura:
 
-- **Autosserviço absorve 56,9% dos chamados e custa 6,35% do total**; **Nível 1 e Nível 2 são 43,1% dos chamados e 93,7% do custo**. Um chamado no Nível 2 custa R$ 48,98: 84 vezes um no chatbot (R$ 0,58), 26 vezes um na URA (R$ 1,85) e 3,6 vezes um no Nível 1 (R$ 13,69).
+- **Autosserviço absorve 56,9% dos chamados e custa 6,35% do total**; **Nível 1 e Nível 2 são 43,1% dos chamados e 93,65% do custo**. Um chamado no Nível 2 custa R$ 48,98: 84 vezes um no chatbot (R$ 0,58), 26 vezes um na URA (R$ 1,85) e 3,6 vezes um no Nível 1 (R$ 13,69).
 - O funil real é parecido com o "atual" da figura 1 do enunciado (e longe do desejado, figura 2, com autosserviço dominante e humano mínimo): menos de **57%** dos chamados ficam no autosserviço.
 - O autosserviço **não resolve a maioria**: 45% a 49% de resolução. Parte do que não se resolve ali chega ao humano (ver [`03-motivos.md`](03-motivos.md)).
 - Satisfação despenca a cada etapa: 86% / 84% (chatbot / URA) → 61% (Nível 1) → 34% (Nível 2). Espera e abandono crescem na mesma direção.

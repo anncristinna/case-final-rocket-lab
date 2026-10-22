@@ -7,9 +7,9 @@ aqui ficam as oportunidades adicionais, o que aprendemos e o que ainda não sabe
 ## Aprendizados (o que os dados ensinaram)
 
 1. **A piora é estrutural, não conjuntural.** CSAT, abandono, resolução e espera pioram **todos os meses** desde jan/25, sem nenhuma inversão. Isso contradiz a hipótese de causa externa e recente.
-2. **O problema é a espera, não a duração do atendimento.** TMA +8%, TME ×4,1. A operação trabalha no mesmo ritmo, mas **tem a mesma equipe para o dobro da demanda**.
+2. **O problema é a espera, não a duração do atendimento.** TMA +8%, TME ×4,1. A operação trabalha no mesmo ritmo, mas **o cadastro não mostra aumento da equipe diante de uma demanda que dobrou**.
 3. **Custo cresce com volume, não com preço unitário.** Custo por chamado fixo em ~R$ 11; custo mensal +129%. Cortar custo sem reduzir volume humano não é viável.
-4. **O custo está concentrado:** 2 níveis humanos = 93,7% do custo; 5 motivos = 60%.
+4. **O custo está concentrado:** 2 níveis humanos = 93,65% do custo; 5 motivos = 60%.
 5. **O autosserviço é bom no simples, ruim no crítico**, e o chatbot, ao contrário do que se acreditava, resolve menos da metade (49%).
 6. **Idade e região explicam pouco** do comportamento (efeito de ~5 p.p. na resolução do autosserviço entre os mais jovens e os mais velhos; região, nenhum). A explicação está no **processo**, não no perfil do cliente.
 7. **Os indicadores que a empresa acompanha são frágeis em três pontos** (CSAT, atendente, abandono) e, sem o tratamento, enganariam: custo 29× maior, TME negativo.

@@ -21,7 +21,7 @@ nível; a decisão sobre exibir o nome no material do Comitê está em aberto (v
 
 ## Capacidade instalada contra demanda (estimativa)
 
-O cadastro permite contar quantos atendentes estavam vigentes em cada mês (admitidos e ainda não desligados):
+O cadastro permite **inferir** quantos atendentes estavam vigentes em cada mês (admitidos e ainda não desligados). **Atenção:** essas datas conflitam com 12% dos chamados (15.874 fora do vínculo; os atendentes 21 a 25, por exemplo, têm chamados desde jan/25, antes da admissão). A contagem de 13 e 7 e as horas por atendente abaixo são, portanto, **estimativas frágeis do Claude Code**. O que resiste é a conclusão de que o quadro **não cresceu**: entradas e saídas se compensam e o total cadastrado é 25 de qualquer forma.
 
 | | Jan/2025 | Jul/2026 | Variação |
 |---|---|---|---|
@@ -34,8 +34,8 @@ O cadastro permite contar quantos atendentes estavam vigentes em cada mês (admi
 | Horas de atendimento por atendente de N2 no mês (chamados × TMA ÷ atendentes) | 47 h | 120 h | ×2,5 |
 | Horas de atendimento por atendente de N1 no mês | 24 h | 64 h | ×2,7 |
 
-Admissões e desligamentos se compensaram (5 saídas e 5 entradas no período; entre as saídas, 4 de N1 e 1 de N2): **o quadro ficou parado
-enquanto a demanda humana mais que dobrou**. Contra uma jornada de referência de ~160 h/mês (premissa do grupo, não vem dos dados), o
+Admissões e desligamentos se compensaram (5 saídas e 5 entradas no período; entre as saídas, 4 de N1 e 1 de N2): **o cadastro não mostra
+aumento da equipe enquanto a demanda humana mais que dobrou**. Contra uma jornada de referência de ~160 h/mês (premissa do Claude Code, não vem dos dados; a validar), o
 Nível 2 passa de ~29% para ~75% do tempo só em atendimento, sem contar espera entre chamados, pausas e pico de demanda
 (horários de pico em [`05-satisfacao.md`](05-satisfacao.md)). Isso é coerente com o TME do Nível 2 ter ido de 5,0 para 21,8 min.
 

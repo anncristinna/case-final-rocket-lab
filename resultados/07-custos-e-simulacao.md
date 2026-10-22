@@ -80,7 +80,8 @@ Dúvidas sobre programa de pontos, Alteração de dados cadastrais e Transferên
 |---|---|---|
 | A — Deflexão | 20% | R$ 30,9 mil |
 | B — Reincidência | 30% | R$ 258,1 mil |
-| **A + B (teto, ver nota)** | | **R$ 288,9 mil** (~23% do run-rate anual de jul/26, de R$ 1,27 mi) |
+| A + B **sem tratar a sobreposição** (teto, não usar como resultado) | | R$ 288,9 mil (~23% do run-rate anual de jul/26, de R$ 1,27 mi) |
+| **A + B líquido da sobreposição** (estimativa do Claude Code, a confirmar) | | **R$ 258 a 279 mil** |
 
 Sensibilidade (o ganho é linear na premissa, mantendo todo o resto):
 
@@ -92,8 +93,19 @@ Sensibilidade (o ganho é linear na premissa, mantendo todo o resto):
 
 Notas e limitações:
 
-- **A e B podem se sobrepor** (um chamado de fatura reincidente entra nos dois cálculos): somar os dois é um teto, não uma estimativa líquida.
+- **A e B se sobrepõem quase por completo.** Dos 12.411 chamados da base de A (baixa criticidade que chegou ao humano), **12.172 (98,1%) também são reincidentes**, ou seja, já estão na base de B. Em linguagem simples: quase todo chamado humano de motivo simples é um recontato, em geral depois de o cliente tentar o autosserviço e não resolver. **Não some A e B.**
+  - Pior caso (A inteiramente dentro de B): o líquido é só o B, **R$ 258 mil/ano**.
+  - Se os dois cortes fossem independentes, a dupla contagem seria 6% (20% × 30%) de 12.172 chamados, ~730 chamados, ~R$ 9,5 mil/ano; o líquido seria ~**R$ 279 mil/ano**.
+  - **Origem e status:** contagem feita pelo Claude Code sobre o `fato_atendimento.csv` do pacote (não numa consulta no Databricks). **A confirmar** com a query:
+    ```sql
+    SELECT COUNT(*) AS base_a, COUNT_IF(f.reincidente_7d) AS tambem_em_b
+    FROM dados_vcredit.default.fato_atendimento_gold f
+    JOIN dados_vcredit.default.dim_motivo_gold m ON f.id_motivo = m.id_motivo
+    JOIN dados_vcredit.default.dim_canal_gold ca ON f.id_canal = ca.id_canal
+    WHERE m.criticidade = 'baixa' AND m.id_motivo > 0
+      AND ca.etapa_funil IN ('Nível 1', 'Nível 2')
+    ```
 - O cálculo usa o **volume médio do período** (~6.940 chamados/mês). Como o volume de jul/26 (9.596) é 38% maior, no ritmo atual a economia seria maior, o que torna esta estimativa conservadora quanto a volume.
 - **Não inclui custo de implantação** (desenvolvimento do autosserviço, treinamento, revisão de scripts); o payback depende dele. Estimar esse custo exige dados que o grupo não tem.
-- A reincidência é medida pelos dados (mesmo cliente e motivo em até 7 dias), mas **nem todo recontato é evitável** e há chamados sem identificação de cliente (não entram como reincidentes), o que subestima a base.
+- A reincidência é medida pelos dados (mesmo cliente e motivo em até 7 dias), mas **nem todo recontato é evitável**. Neste conjunto todos os chamados têm id de cliente (a regra de elegibilidade não exclui ninguém), e a medida só compara com o chamado anterior imediato do mesmo cliente e motivo.
 - Ganhos de satisfação, redução de abandono e liberação de capacidade do Nível 2 **não estão monetizados** aqui (ver [`../docs/analitico/propostas-e-priorizacao.md`](../docs/analitico/propostas-e-priorizacao.md)).

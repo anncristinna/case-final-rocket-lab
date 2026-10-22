@@ -6,8 +6,8 @@ esperado; pelo menos duas com ganho quantificado e premissas de cálculo explíc
 
 ## O diagnóstico em três linhas
 
-1. **A demanda mais que dobrou (+120% em 18 meses) sem capacidade correspondente**: o quadro de atendentes ficou em 13 no Nível 1 e 7 no Nível 2, e a **espera** do Nível 2 foi de 5 para 22 min. O CSAT passou de 86% para 57% e o abandono, de 1,4% para 3,8%.
-2. **O custo está no atendimento humano** (93,7% do custo em 43% dos chamados) **e em poucos motivos** (5 motivos = 43% dos chamados e 60% do custo), que têm baixa resolução (31% a 38%) e alta reincidência (53% a 58%).
+1. **A demanda mais que dobrou (+120% em 18 meses) sem capacidade correspondente**: o cadastro não mostra aumento da equipe (5 saídas e 5 entradas, 25 atendentes cadastrados), e a **espera** do Nível 2 foi de 5 para 22 min. O CSAT passou de 86% para 57% e o abandono, de 1,4% para 3,8%.
+2. **O custo está no atendimento humano** (93,65% do custo em 43% dos chamados) **e em poucos motivos** (5 motivos = 43% dos chamados e 60% do custo), que têm baixa resolução (31% a 38%) e alta reincidência (53% a 58%).
 3. **O autosserviço funciona onde o problema é simples** (cadastral, fatura, limite) **e falha onde é crítico** (renegociação, compra não autorizada, cancelamento); parte dos casos simples ainda chega ao humano (12.411 chamados).
 
 ## Critério de priorização
@@ -21,7 +21,7 @@ Cada proposta recebe nota de 1 a 5 em quatro critérios, com pesos:
 | **Facilidade de execução** | 25% | 5 = ação de processo/configuração em semanas; 1 = projeto com investimento e prazo longos |
 | **Solidez da evidência** | 15% | 5 = efeito medido diretamente nos dados; 1 = depende de hipótese sem dado |
 
-Nota final = soma ponderada. As notas são **julgamento do grupo** a partir dos números; vale revisar com o time antes da
+Nota final = soma ponderada. Os pesos e as notas são **estimativa do Claude Code** a partir dos números, **a validar pelo grupo** antes da
 apresentação. A **sequência de execução** não é só a ordem de nota: habilitadores baratos entram primeiro.
 
 | # | Proposta | Fin. (35%) | Cliente (25%) | Facilidade (25%) | Evidência (15%) | **Nota** |
@@ -30,6 +30,19 @@ apresentação. A **sequência de execução** não é só a ordem de nota: habi
 | P2 | Deflexão dos motivos simples para o autosserviço | 2 | 3 | 4 | 4 | **3,05** |
 | P3 | Dimensionar capacidade e escala (espera ≤ 5 min), começando pelo Nível 2 | 2 | 5 | 2 | 3 | **2,90** |
 | P4 | Governança de dados: pesquisa, atendente, abandono | 1 | 2 | 4 | 5 | **2,60** |
+
+## De quem é cada número
+
+| Item | Origem | Status |
+|---|---|---|
+| 20% de deflexão (A) e 30% de redução de reincidência (B) | **Grupo** (`PCT_DEFLEXAO` e `PCT_REDUCAO_REINCIDENCIA` no `Silver_To_Gold`) | Hipóteses de negócio; validar em piloto |
+| Custo de referência de R$ 1,4 mi | Entrevista com o Gerente Financeiro (case, p. 5) | Dado do case |
+| Pesos e notas de priorização | Claude Code | A validar pelo grupo |
+| Jornada de ~160 h/mês e ocupação do Nível 1 e 2 | Claude Code | Premissa, a validar |
+| Contagem de atendentes vigentes (13 e 7) | Claude Code, a partir do cadastro | Frágil (12% dos chamados fora do vínculo) |
+| Teto de CSAT (~82,2%) | Claude Code | Estimativa, a validar |
+| Líquido P1 + P2 (R$ 258 a 279 mil/ano) | Claude Code | A confirmar com query |
+| Metas dos KPIs | Claude Code | A validar pelo grupo e pelo Comitê |
 
 ## P1 — Resolver na primeira interação os cinco motivos críticos (**ganho quantificado**)
 
@@ -79,12 +92,12 @@ resolvem 49% a 77% no autosserviço, mas ainda geram **12.411 chamados no atendi
 **tirar volume do Nível 1** e melhorar a experiência (CSAT de 74% a 85% nesses motivos), não cortar custo.
 **Custo de implantação não está incluído** e pode consumir boa parte da economia.
 
-**P1 + P2**: teto de **R$ 288,9 mil/ano** (~23% do run-rate anual de jul/26, de R$ 1,27 mi). É um teto porque os dois cenários podem se sobrepor (nota em `07-custos-e-simulacao.md`).
+**P1 + P2: não somar.** 98,1% da base de P2 (12.172 de 12.411 chamados) já é reincidente e, portanto, já está na base de P1: os dois atacam o mesmo problema (recontato por falha de resolução). Líquido da sobreposição: **R$ 258 a 279 mil/ano**, estimativa do Claude Code **a confirmar** com a query de [`07-custos-e-simulacao.md`](../../resultados/07-custos-e-simulacao.md). Os R$ 288,9 mil (soma simples) são só um teto.
 
 ## P3 — Capacidade e escala: espera até 5 minutos (**ganho qualitativo com teto estimado**)
 
-**Problema**: o quadro de atendentes está igual ao de jan/25 (13 no Nível 1, 7 no Nível 2), mas o volume humano
-cresceu ×2,4 e ×2,5. O TME do Nível 2 foi de 5,0 para 21,8 min, o abandono do Nível 2, de 4,3% para 15,2%, e seu CSAT, de 64% para 12%. Dois terços do volume estão entre 9h e 17h59 e segunda-feira concentra 20%.
+**Problema**: o cadastro não mostra aumento da equipe (entradas e saídas se compensam; 25 atendentes cadastrados), mas o volume humano
+cresceu ×2,4 e ×2,5. A contagem de vigentes por mês (13 no Nível 1 e 7 no Nível 2) é **inferida** das datas de admissão e desligamento, que conflitam com 12% dos chamados; trate-a como estimativa frágil. O TME do Nível 2 foi de 5,0 para 21,8 min, o abandono do Nível 2, de 4,3% para 15,2%, e seu CSAT, de 64% para 12%. Dois terços do volume estão entre 9h e 17h59 e segunda-feira concentra 20%.
 
 **Evidência de valor**: com espera até 5 min o CSAT é 83%; de 5 a 15 min, 49%; de 15 a 30 min, 10%.
 
@@ -123,4 +136,4 @@ Esforço baixo (validações na captura e no cadastro): vale começar já.
 | Cobertura da pesquisa | 48,4% | ≥ 65% (nível de jan/25) |
 | Abandono | 3,8% | ≤ 1,4% (nível de jan/25) |
 
-As metas são **sugestões do grupo**, ancoradas nos níveis de jan/25 e nas premissas das simulações; alinhar com o Comitê.
+As metas são **sugestões do Claude Code**, ancoradas nos níveis de jan/25 e nas premissas das simulações; **a validar pelo grupo** e alinhar com o Comitê.

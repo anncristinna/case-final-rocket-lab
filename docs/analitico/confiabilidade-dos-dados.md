@@ -21,11 +21,11 @@ volume, 2% inflado e o CSAT, contaminado por notas impossíveis. **Três pontos 
 | TME e TMA | Alta | Todos os chamados atendidos têm sequência de horários válida após correção; só 199 chamados corrigidos (0,15%) |
 | Taxa de resolução | Média-alta | 1,5% sem informação; depende de o abandono entrar ou não no denominador (50,9% contra 52,2%) |
 | Abandono | Média | Definido por ausência de horário de início; não distingue desistência de falha de registro |
-| Reincidência | Média | Exige `id_cliente`; chamados sem cliente nunca são reincidentes (tende a subestimar) |
+| Reincidência | Média | Exige `id_cliente`. Neste conjunto todos os chamados trazem id de cliente (`chamado_sem_id_cliente` = 0), então os 131.838 são elegíveis (`recontato_elegivel`) e os 1.330 com id sem cadastro **entram** na reincidência (só ficam fora de `perfil_cliente`). Limite: compara só com o chamado anterior imediato do mesmo cliente e motivo |
 | **CSAT** | **Média-baixa** | 39,2% dos chamados sem pesquisa, cobertura caindo de 65% para 48%, 5,2% com nota fora da escala |
 | **Análise por atendente** | **Baixa** | 56,6% dos chamados de autosserviço trazem atendente; 12,0% fora do vínculo do atendente |
 
-(Classificação do grupo, a validar.)
+(Classificação proposta pelo Claude Code, a validar pelo grupo.)
 
 ## Inconsistências, tratamento e impacto
 
@@ -34,9 +34,9 @@ volume, 2% inflado e o CSAT, contaminado por notas impossíveis. **Três pontos 
 | 1 | `id_chamado` duplicado em `chamados` (cópias idênticas) | 2.636 (134.474 → 131.838) | Remoção das cópias exatas na silver | Volume e todos os totais inflados em ~2% se não removido |
 | 2 | `id_custo` duplicado em `custos` (idênticos) | 781 | Remoção por `id_custo` | Custo duplicado |
 | 3 | `custo` em formatos mistos (`9,99`, `R$ 9,99`, `9.99reais`, negativos) | Toda a coluna | Só dígitos, vírgula e ponto; vírgula = decimal brasileiro; sem vírgula, o ponto já é decimal | **Remover todo ponto (erro do notebook exploratório inicial) levava o total a R$ 42,2 mi; o correto é R$ 1,45 mi (29× menor)** |
-| 4 | Lançamentos de custo ≤ 0 | 544 (271 negativos, 273 zeros) | Ficam na silver (`custo_com_problema`), fora da soma da gold | Total R$ 1.450.617,85 (só valores > 0) |
+| 4 | Custo ≤ 0 (negativo ou zero) | 544 em `qualidade_dados` (`custo_invalido_ou_nao_positivo`, 0,41% dos **chamados**). Divisão 271 negativos / 273 zeros e unidade (chamados ou lançamentos): **a confirmar** | Ficam na silver (`custo_com_problema`), fora da soma da gold | Total R$ 1.450.617,85 (só valores > 0) |
 | 5 | Chamados sem nenhum custo | 1.550 (1,18%) | Custo nulo (não zero) | Custo médio por chamado: R$ 11,18 (só com custo) contra R$ 11,00 (diluído em todos) |
-| 6 | `tempo_atendimento` de `chamados` truncado para durações ≥ 1.000 s | Campo todo | **Nunca usado**; tempos vêm dos timestamps de `chamados_hora` | Subestimaria o TMA humano em várias vezes |
+| 6 | `tempo_atendimento` de `chamados` truncado para durações ≥ 1.000 s | Campo todo | **Nunca usado**; tempos vêm dos timestamps de `chamados_hora` | Subestimaria o TMA humano em várias vezes (valores preliminares, a confirmar, em [`../tecnico/arquitetura-medalhao.md`](../tecnico/arquitetura-medalhao.md)) |
 | 7 | Ano de abertura errado (abertura posterior à finalização) | 198 (0,15%) | Corrigido pelo ano da finalização, só quando a cadeia de horários fica válida | **TME bruto médio de −1.211,9 min (negativo) contra 3,6 min tratado** |
 | 8 | Virada de dia não registrada (atendimento cruza a meia-noite) | 1 | Soma 1 dia à finalização (regra restrita, auditável) | Desprezível |
 | 9 | Chamado sem horário de início | 3.414 (2,59%) | Marcado como **abandonado** (informativo); fora de TME/TMA | Abandono antes invisível (o notebook exploratório não usava `chamados_hora`) |
@@ -83,3 +83,13 @@ Leitura: o tratamento **muda muito** o custo (R$ 42 mi → R$ 1,45 mi) e o TME (
 5. **Chave única**: impedir `id_chamado` e `id_custo` duplicados na extração.
 6. **Cadastro de clientes**: 1% dos chamados aponta para cliente inexistente; reconciliar as duas bases.
 7. **Visão única**: manter o pipeline medalhão como fonte única de indicadores (hoje os números vivem em bases dispersas, como relatou o Diretor de Tecnologia).
+
+## A confirmar no Databricks
+
+Estes números ainda não foram conferidos por consulta no workspace. Até rodar as queries, valem como **a confirmar**:
+
+| Item | Onde aparece | Query de conferência |
+|---|---|---|
+| 544 com custo ≤ 0, divisão 271 negativos / 273 zeros e unidade (chamados ou lançamentos) | Tabela de inconsistências, linha 4 | `SELECT COUNT_IF(custo < 0) AS negativos, COUNT_IF(custo = 0) AS zeros, COUNT(DISTINCT id_chamado) AS chamados FROM dados_vcredit.default.custos_silver WHERE custo <= 0` |
+| Números da fonte da verdade dos tempos (média do campo truncado contra a dos timestamps) | [`arquitetura-medalhao.md`](../tecnico/arquitetura-medalhao.md), seção "Fonte da verdade dos tempos" | Query na mesma seção |
+| Sobreposição entre os cenários A e B (12.172 de 12.411) | [`07-custos-e-simulacao.md`](../../resultados/07-custos-e-simulacao.md) | Query na mesma seção |
