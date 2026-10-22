@@ -42,3 +42,6 @@ Thumbs.db
 
 # --- Claude Code (configs pessoais) ---
 .claude/settings.local.json
+
+# --- PPTX de trabalho (só os PDFs finais são versionados) ---
+docs/pdf/*.pptx
