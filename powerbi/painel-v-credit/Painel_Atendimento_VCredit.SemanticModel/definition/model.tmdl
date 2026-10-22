@@ -1,0 +1,42 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: pt-BR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["visao_geral","kpi_mensal","comparativo_yoy","funil_atendimento","etapa_mensal","motivos_pareto","motivo_etapa","demanda_dia_hora","atendentes_desempenho","satisfacao_drivers","perfil_cliente","qualidade_dados","impacto_indicadores","simulacao_ganhos","DimMes","DimEtapa","PastaCSV"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table visao_geral
+ref table kpi_mensal
+ref table comparativo_yoy
+ref table funil_atendimento
+ref table etapa_mensal
+ref table motivos_pareto
+ref table motivo_etapa
+ref table demanda_dia_hora
+ref table atendentes_desempenho
+ref table satisfacao_drivers
+ref table perfil_cliente
+ref table qualidade_dados
+ref table impacto_indicadores
+ref table simulacao_ganhos
+ref table DimMes
+ref table DimEtapa
+ref table Medidas
+ref table Alertas
+ref table 'Metrica Heatmap'
+ref table 'Premissa A'
+ref table 'Premissa B'
+ref table Def_Indicadores
+ref table Def_Tabelas
+ref table Oportunidades
+
+ref cultureInfo pt-BR
+

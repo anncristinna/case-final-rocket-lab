@@ -1,0 +1,334 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1430.6845508576214,
+            "y": 332.55521310075579
+          },
+          "nodeIndex": "Medidas",
+          "nodeLineageTag": "84c21f90-f909-5221-b90b-3009eff6a965",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1714.6845508576214,
+            "y": 382.55521310075579
+          },
+          "nodeIndex": "Alertas",
+          "nodeLineageTag": "999aaf80-48c1-539a-be36-93a4609bbf81",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1998.6845508576214,
+            "y": 332.55521310075579
+          },
+          "nodeIndex": "atendentes_desempenho",
+          "nodeLineageTag": "a042f3ae-bf5e-5ea9-851b-4ee281022733",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2282.6845508576216,
+            "y": 332.55521310075579
+          },
+          "nodeIndex": "comparativo_yoy",
+          "nodeLineageTag": "0ea57f79-fd4b-5ca5-a91a-1e32253808f3",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2566.6845508576216,
+            "y": 394.55521310075579
+          },
+          "nodeIndex": "Def_Indicadores",
+          "nodeLineageTag": "74ba0500-1e7e-5b6d-9c29-f4ac0884110f",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2850.6845508576216,
+            "y": 406.55521310075579
+          },
+          "nodeIndex": "Def_Tabelas",
+          "nodeLineageTag": "8e7f90f1-05ae-5e35-9c6c-5200de697637",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3134.6845508576216,
+            "y": 334.55521310075579
+          },
+          "nodeIndex": "demanda_dia_hora",
+          "nodeLineageTag": "d156ff27-ba02-5bfc-b9ee-4344821c3bdf",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 479.57018867379088
+          },
+          "nodeIndex": "DimEtapa",
+          "nodeLineageTag": "ac7392d7-1e78-5dff-a04e-caafaab57f10",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 620.84551291536013,
+            "y": 320.51487284356739
+          },
+          "nodeIndex": "DimMes",
+          "nodeLineageTag": "8bdf5ab2-95be-5854-ae61-e4b647e30ebf",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1196.6845508576214,
+            "y": 336.58037111347465
+          },
+          "nodeIndex": "etapa_mensal",
+          "nodeLineageTag": "9ed654ca-b53e-5650-a4c4-d3645b1a7fb3",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 335.46900161623671,
+            "y": 303.25633897874718
+          },
+          "nodeIndex": "funil_atendimento",
+          "nodeLineageTag": "103013cf-7354-539f-be7e-3d59bc1cb3cd",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3418.6845508576216,
+            "y": 346.55521310075579
+          },
+          "nodeIndex": "impacto_indicadores",
+          "nodeLineageTag": "1aa5f6fa-0771-5c64-b214-7f95e7675ce3",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 907.90353064268174,
+            "y": 218.88563552434539
+          },
+          "nodeIndex": "kpi_mensal",
+          "nodeLineageTag": "5a31e188-29b1-548f-aab3-912240a44829",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3702.6845508576216,
+            "y": 418.55521310075579
+          },
+          "nodeIndex": "Metrica Heatmap",
+          "nodeLineageTag": "e2c62a98-7841-5660-8b22-c4e905034541",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 472.26805230345605,
+            "y": -50
+          },
+          "nodeIndex": "motivo_etapa",
+          "nodeLineageTag": "ddbbdb4e-5e31-53ab-966b-8a6d4f44deed",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3986.6845508576216,
+            "y": 332.55521310075579
+          },
+          "nodeIndex": "motivos_pareto",
+          "nodeLineageTag": "c64206f7-f516-5d98-923b-7bd505530092",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 4270.6845508576216,
+            "y": 406.55521310075579
+          },
+          "nodeIndex": "Oportunidades",
+          "nodeLineageTag": "56ec03bf-abec-5a4f-afa6-495975dbf1a1",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 906.65465297626588,
+            "y": 615.11042620151159
+          },
+          "nodeIndex": "perfil_cliente",
+          "nodeLineageTag": "1910f2d6-87ee-5a17-8a7c-6af0f17f91ee",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 4554.6845508576216,
+            "y": 382.55521310075579
+          },
+          "nodeIndex": "Premissa A",
+          "nodeLineageTag": "e2bda051-1904-5a65-9aa6-349e5f2994f5",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 4838.6845508576216,
+            "y": 382.55521310075579
+          },
+          "nodeIndex": "Premissa B",
+          "nodeLineageTag": "98320550-1ca7-5a08-a481-ad2a2484adb2",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5122.6845508576216,
+            "y": 370.55521310075579
+          },
+          "nodeIndex": "qualidade_dados",
+          "nodeLineageTag": "504ca8e5-2935-5caf-84fd-6c61c68fb15e",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5406.6845508576216,
+            "y": 370.55521310075579
+          },
+          "nodeIndex": "satisfacao_drivers",
+          "nodeLineageTag": "7e6b32b1-787d-5fc9-a114-003c2c82afb5",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5690.6845508576216,
+            "y": 332.55521310075579
+          },
+          "nodeIndex": "simulacao_ganhos",
+          "nodeLineageTag": "c11f4dab-a063-581f-8c07-59e4dcc760fb",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5974.6845508576216,
+            "y": 332.55521310075579
+          },
+          "nodeIndex": "visao_geral",
+          "nodeLineageTag": "36c18260-bd92-585e-972f-b077901625c9",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Todas as tabelas",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas as tabelas",
+  "defaultDiagram": "Todas as tabelas"
+}

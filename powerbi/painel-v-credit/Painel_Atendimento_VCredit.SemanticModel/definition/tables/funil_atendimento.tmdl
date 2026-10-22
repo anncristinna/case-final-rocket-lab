@@ -1,0 +1,156 @@
+table funil_atendimento
+	lineageTag: 103013cf-7354-539f-be7e-3d59bc1cb3cd
+
+	column etapa_funil
+		dataType: string
+		lineageTag: 9cecae86-51c8-5849-95d5-5bb9b8e782cd
+		summarizeBy: none
+		sourceColumn: etapa_funil
+
+		annotation SummarizationSetBy = User
+
+	column canal
+		dataType: string
+		lineageTag: f5dc7b04-6e41-5e03-8563-163e54e67536
+		summarizeBy: none
+		sourceColumn: canal
+
+		annotation SummarizationSetBy = User
+
+	column tipo_canal
+		dataType: string
+		lineageTag: e9fed00c-0bc4-5d90-bb07-539a230b981c
+		summarizeBy: none
+		sourceColumn: tipo_canal
+
+		annotation SummarizationSetBy = User
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: f5d776af-1c6a-5e8c-a266-487a0d6c8e37
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column pct_chamados
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 0c7d6c8c-1570-54e2-90dd-afb9495443b8
+		summarizeBy: none
+		sourceColumn: pct_chamados
+
+		annotation SummarizationSetBy = User
+
+	column abandonados
+		dataType: int64
+		formatString: #,0
+		lineageTag: 24cc88c2-6ca7-5877-bbb6-b19eb37d42b6
+		summarizeBy: none
+		sourceColumn: abandonados
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: b9210c2f-da29-585c-886e-ad4edb5e2a98
+		summarizeBy: none
+		sourceColumn: pct_abandono
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: a22522a3-f1dc-526d-8f2f-df1c32391f07
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column tme_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: d8dffb9c-269c-5660-bf75-c76c5e2e7a18
+		summarizeBy: none
+		sourceColumn: tme_min
+
+		annotation SummarizationSetBy = User
+
+	column tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: ce1b6a8e-87fd-5993-a63a-673fa4d3207a
+		summarizeBy: none
+		sourceColumn: tma_min
+
+		annotation SummarizationSetBy = User
+
+	column custo_total
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 7dbbdab9-f935-5e46-b09b-cb1baf9a2ec3
+		summarizeBy: none
+		sourceColumn: custo_total
+
+		annotation SummarizationSetBy = User
+
+	column pct_custo
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 95f14cce-521d-58df-8fc6-deea8ef973e7
+		summarizeBy: none
+		sourceColumn: pct_custo
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 716b9c49-3ff7-5e43-a90e-5635737928f7
+		summarizeBy: none
+		sourceColumn: custo_medio
+
+		annotation SummarizationSetBy = User
+
+	column custo_por_resolucao
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 5b559dd5-9cfd-5e8a-9537-8859c9913801
+		summarizeBy: none
+		sourceColumn: custo_por_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 18473650-5692-5a6f-9ea5-bc71cd272bf8
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	column canal_rotulo
+		dataType: string
+		lineageTag: c09a6aa4-fdd9-5322-9bc1-115d4a3f4146
+		summarizeBy: none
+		sourceColumn: canal_rotulo
+
+		annotation SummarizationSetBy = User
+
+	partition funil_atendimento = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\funil_atendimento.csv"), [Delimiter=",", Columns=15, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"etapa_funil", type text}, {"canal", type text}, {"tipo_canal", type text}, {"chamados", Int64.Type}, {"pct_chamados", type number}, {"abandonados", Int64.Type}, {"pct_abandono", type number}, {"pct_resolucao", type number}, {"tme_min", type number}, {"tma_min", type number}, {"custo_total", type number}, {"pct_custo", type number}, {"custo_medio", type number}, {"custo_por_resolucao", type number}, {"csat_pct", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "canal_rotulo", each if [canal] = "URA" then "URA" else Text.Proper([canal]), type text)
+				in
+					Extra1
+
+	annotation PBI_ResultType = Table
+

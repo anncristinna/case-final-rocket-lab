@@ -1,0 +1,93 @@
+table motivo_etapa
+	lineageTag: ddbbdb4e-5e31-53ab-966b-8a6d4f44deed
+
+	column categoria
+		dataType: string
+		lineageTag: 77c8c57b-00c4-5d5b-9f34-74aac6d46d54
+		summarizeBy: none
+		sourceColumn: categoria
+
+		annotation SummarizationSetBy = User
+
+	column motivo
+		dataType: string
+		lineageTag: 5bc90586-b6ac-519d-a62c-9eab170cc5ce
+		summarizeBy: none
+		sourceColumn: motivo
+
+		annotation SummarizationSetBy = User
+
+	column etapa_funil
+		dataType: string
+		lineageTag: 2c17a8e6-ec49-5e2a-8ffe-daecbca19bea
+		summarizeBy: none
+		sourceColumn: etapa_funil
+
+		annotation SummarizationSetBy = User
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: c40a2b21-d2f8-535f-8cab-8ef159ba9836
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column pct_do_motivo
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 5e00cef5-6234-5e78-9096-39e2579626b7
+		summarizeBy: none
+		sourceColumn: pct_do_motivo
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 819b602f-dcbc-5e1d-9f71-81855c5a5a18
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: 2c4d7f42-f6f4-5927-b7a4-e8b7b47ac4fd
+		summarizeBy: none
+		sourceColumn: tma_min
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 05a1f89e-ddab-5f4e-bef7-56c2e71027e0
+		summarizeBy: none
+		sourceColumn: custo_medio
+
+		annotation SummarizationSetBy = User
+
+	column motivo_rotulo
+		dataType: string
+		lineageTag: 1c9aab78-042b-598a-afae-c6c9cc4d88b5
+		summarizeBy: none
+		sourceColumn: motivo_rotulo
+
+		annotation SummarizationSetBy = User
+
+	partition motivo_etapa = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\motivo_etapa.csv"), [Delimiter=",", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"categoria", type text}, {"motivo", type text}, {"etapa_funil", type text}, {"chamados", Int64.Type}, {"pct_do_motivo", type number}, {"pct_resolucao", type number}, {"tma_min", type number}, {"custo_medio", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "motivo_rotulo", each if Text.Contains([motivo], " (") then Text.BeforeDelimiter([motivo], " (") else [motivo], type text)
+				in
+					Extra1
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,94 @@
+table etapa_mensal
+	lineageTag: 9ed654ca-b53e-5650-a4c4-d3645b1a7fb3
+
+	column ano_mes
+		dataType: string
+		lineageTag: e4c75088-0677-5a54-89e3-4cb9683c77c3
+		summarizeBy: none
+		sourceColumn: ano_mes
+
+		annotation SummarizationSetBy = User
+
+	column etapa_funil
+		dataType: string
+		lineageTag: 04642292-c58d-5e45-9013-6d63ec534951
+		summarizeBy: none
+		sourceColumn: etapa_funil
+
+		annotation SummarizationSetBy = User
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: a21f9461-2a15-5127-b022-d7799af4b48c
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 9d649604-0d90-57dc-8b41-3904886d0c3d
+		summarizeBy: none
+		sourceColumn: pct_abandono
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 0efd1dca-868b-5f2f-bf1f-0e3729798e13
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column tme_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: cf904156-70f7-5188-afdf-7315c18ed4ea
+		summarizeBy: none
+		sourceColumn: tme_min
+
+		annotation SummarizationSetBy = User
+
+	column tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: e869a72e-df26-5f89-9931-27f0da564425
+		summarizeBy: none
+		sourceColumn: tma_min
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 1a533bc4-b092-57fe-9f6c-bb27f8ce1cc7
+		summarizeBy: none
+		sourceColumn: custo_medio
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: d8a6cb5b-67fb-5b4a-8897-7cb1b5f96845
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	partition etapa_mensal = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\etapa_mensal.csv"), [Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"ano_mes", type text}, {"etapa_funil", type text}, {"chamados", Int64.Type}, {"pct_abandono", type number}, {"pct_resolucao", type number}, {"tme_min", type number}, {"tma_min", type number}, {"custo_medio", type number}, {"csat_pct", type number}}, "en-US")
+				in
+					Tipos
+
+	annotation PBI_ResultType = Table
+

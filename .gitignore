@@ -12,6 +12,9 @@ data/raw/*
 *.parquet
 *.zip
 *.pbix
+# Power BI (PBIP): cache e configuracao local nunca vao para o git (os .gitignore do projeto ja cobrem; aqui e a rede de seguranca)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
 # Exceção: manifestos e comparação de idempotência (só nomes de tabela, contagens e checksums; sem dado pessoal)
 !docs/tecnico/evidencias/**/*.csv
 

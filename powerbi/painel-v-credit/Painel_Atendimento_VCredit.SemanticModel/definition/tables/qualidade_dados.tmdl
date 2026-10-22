@@ -1,0 +1,67 @@
+table qualidade_dados
+	lineageTag: 504ca8e5-2935-5caf-84fd-6c61c68fb15e
+
+	column grupo
+		dataType: string
+		lineageTag: 7df6b218-0d06-53f7-9b8d-080e7e20b616
+		summarizeBy: none
+		sourceColumn: grupo
+
+		annotation SummarizationSetBy = User
+
+	column indicador
+		dataType: string
+		lineageTag: 12ddd391-981c-5450-a617-68bf169d45af
+		summarizeBy: none
+		sourceColumn: indicador
+
+		annotation SummarizationSetBy = User
+
+	column qtd
+		dataType: int64
+		formatString: #,0
+		lineageTag: bc050681-871f-561c-88b9-30b1b6ab49ce
+		summarizeBy: none
+		sourceColumn: qtd
+
+		annotation SummarizationSetBy = User
+
+	column pct_chamados
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 85ef9319-f3a0-5e2a-aa90-1082a6dcb8be
+		summarizeBy: none
+		sourceColumn: pct_chamados
+
+		annotation SummarizationSetBy = User
+
+	column indicador_rotulo
+		dataType: string
+		lineageTag: f036ad26-8779-50d5-b588-cafad9720d12
+		summarizeBy: none
+		sourceColumn: indicador_rotulo
+
+		annotation SummarizationSetBy = User
+
+	column informativo
+		dataType: boolean
+		lineageTag: 60d56ad3-c8c4-5862-b337-a020d20a2ce3
+		summarizeBy: none
+		sourceColumn: informativo
+
+		annotation SummarizationSetBy = User
+
+	partition qualidade_dados = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\qualidade_dados.csv"), [Delimiter=",", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"grupo", type text}, {"indicador", type text}, {"qtd", Int64.Type}, {"pct_chamados", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "indicador_rotulo", each let t = Text.Replace([indicador], "_", " ") in Text.Upper(Text.Start(t, 1)) & Text.Middle(t, 1), type text),
+					Extra2 = Table.AddColumn(Extra1, "informativo", each Text.Contains([indicador], "informativo") or [indicador] = "chamado_sem_pesquisa", type logical)
+				in
+					Extra2
+
+	annotation PBI_ResultType = Table
+

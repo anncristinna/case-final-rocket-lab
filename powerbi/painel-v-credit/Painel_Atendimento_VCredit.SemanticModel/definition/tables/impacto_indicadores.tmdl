@@ -1,0 +1,84 @@
+table impacto_indicadores
+	lineageTag: 1aa5f6fa-0771-5c64-b214-7f95e7675ce3
+
+	column indicador
+		dataType: string
+		lineageTag: c2170695-46f7-5139-92f7-e1313f22615f
+		summarizeBy: none
+		sourceColumn: indicador
+
+		annotation SummarizationSetBy = User
+
+	column metodo_a
+		dataType: string
+		lineageTag: 4470d69d-75e1-5f5e-927b-bdd6e230f2ec
+		summarizeBy: none
+		sourceColumn: metodo_a
+
+		annotation SummarizationSetBy = User
+
+	column valor_a
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 3a819c00-b4ef-5774-a2b1-ef57d981a8ee
+		summarizeBy: none
+		sourceColumn: valor_a
+
+		annotation SummarizationSetBy = User
+
+	column n_a
+		dataType: int64
+		formatString: #,0
+		lineageTag: b015b2b5-4813-57a5-a829-87a5f84731ce
+		summarizeBy: none
+		sourceColumn: n_a
+
+		annotation SummarizationSetBy = User
+
+	column metodo_b
+		dataType: string
+		lineageTag: 732ab13a-44dd-53ec-b4d5-e0c537be8820
+		summarizeBy: none
+		sourceColumn: metodo_b
+
+		annotation SummarizationSetBy = User
+
+	column valor_b
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 1686e074-91fd-5e4f-b8e6-f455f5616cbd
+		summarizeBy: none
+		sourceColumn: valor_b
+
+		annotation SummarizationSetBy = User
+
+	column n_b
+		dataType: int64
+		formatString: #,0
+		lineageTag: 00f9130e-16e2-5c1c-b87c-90d4dc034909
+		summarizeBy: none
+		sourceColumn: n_b
+
+		annotation SummarizationSetBy = User
+
+	column diferenca
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 72b3cabc-55e4-5a84-aaae-87d0e43f67c7
+		summarizeBy: none
+		sourceColumn: diferenca
+
+		annotation SummarizationSetBy = User
+
+	partition impacto_indicadores = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\impacto_indicadores.csv"), [Delimiter=",", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"indicador", type text}, {"metodo_a", type text}, {"valor_a", type number}, {"n_a", Int64.Type}, {"metodo_b", type text}, {"valor_b", type number}, {"n_b", Int64.Type}, {"diferenca", type number}}, "en-US")
+				in
+					Tipos
+
+	annotation PBI_ResultType = Table
+

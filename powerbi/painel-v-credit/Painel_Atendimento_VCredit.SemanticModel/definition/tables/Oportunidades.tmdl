@@ -1,0 +1,33 @@
+table Oportunidades
+	lineageTag: 56ec03bf-abec-5a4f-afa6-495975dbf1a1
+
+	column Oportunidade
+		dataType: string
+		lineageTag: ff411ada-dec3-5cd7-a692-0dc34c2e7c71
+		summarizeBy: none
+		sourceColumn: [Oportunidade]
+
+		annotation SummarizationSetBy = User
+
+	column 'Origem da hipótese'
+		dataType: string
+		lineageTag: 9c0206cc-a667-5048-8d3a-d654104fc98d
+		summarizeBy: none
+		sourceColumn: [Origem da hipótese]
+
+		annotation SummarizationSetBy = User
+
+	column 'O que falta medir'
+		dataType: string
+		lineageTag: ef686345-a657-5b56-b17e-43ba45d77e9f
+		summarizeBy: none
+		sourceColumn: [O que falta medir]
+
+		annotation SummarizationSetBy = User
+
+	partition Oportunidades = calculated
+		mode: import
+		source = DATATABLE("Oportunidade", STRING, "Origem da hipótese", STRING, "O que falta medir", STRING, {{"Melhorar app, site e URA", "Atendentes relatam app e site lentos e URA com caminhos confusos (relato qualitativo do case).", "Logs de navegação do app, do site e da URA. A etapa Prevenção do funil não aparece nas tabelas."}, {"Capacitar o Nível 2", "Coordenadora: atendentes sem preparo para as novas demandas.", "Histórico de treinamentos e complexidade dos chamados de cada atendente."}, {"Reforçar a escala nos picos", "Espera e abandono sobem quando a demanda aperta.", "Número de atendentes escalados por hora."}, {"Reduzir reincidência", "Parte dos contatos é recontato do mesmo motivo em até 7 dias.", "Causa dos recontatos (resolução incompleta, erro de sistema, falta de retorno)."}, {"Apoiar quem não usa o chatbot", "Diretor de Tecnologia: muitos usuários são analfabetos digitais e não usam o chatbot em plenitude.", "Uma medida de alfabetização digital e a jornada do usuário dentro do chatbot."}})
+
+	annotation PBI_ResultType = Table
+

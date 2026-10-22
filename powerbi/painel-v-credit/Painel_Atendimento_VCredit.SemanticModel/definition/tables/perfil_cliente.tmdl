@@ -1,0 +1,102 @@
+table perfil_cliente
+	lineageTag: 1910f2d6-87ee-5a17-8a7c-6af0f17f91ee
+
+	column dimensao
+		dataType: string
+		lineageTag: fac868f7-1d00-5117-8820-c41a711c6c51
+		summarizeBy: none
+		sourceColumn: dimensao
+
+		annotation SummarizationSetBy = User
+
+	column valor
+		dataType: string
+		lineageTag: ac5cc11a-c935-5b3e-8b5c-33d7779921ac
+		summarizeBy: none
+		sourceColumn: valor
+
+		annotation SummarizationSetBy = User
+
+	column etapa_funil
+		dataType: string
+		lineageTag: 4d4fc90f-831f-5f5e-ac81-00b1bd400e25
+		summarizeBy: none
+		sourceColumn: etapa_funil
+
+		annotation SummarizationSetBy = User
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: 87e39e36-d3df-5e11-a799-2a7a473fc1fd
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column pct_da_dimensao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 8719796e-9522-5aad-8c8e-1989b289ea79
+		summarizeBy: none
+		sourceColumn: pct_da_dimensao
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 2bed8970-56d5-5622-993a-4e29d86e32a2
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 1737a3ae-7ca0-531a-98f1-793154c5da98
+		summarizeBy: none
+		sourceColumn: pct_abandono
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 3f156705-4da4-5862-ab17-ac723345b115
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: c3e1c53a-56f9-5be3-9cb5-4c9662edd4f5
+		summarizeBy: none
+		sourceColumn: custo_medio
+
+		annotation SummarizationSetBy = User
+
+	column valor_rotulo
+		dataType: string
+		lineageTag: c857cd3a-ca30-5453-944d-9537040643e0
+		summarizeBy: none
+		sourceColumn: valor_rotulo
+
+		annotation SummarizationSetBy = User
+
+	partition perfil_cliente = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\perfil_cliente.csv"), [Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"dimensao", type text}, {"valor", type text}, {"etapa_funil", type text}, {"chamados", Int64.Type}, {"pct_da_dimensao", type number}, {"pct_resolucao", type number}, {"pct_abandono", type number}, {"csat_pct", type number}, {"custo_medio", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "valor_rotulo", each if [dimensao] = "regiao" then Text.Proper([valor]) else [valor], type text)
+				in
+					Extra1
+
+	annotation PBI_ResultType = Table
+

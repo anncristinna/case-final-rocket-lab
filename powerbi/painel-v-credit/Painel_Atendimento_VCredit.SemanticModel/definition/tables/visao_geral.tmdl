@@ -1,0 +1,165 @@
+table visao_geral
+	lineageTag: 36c18260-bd92-585e-972f-b077901625c9
+
+	column total_chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: 2785ddf5-5997-5ff2-8ecd-ffbbefbc5401
+		summarizeBy: none
+		sourceColumn: total_chamados
+
+		annotation SummarizationSetBy = User
+
+	column primeira_data
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 377dc63e-2994-5a0d-b434-23a6d99f37b5
+		summarizeBy: none
+		sourceColumn: primeira_data
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ultima_data
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: b876e21e-f0b4-5307-a6c4-b4affe9e2f09
+		summarizeBy: none
+		sourceColumn: ultima_data
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column meses_no_periodo
+		dataType: int64
+		formatString: 0
+		lineageTag: 144e4a7e-04c0-5ba6-9db6-a5d473f4f4ca
+		summarizeBy: none
+		sourceColumn: meses_no_periodo
+
+		annotation SummarizationSetBy = User
+
+	column abandonados
+		dataType: int64
+		formatString: #,0
+		lineageTag: f32dacf2-b547-5197-8860-2cd45368c086
+		summarizeBy: none
+		sourceColumn: abandonados
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: bb54dae8-a6eb-56b5-baee-3f01ae80e3a2
+		summarizeBy: none
+		sourceColumn: pct_abandono
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: daff1288-f91e-5a8a-bb9d-448a791ea9ef
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column tme_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: a4dd12a9-65be-5e95-97f8-67cf6a9bdd00
+		summarizeBy: none
+		sourceColumn: tme_min
+
+		annotation SummarizationSetBy = User
+
+	column tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: 01a6a28a-ec93-5409-a5b7-8a7f6a6c0a46
+		summarizeBy: none
+		sourceColumn: tma_min
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: f7fe3e93-7ad7-5a91-a93d-9f799042cbe5
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	column nota_media
+		dataType: double
+		formatString: 0.00
+		lineageTag: 64c332b9-0b3d-5bdb-af6b-736bb8b11120
+		summarizeBy: none
+		sourceColumn: nota_media
+
+		annotation SummarizationSetBy = User
+
+	column custo_total
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 2f794960-fd29-559f-8cc7-89274f10e82b
+		summarizeBy: none
+		sourceColumn: custo_total
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio_chamado
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 55ee629b-6c33-5d40-ad61-72c69559657b
+		summarizeBy: none
+		sourceColumn: custo_medio_chamado
+
+		annotation SummarizationSetBy = User
+
+	column custo_mensal_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 62d811bf-eaa7-5153-abf4-8a44b9f33415
+		summarizeBy: none
+		sourceColumn: custo_mensal_medio
+
+		annotation SummarizationSetBy = User
+
+	column custo_referencia_entrevista
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: a4c955f2-aa32-5fa5-af81-0e7ccf3a06c5
+		summarizeBy: none
+		sourceColumn: custo_referencia_entrevista
+
+		annotation SummarizationSetBy = User
+
+	column diferenca_vs_referencia
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: a48ff0d9-d2d5-5b1d-8966-2bdc51f42716
+		summarizeBy: none
+		sourceColumn: diferenca_vs_referencia
+
+		annotation SummarizationSetBy = User
+
+	partition visao_geral = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\visao_geral.csv"), [Delimiter=",", Columns=16, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"total_chamados", Int64.Type}, {"primeira_data", type date}, {"ultima_data", type date}, {"meses_no_periodo", Int64.Type}, {"abandonados", Int64.Type}, {"pct_abandono", type number}, {"pct_resolucao", type number}, {"tme_min", type number}, {"tma_min", type number}, {"csat_pct", type number}, {"nota_media", type number}, {"custo_total", type number}, {"custo_medio_chamado", type number}, {"custo_mensal_medio", type number}, {"custo_referencia_entrevista", type number}, {"diferenca_vs_referencia", type number}}, "en-US")
+				in
+					Tipos
+
+	annotation PBI_ResultType = Exception
+
+	annotation PBI_NavigationStepName = Navegação
+

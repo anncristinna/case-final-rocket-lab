@@ -1,0 +1,18 @@
+table 'Premissa B'
+	lineageTag: 98320550-1ca7-5a08-a481-ad2a2484adb2
+
+	column 'Premissa B'
+		dataType: double
+		formatString: 0%
+		lineageTag: b39b2126-08cc-5d2d-975f-47a6b178d4d7
+		summarizeBy: none
+		sourceColumn: [Premissa B]
+
+		annotation SummarizationSetBy = User
+
+	partition 'Premissa B' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(0, 12, 1), "Premissa B", [Value] / 20)
+
+	annotation PBI_ResultType = Table
+

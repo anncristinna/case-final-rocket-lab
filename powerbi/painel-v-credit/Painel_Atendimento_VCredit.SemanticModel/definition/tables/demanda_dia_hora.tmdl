@@ -1,0 +1,96 @@
+table demanda_dia_hora
+	lineageTag: d156ff27-ba02-5bfc-b9ee-4344821c3bdf
+
+	column dia_semana
+		dataType: int64
+		formatString: 0
+		lineageTag: fd74d87e-f702-5e75-b854-662c84a9ffce
+		summarizeBy: none
+		sourceColumn: dia_semana
+
+		annotation SummarizationSetBy = User
+
+	column nome_dia
+		dataType: string
+		lineageTag: 93a7e258-11d9-50f9-aa65-4ba263af2d88
+		summarizeBy: none
+		sourceColumn: nome_dia
+		sortByColumn: dia_semana
+
+		annotation SummarizationSetBy = User
+
+	column hora_abertura
+		dataType: int64
+		formatString: 0
+		lineageTag: 528411b7-868a-523c-b638-5634ba3ff4b7
+		summarizeBy: none
+		sourceColumn: hora_abertura
+
+		annotation SummarizationSetBy = User
+
+	column faixa_horaria
+		dataType: string
+		lineageTag: c805e1ba-4814-5dbf-8831-3717d822df29
+		summarizeBy: none
+		sourceColumn: faixa_horaria
+
+		annotation SummarizationSetBy = User
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: a74fea7b-7d21-520b-b39b-66dc5c1e0d7b
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 85fb88bc-78a4-562e-a25d-74dc06019c78
+		summarizeBy: none
+		sourceColumn: pct_abandono
+
+		annotation SummarizationSetBy = User
+
+	column tme_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: 3d77fd74-fe93-54e8-8ade-89a6df6e8f81
+		summarizeBy: none
+		sourceColumn: tme_min
+
+		annotation SummarizationSetBy = User
+
+	column p90_espera_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: c77153f8-f73d-5392-899e-9f26933c8ee6
+		summarizeBy: none
+		sourceColumn: p90_espera_min
+
+		annotation SummarizationSetBy = User
+
+	column hora_rotulo
+		dataType: string
+		lineageTag: 5761e10f-3f2a-56bb-8ff9-11c7f71f8cce
+		summarizeBy: none
+		sourceColumn: hora_rotulo
+		sortByColumn: hora_abertura
+
+		annotation SummarizationSetBy = User
+
+	partition demanda_dia_hora = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\demanda_dia_hora.csv"), [Delimiter=",", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"dia_semana", Int64.Type}, {"nome_dia", type text}, {"hora_abertura", Int64.Type}, {"faixa_horaria", type text}, {"chamados", Int64.Type}, {"pct_abandono", type number}, {"tme_min", type number}, {"p90_espera_min", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "hora_rotulo", each Text.From([hora_abertura]) & "h", type text)
+				in
+					Extra1
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,122 @@
+table simulacao_ganhos
+	lineageTag: c11f4dab-a063-581f-8c07-59e4dcc760fb
+
+	column cenario
+		dataType: string
+		lineageTag: d69ba7ef-2f48-54d0-97d6-fb2c223f12e5
+		summarizeBy: none
+		sourceColumn: cenario
+
+		annotation SummarizationSetBy = User
+
+	column item
+		dataType: string
+		lineageTag: c2388eaa-4f37-51e6-aad0-181d33bdfc78
+		summarizeBy: none
+		sourceColumn: item
+
+		annotation SummarizationSetBy = User
+
+	column chamados_base
+		dataType: int64
+		formatString: #,0
+		lineageTag: fda5577f-095e-56a7-9947-c794d6800e57
+		summarizeBy: none
+		sourceColumn: chamados_base
+
+		annotation SummarizationSetBy = User
+
+	column premissa_pct
+		dataType: double
+		formatString: 0%
+		lineageTag: 79535cb6-f09a-5538-88c3-9a060b22d2c5
+		summarizeBy: none
+		sourceColumn: premissa_pct
+
+		annotation SummarizationSetBy = User
+
+	column chamados_evitados
+		dataType: double
+		formatString: #,0
+		lineageTag: cd439728-3973-5d6b-9719-e5443fbae21b
+		summarizeBy: none
+		sourceColumn: chamados_evitados
+
+		annotation SummarizationSetBy = User
+
+	column ganho_unitario
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 78ebf3f0-9fea-54ae-988f-43f59437dd7e
+		summarizeBy: none
+		sourceColumn: ganho_unitario
+
+		annotation SummarizationSetBy = User
+
+	column economia_periodo
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 66b6c471-9422-5e37-a447-63ca82e8e5ce
+		summarizeBy: none
+		sourceColumn: economia_periodo
+
+		annotation SummarizationSetBy = User
+
+	column economia_mensal_media
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 0116ba20-bcec-59f4-9fae-83c9a044340b
+		summarizeBy: none
+		sourceColumn: economia_mensal_media
+
+		annotation SummarizationSetBy = User
+
+	column economia_anualizada
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: f6f7c8b7-ee9c-591d-8d11-defd9e2e1acf
+		summarizeBy: none
+		sourceColumn: economia_anualizada
+
+		annotation SummarizationSetBy = User
+
+	column cenario_cod
+		dataType: string
+		lineageTag: a7abd290-9649-5e76-a789-866fd77218f2
+		summarizeBy: none
+		sourceColumn: cenario_cod
+
+		annotation SummarizationSetBy = User
+
+	column item_rotulo
+		dataType: string
+		lineageTag: 3587b801-bd10-5e52-99ea-1bba9ef9aa36
+		summarizeBy: none
+		sourceColumn: item_rotulo
+
+		annotation SummarizationSetBy = User
+
+	column iniciativa
+		dataType: string
+		lineageTag: 7fb1c3bc-784a-5f6d-b9b5-7f97242339b6
+		summarizeBy: none
+		sourceColumn: iniciativa
+
+		annotation SummarizationSetBy = User
+
+	partition simulacao_ganhos = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\simulacao_ganhos.csv"), [Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"cenario", type text}, {"item", type text}, {"chamados_base", Int64.Type}, {"premissa_pct", type number}, {"chamados_evitados", type number}, {"ganho_unitario", type number}, {"economia_periodo", type number}, {"economia_mensal_media", type number}, {"economia_anualizada", type number}}, "en-US"),
+					Filtrado = Table.SelectRows(Tipos, each [item] <> "** TOTAL **"),
+					Extra1 = Table.AddColumn(Filtrado, "cenario_cod", each Text.Start([cenario], 1), type text),
+					Extra2 = Table.AddColumn(Extra1, "item_rotulo", each if Text.Contains([item], " (") then Text.BeforeDelimiter([item], " (") else [item], type text),
+					Extra3 = Table.AddColumn(Extra2, "iniciativa", each Text.Start([cenario], 1) & " · " & (if Text.Contains([item], " (") then Text.BeforeDelimiter([item], " (") else [item]), type text)
+				in
+					Extra3
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,55 @@
+table DimMes
+	lineageTag: 8bdf5ab2-95be-5854-ae61-e4b647e30ebf
+
+	column ano_mes
+		dataType: string
+		lineageTag: ac801ce1-cc1d-5d03-ab59-abee7b0d01ca
+		summarizeBy: none
+		sourceColumn: ano_mes
+		sortByColumn: Data
+
+		annotation SummarizationSetBy = User
+
+	column Data
+		dataType: dateTime
+		formatString: mmm/yy
+		lineageTag: 426da3b9-e6ea-553f-bff2-0a618ad29d2c
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Rotulo
+		dataType: string
+		lineageTag: 1821b48c-6975-57fc-9f11-a0aea6d65f25
+		summarizeBy: none
+		sourceColumn: Rotulo
+		sortByColumn: Data
+
+		annotation SummarizationSetBy = User
+
+	column Ano
+		dataType: int64
+		formatString: 0
+		lineageTag: a83f31c6-2713-5cd2-a580-b646a59deb50
+		summarizeBy: none
+		sourceColumn: Ano
+
+		annotation SummarizationSetBy = User
+
+	partition DimMes = m
+		mode: import
+		source =
+				let
+					Fonte = Table.Distinct(Table.SelectColumns(kpi_mensal, {"ano_mes"})),
+					Data = Table.AddColumn(Fonte, "Data", each #date(Number.FromText(Text.Start([ano_mes], 4)), Number.FromText(Text.End([ano_mes], 2)), 1), type date),
+					Rotulo = Table.AddColumn(Data, "Rotulo", each {"jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"}{Number.FromText(Text.End([ano_mes], 2)) - 1} & "/" & Text.Middle([ano_mes], 2, 2), type text),
+					Ano = Table.AddColumn(Rotulo, "Ano", each Number.FromText(Text.Start([ano_mes], 4)), Int64.Type),
+					Ordenado = Table.Sort(Ano, {{"Data", Order.Ascending}})
+				in
+					Ordenado
+
+	annotation PBI_ResultType = Table
+

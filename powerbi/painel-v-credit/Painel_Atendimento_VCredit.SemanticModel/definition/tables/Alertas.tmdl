@@ -1,0 +1,18 @@
+table Alertas
+	lineageTag: 999aaf80-48c1-539a-be36-93a4609bbf81
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: c4e2ce18-91e7-55f4-bd23-6d3e72bdd6af
+		summarizeBy: none
+		sourceColumn: [id]
+
+		annotation SummarizationSetBy = User
+
+	partition Alertas = calculated
+		mode: import
+		source = DATATABLE("id", INTEGER, {{1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}})
+
+	annotation PBI_ResultType = Table
+

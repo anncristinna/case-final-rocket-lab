@@ -1,0 +1,41 @@
+table Def_Indicadores
+	lineageTag: 74ba0500-1e7e-5b6d-9c29-f4ac0884110f
+
+	column Indicador
+		dataType: string
+		lineageTag: d9d54d17-7b39-5e3b-9850-207de11fadf8
+		summarizeBy: none
+		sourceColumn: [Indicador]
+
+		annotation SummarizationSetBy = User
+
+	column Definição
+		dataType: string
+		lineageTag: 3ddbd2ce-b902-5cb3-bdd8-85afe665661b
+		summarizeBy: none
+		sourceColumn: [Definição]
+
+		annotation SummarizationSetBy = User
+
+	column Fonte
+		dataType: string
+		lineageTag: 24fd5819-b323-54bf-ace7-d40f54f031e3
+		summarizeBy: none
+		sourceColumn: [Fonte]
+
+		annotation SummarizationSetBy = User
+
+	column Tipo
+		dataType: string
+		lineageTag: 86d5ca6e-4d0b-5dfe-a99b-b6f57fe5921d
+		summarizeBy: none
+		sourceColumn: [Tipo]
+
+		annotation SummarizationSetBy = User
+
+	partition Def_Indicadores = calculated
+		mode: import
+		source = DATATABLE("Indicador", STRING, "Definição", STRING, "Fonte", STRING, "Tipo", STRING, {{"Chamados", "Total de chamados abertos.", "kpi_mensal.chamados (soma); visao_geral.total_chamados", "Existente"}, {"Custo total", "Soma dos custos válidos (maiores que zero) por chamado.", "kpi_mensal.custo_total; visao_geral.custo_total", "Existente"}, {"Custo médio por chamado", "Média do custo dos chamados com custo válido.", "kpi_mensal.custo_medio; em período parcial, custo total ÷ chamados com custo (estimado por custo_total ÷ custo_medio de cada mês)", "Existente / calculado"}, {"Custo por resolução", "Custo total ÷ chamados resolvidos.", "kpi_mensal.custo_por_resolucao; no período, média ponderada dos meses", "Existente / calculado"}, {"CSAT", "% de notas 4 ou 5 entre as notas válidas (1 a 5).", "kpi_mensal.csat_pct", "Existente"}, {"CSAT ajustado", "CSAT recuperando notas inválidas (6 vira 5; 0 e −1 viram 1).", "kpi_mensal.csat_ajustado_pct", "Existente"}, {"Cobertura da pesquisa", "Respostas da pesquisa ÷ chamados.", "kpi_mensal.cobertura_pesquisa_pct", "Existente"}, {"Taxa de resolução", "Chamados resolvidos ÷ chamados com informação de resolução.", "kpi_mensal.pct_resolucao", "Existente"}, {"Sem início de atendimento (proxy de abandono)", "Chamados sem horário de início de atendimento ÷ chamados (proxy de abandono; não é abandono confirmado).", "kpi_mensal.pct_abandono", "Existente"}, {"Tempo médio de espera (TME)", "Tempo entre abertura e início do atendimento, após tratamento das datas.", "kpi_mensal.tme_min", "Existente"}, {"Espera P90", "Tempo de espera abaixo do qual ficam 90% dos chamados.", "kpi_mensal.p90_espera_min", "Existente"}, {"Tempo médio de atendimento (TMA)", "Tempo entre início e fim do atendimento, após tratamento.", "kpi_mensal.tma_min", "Existente"}, {"Reincidência em 7 dias", "Chamado do mesmo cliente e do mesmo motivo em até 7 dias do anterior.", "motivos_pareto.pct_reincidencia", "Existente"}, {"Chegam ao humano", "Participação dos canais de Nível 1 e Nível 2 nos chamados.", "funil_atendimento.pct_chamados (soma das etapas)", "Calculado"}, {"Economia anualizada", "Chamados base × premissa × ganho unitário ÷ meses × 12.", "simulacao_ganhos; premissa editável no painel", "Calculado"}, {"Variação vs mês anterior", "Diferença entre os dois últimos meses do período filtrado (p.p. para percentuais, % para valores).", "kpi_mensal", "Calculado"}, {"Valores do período filtrado", "Média dos meses ponderada pelos chamados (CSAT, pelas respostas). No período completo, usa visao_geral.", "kpi_mensal, etapa_mensal", "Calculado (aproximado)"}})
+
+	annotation PBI_ResultType = Table
+

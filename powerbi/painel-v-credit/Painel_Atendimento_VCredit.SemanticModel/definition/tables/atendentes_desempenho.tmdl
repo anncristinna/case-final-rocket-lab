@@ -1,0 +1,219 @@
+table atendentes_desempenho
+	lineageTag: a042f3ae-bf5e-5ea9-851b-4ee281022733
+
+	column id_atendente
+		dataType: int64
+		formatString: 0
+		lineageTag: 63a0dbc8-107a-5a46-a712-173727de496e
+		summarizeBy: none
+		sourceColumn: id_atendente
+
+		annotation SummarizationSetBy = User
+
+	column rotulo_atendente
+		dataType: string
+		lineageTag: a6b41581-3f70-5dd3-9846-e95b159cdd36
+		summarizeBy: none
+		sourceColumn: rotulo_atendente
+
+		annotation SummarizationSetBy = User
+
+	column nivel_atendimento
+		dataType: int64
+		formatString: 0
+		lineageTag: 7325bb67-5d6b-5da6-ae92-5d8ae671867c
+		summarizeBy: none
+		sourceColumn: nivel_atendimento
+
+		annotation SummarizationSetBy = User
+
+	column data_admissao
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 7544239c-0c2c-5ac8-a953-610c915c4219
+		summarizeBy: none
+		sourceColumn: data_admissao
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column data_desligamento
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: a7593c69-55fc-5d69-b715-16e24779b491
+		summarizeBy: none
+		sourceColumn: data_desligamento
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: 262e9a96-4bea-5176-9e91-2a9df0c91e5c
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column atendimentos_validos
+		dataType: int64
+		formatString: #,0
+		lineageTag: 4a9c944e-047f-51bb-b5f9-e1e848dbef4d
+		summarizeBy: none
+		sourceColumn: atendimentos_validos
+
+		annotation SummarizationSetBy = User
+
+	column tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: b9b0fba4-2599-5418-bfca-6bbd176c6612
+		summarizeBy: none
+		sourceColumn: tma_min
+
+		annotation SummarizationSetBy = User
+
+	column p90_tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: d6a60f34-06bc-54ae-a21d-8639f30c5475
+		summarizeBy: none
+		sourceColumn: p90_tma_min
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: f2448a2c-ea1b-5c05-9366-2fedfa40cac3
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 6b2d7ae1-5f17-550e-9635-993a2c843aba
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 139fe7a3-ea0b-5832-a4b4-04bf99c0bddf
+		summarizeBy: none
+		sourceColumn: custo_medio
+
+		annotation SummarizationSetBy = User
+
+	column primeiro_chamado
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 7c8086b7-8dda-51b0-abdb-4c3a4b69b0ef
+		summarizeBy: none
+		sourceColumn: primeiro_chamado
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ultimo_chamado
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 3f1329ce-1e40-5b97-ad73-eeeac234583e
+		summarizeBy: none
+		sourceColumn: ultimo_chamado
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column chamados_fora_vigencia
+		dataType: int64
+		formatString: #,0
+		lineageTag: c2dc32ec-9157-5181-97fd-19455a25040d
+		summarizeBy: none
+		sourceColumn: chamados_fora_vigencia
+
+		annotation SummarizationSetBy = User
+
+	column amostra_suficiente
+		dataType: boolean
+		lineageTag: ee5ac3d5-8cca-52ff-8281-98315c6705b0
+		summarizeBy: none
+		sourceColumn: amostra_suficiente
+
+		annotation SummarizationSetBy = User
+
+	column tempo_casa_meses_no_ultimo_chamado
+		dataType: double
+		formatString: 0.0" meses"
+		lineageTag: 2e236693-c74b-5d36-86ce-8866f0140cf1
+		summarizeBy: none
+		sourceColumn: tempo_casa_meses_no_ultimo_chamado
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao_vs_media_nivel
+		dataType: double
+		formatString: +0.0" p.p.";-0.0" p.p.";0.0" p.p."
+		lineageTag: 9a74ae68-fe9a-5f39-88e2-4f26971bb840
+		summarizeBy: none
+		sourceColumn: pct_resolucao_vs_media_nivel
+
+		annotation SummarizationSetBy = User
+
+	column tma_vs_media_nivel
+		dataType: double
+		formatString: +0.0" min";-0.0" min";0.0" min"
+		lineageTag: eca58603-ab72-5458-8d9a-8b4c0cdfe3fd
+		summarizeBy: none
+		sourceColumn: tma_vs_media_nivel
+
+		annotation SummarizationSetBy = User
+
+	column rank_resolucao_no_nivel
+		dataType: int64
+		formatString: 0
+		lineageTag: aada6323-57ff-5174-b8c0-5cbe63417b3a
+		summarizeBy: none
+		sourceColumn: rank_resolucao_no_nivel
+
+		annotation SummarizationSetBy = User
+
+	column nivel_rotulo
+		dataType: string
+		lineageTag: 5d556fbe-feeb-5102-83e8-f4a639a56337
+		summarizeBy: none
+		sourceColumn: nivel_rotulo
+
+		annotation SummarizationSetBy = User
+
+	column amostra_rotulo
+		dataType: string
+		lineageTag: 1e25b9b4-6c0d-5096-b39c-64d9e8fe4231
+		summarizeBy: none
+		sourceColumn: amostra_rotulo
+
+		annotation SummarizationSetBy = User
+
+	partition atendentes_desempenho = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\atendentes_desempenho.csv"), [Delimiter=",", Columns=20, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"id_atendente", Int64.Type}, {"rotulo_atendente", type text}, {"nivel_atendimento", Int64.Type}, {"data_admissao", type date}, {"data_desligamento", type date}, {"chamados", Int64.Type}, {"atendimentos_validos", Int64.Type}, {"tma_min", type number}, {"p90_tma_min", type number}, {"pct_resolucao", type number}, {"csat_pct", type number}, {"custo_medio", type number}, {"primeiro_chamado", type date}, {"ultimo_chamado", type date}, {"chamados_fora_vigencia", Int64.Type}, {"amostra_suficiente", type logical}, {"tempo_casa_meses_no_ultimo_chamado", type number}, {"pct_resolucao_vs_media_nivel", type number}, {"tma_vs_media_nivel", type number}, {"rank_resolucao_no_nivel", Int64.Type}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "nivel_rotulo", each "Nível " & Text.From([nivel_atendimento]), type text),
+					Extra2 = Table.AddColumn(Extra1, "amostra_rotulo", each if [amostra_suficiente] = true then "suficiente" else "pequena", type text)
+				in
+					Extra2
+
+	annotation PBI_ResultType = Table
+

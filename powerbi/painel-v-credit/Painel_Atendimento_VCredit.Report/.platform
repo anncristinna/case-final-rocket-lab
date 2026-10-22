@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Painel_Atendimento_VCredit"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "80742a50-1262-5249-b36f-e44450516ed4"
+  }
+}
