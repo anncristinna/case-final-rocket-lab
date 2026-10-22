@@ -1,0 +1,44 @@
+{
+  "name": "VCredit",
+  "dataColors": [
+    "#0f515c",
+    "#2b8b8a",
+    "#6fb7b0",
+    "#9bbcbf",
+    "#176977",
+    "#7a9ea3",
+    "#3f6f78",
+    "#b8d4d2"
+  ],
+  "background": "#ffffff",
+  "foreground": "#0b2c33",
+  "tableAccent": "#0f515c",
+  "good": "#14793a",
+  "bad": "#b3322e",
+  "neutral": "#8f5d00",
+  "maximum": "#0f515c",
+  "center": "#6fb7b0",
+  "minimum": "#ecf4f3",
+  "textClasses": {
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 10,
+      "color": "#3b5b61"
+    },
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 24,
+      "color": "#0b2c33"
+    },
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 13,
+      "color": "#0b2c33"
+    },
+    "header": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 11,
+      "color": "#0b2c33"
+    }
+  }
+}

@@ -1,0 +1,165 @@
+table motivos_pareto
+	lineageTag: c64206f7-f516-5d98-923b-7bd505530092
+
+	column motivo
+		dataType: string
+		lineageTag: af9c22c3-0a86-5738-91d1-a7db5bdf67b3
+		summarizeBy: none
+		sourceColumn: motivo
+
+		annotation SummarizationSetBy = User
+
+	column categoria
+		dataType: string
+		lineageTag: 6897444a-c74f-5f54-88a1-91749fb6e1f7
+		summarizeBy: none
+		sourceColumn: categoria
+
+		annotation SummarizationSetBy = User
+
+	column criticidade
+		dataType: string
+		lineageTag: 383ba4f6-f0fe-5ff0-a83d-d929edcb46bf
+		summarizeBy: none
+		sourceColumn: criticidade
+
+		annotation SummarizationSetBy = User
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: 18672bf2-07dd-5753-95b0-038001a4a58f
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column pct_chamados
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 542479b7-4af6-55ea-bf09-ec9068030779
+		summarizeBy: none
+		sourceColumn: pct_chamados
+
+		annotation SummarizationSetBy = User
+
+	column pct_acumulado
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 2c95dd6a-08f7-5488-b282-9a85d6e9148d
+		summarizeBy: none
+		sourceColumn: pct_acumulado
+
+		annotation SummarizationSetBy = User
+
+	column pct_chegou_humano
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 048912ca-5df1-57bc-a313-62274980eee9
+		summarizeBy: none
+		sourceColumn: pct_chegou_humano
+
+		annotation SummarizationSetBy = User
+
+	column pct_nivel2
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 0fc40d56-145b-5cbb-ac3b-99b8a58ec0af
+		summarizeBy: none
+		sourceColumn: pct_nivel2
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: e853fa2c-6d39-55ab-8982-784aa7743ec8
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column pct_reincidencia
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 2d9f5976-568e-52b1-8bf1-d4018ab93e27
+		summarizeBy: none
+		sourceColumn: pct_reincidencia
+
+		annotation SummarizationSetBy = User
+
+	column tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: 179f846c-3aec-57bb-87ae-886e9c50b958
+		summarizeBy: none
+		sourceColumn: tma_min
+
+		annotation SummarizationSetBy = User
+
+	column custo_total
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: db8ab77a-1457-5dc5-b334-acb92723534d
+		summarizeBy: none
+		sourceColumn: custo_total
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 64b57960-74db-516d-8fc2-6bd97c4a4a96
+		summarizeBy: none
+		sourceColumn: custo_medio
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: dd81dff6-865d-57d7-838f-bbbb52031d95
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	column pct_custo
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 634c0eca-dc58-551a-a004-26608dafe6f3
+		summarizeBy: none
+		sourceColumn: pct_custo
+
+		annotation SummarizationSetBy = User
+
+	column motivo_rotulo
+		dataType: string
+		lineageTag: 9dcd1078-ebd6-50d0-920f-a9d41a8f8b40
+		summarizeBy: none
+		sourceColumn: motivo_rotulo
+
+		annotation SummarizationSetBy = User
+
+	column criticidade_rotulo
+		dataType: string
+		lineageTag: db862046-075c-5e8b-91ac-26e4d0913dc9
+		summarizeBy: none
+		sourceColumn: criticidade_rotulo
+
+		annotation SummarizationSetBy = User
+
+	partition motivos_pareto = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\motivos_pareto.csv"), [Delimiter=",", Columns=15, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"motivo", type text}, {"categoria", type text}, {"criticidade", type text}, {"chamados", Int64.Type}, {"pct_chamados", type number}, {"pct_acumulado", type number}, {"pct_chegou_humano", type number}, {"pct_nivel2", type number}, {"pct_resolucao", type number}, {"pct_reincidencia", type number}, {"tma_min", type number}, {"custo_total", type number}, {"custo_medio", type number}, {"csat_pct", type number}, {"pct_custo", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "motivo_rotulo", each if Text.Contains([motivo], " (") then Text.BeforeDelimiter([motivo], " (") else [motivo], type text),
+					Extra2 = Table.AddColumn(Extra1, "criticidade_rotulo", each Text.Proper([criticidade]), type text)
+				in
+					Extra2
+
+	annotation PBI_ResultType = Table
+

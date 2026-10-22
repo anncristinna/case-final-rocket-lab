@@ -46,7 +46,7 @@ volume, 2% inflado e o CSAT, contaminado por notas impossíveis. **Três pontos 
 | 13 | `id_atendente` inválido (0, 99, 999, texto) | 764 (0,58%) | Membro `-2` "inválido na origem" | Sem atendente para esses chamados |
 | 14 | Chamado humano sem atendente válido | 338 (0,26%) | Membros `-1`/`-2` | Idem |
 | 15 | Chamado aberto antes da admissão ou depois do desligamento do atendente | 15.874 (12,04%) | Flag `atendente_fora_vigencia`; mantido | **Atribuição chamado → atendente não confiável** para ~1 em 8 chamados |
-| 16 | Chamado de autosserviço (URA/chatbot) com atendente informado | 74.624 (56,60%) | Flag `autosservico_com_atendente`; mantido | Desempenho por atendente mistura autosserviço e humano |
+| 16 | Chamado de autosserviço (URA/chatbot) com atendente informado | 74.624 (56,60% de todos os chamados; 99,4% dos 75.050 de autosserviço) | Flag `autosservico_com_atendente`; mantido como defeito | O campo vem preenchido onde não deveria haver atendente humano. Até confirmarmos o significado do campo (pergunta à V-Credit, abaixo), os números por atendente são indicativos |
 | 17 | `id_cliente` do chamado sem cadastro em `clientes` | 1.330 (~1,0%) | `dq_cliente_sem_correspondencia`; membro `SEM_CADASTRO` no modelo do Power BI | Ficam fora de análises por perfil de cliente |
 | 18 | Grafias de canal e de nível do atendente, caixa em criticidade, categoria de motivo vazia | Várias | Normalização e de-para (0 canais sem correspondência, 0 motivos sem correspondência); categoria vazia → "Outro" | Evita canais duplicados e motivos sem categoria |
 
@@ -83,3 +83,9 @@ Leitura: o tratamento **muda muito** o custo (R$ 42 mi → R$ 1,45 mi) e o TME (
 5. **Chave única**: impedir `id_chamado` e `id_custo` duplicados na extração.
 6. **Cadastro de clientes**: 1% dos chamados aponta para cliente inexistente; reconciliar as duas bases.
 7. **Visão única**: manter o pipeline medalhão como fonte única de indicadores (hoje os números vivem em bases dispersas, como relatou o Diretor de Tecnologia).
+
+## Perguntas em aberto para a V-Credit
+
+| # | Pergunta | Por que importa | Onde aparece |
+|---|---|---|---|
+| 1 | O que o `ID_Atendente` representa em chamados de URA e chatbot? | O campo vem preenchido em 99,4% dos chamados de autosserviço onde não deveria haver atendente humano. Se for um identificador de roteamento ou de fila, passa a ser informativo; se for defeito de registro, a análise por atendente continua sem confiança | Linha 16 da tabela de inconsistências; página "Customer Success" do painel; "O que falta medir" em Oportunidades |

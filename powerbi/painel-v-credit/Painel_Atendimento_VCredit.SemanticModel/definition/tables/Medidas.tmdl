@@ -1,0 +1,1431 @@
+table Medidas
+	lineageTag: 84c21f90-f909-5221-b90b-3009eff6a965
+
+	measure 'Período Completo' = COUNTROWS(DimMes) = COUNTROWS(ALL(DimMes))
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: 3eda35b3-39cf-5905-8a51-ef208fbce1bd
+
+	measure 'Meses no Período' = DISTINCTCOUNT(kpi_mensal[ano_mes])
+		formatString: 0
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: b512c10b-de90-5005-b6e2-a80dc502065a
+
+	measure Chamados = SUM(kpi_mensal[chamados])
+		formatString: #,0
+		displayFolder: KPIs
+		lineageTag: 659a666b-0073-5ef5-adcc-6567f3b79b59
+
+	measure Abandonados = SUM(kpi_mensal[abandonados])
+		formatString: #,0
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: 8657ce9d-4381-5b6b-b99d-1f765e47ed96
+
+	measure 'Respostas Pesquisa' = SUM(kpi_mensal[respostas_pesquisa])
+		formatString: #,0
+		displayFolder: KPIs
+		lineageTag: 63d4fdef-60fa-5ebe-b541-fd7ddb2d5277
+
+	measure 'Custo Total' = SUM(kpi_mensal[custo_total])
+		formatString: \R\$ #,0
+		displayFolder: KPIs
+		lineageTag: 92368be6-8444-514c-a9aa-aa3d2190f8ba
+
+	measure 'Custo Médio Pond' = DIVIDE([Custo Total], SUMX(kpi_mensal, DIVIDE(kpi_mensal[custo_total], kpi_mensal[custo_medio])))
+		formatString: \R\$ #,0.00
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: c7dfbefa-ce1b-5fbd-bab7-772c1a2a3e55
+
+	measure 'Resolução Pond' = DIVIDE(SUMX(kpi_mensal, kpi_mensal[pct_resolucao] * kpi_mensal[chamados]), SUM(kpi_mensal[chamados]))
+		formatString: 0.0"%"
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: d3637c81-8776-5902-957c-054c2a533348
+
+	measure 'TME Pond' = DIVIDE(SUMX(kpi_mensal, kpi_mensal[tme_min] * kpi_mensal[chamados]), SUM(kpi_mensal[chamados]))
+		formatString: 0.0" min"
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: 4265b8f5-078a-5aed-92c8-1edbe2353936
+
+	measure 'TMA Pond' = DIVIDE(SUMX(kpi_mensal, kpi_mensal[tma_min] * kpi_mensal[chamados]), SUM(kpi_mensal[chamados]))
+		formatString: 0.0" min"
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: 4f86b96a-b88e-5ea6-809a-7f0f08b7e4d0
+
+	measure 'CSAT Pond' = DIVIDE(SUMX(kpi_mensal, kpi_mensal[csat_pct] * kpi_mensal[respostas_pesquisa]), SUM(kpi_mensal[respostas_pesquisa]))
+		formatString: 0.0"%"
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: 98ace61f-3684-5079-9fd0-e891fc820092
+
+	measure 'Nota Média Pond' = DIVIDE(SUMX(kpi_mensal, kpi_mensal[nota_media] * kpi_mensal[respostas_pesquisa]), SUM(kpi_mensal[respostas_pesquisa]))
+		formatString: 0.00
+		isHidden
+		displayFolder: Auxiliares
+		lineageTag: 842d2c4a-1e37-5ad2-b55e-ff8ffcfc9db4
+
+	measure 'Custo Médio' = IF([Período Completo], MAX(visao_geral[custo_medio_chamado]), [Custo Médio Pond])
+		formatString: \R\$ #,0.00
+		displayFolder: KPIs
+		lineageTag: 548bda9e-55f3-5ba9-91e2-7d478d81d69e
+
+	measure CSAT = IF([Período Completo], MAX(visao_geral[csat_pct]), [CSAT Pond])
+		formatString: 0.0"%"
+		displayFolder: KPIs
+		lineageTag: e5e1e738-63cc-5224-a6e0-13533c049d1c
+
+	measure 'Nota Média' = IF([Período Completo], MAX(visao_geral[nota_media]), [Nota Média Pond])
+		formatString: 0.00
+		displayFolder: KPIs
+		lineageTag: 553135f7-2f16-52bf-a2e4-f8ae9cc308fb
+
+	measure Resolução = IF([Período Completo], MAX(visao_geral[pct_resolucao]), [Resolução Pond])
+		formatString: 0.0"%"
+		displayFolder: KPIs
+		lineageTag: ff09835f-cd84-5d51-9fa1-e386a2d3ec34
+
+	measure Abandono = DIVIDE([Abandonados], [Chamados]) * 100
+		formatString: 0.0"%"
+		displayFolder: KPIs
+		lineageTag: 2cb68e24-d09f-5acd-8128-9a2d3e827e68
+
+	measure TME = IF([Período Completo], MAX(visao_geral[tme_min]), [TME Pond])
+		formatString: 0.0" min"
+		displayFolder: KPIs
+		lineageTag: c7bfcb1f-b717-56cf-b183-5ebb6542c96f
+
+	measure TMA = IF([Período Completo], MAX(visao_geral[tma_min]), [TMA Pond])
+		formatString: 0.0" min"
+		displayFolder: KPIs
+		lineageTag: 248894b2-3533-515c-a125-a0ddd1acea59
+
+	measure 'Custo por Resolução' = DIVIDE(SUMX(kpi_mensal, kpi_mensal[custo_por_resolucao] * kpi_mensal[chamados]), SUM(kpi_mensal[chamados]))
+		formatString: \R\$ #,0.00
+		displayFolder: KPIs
+		lineageTag: a908f48e-8369-5b1c-a4ec-a3369bff729e
+
+	measure 'Custo Mensal Médio' = DIVIDE([Custo Total], [Meses no Período])
+		formatString: \R\$ #,0
+		displayFolder: KPIs
+		lineageTag: 514fed68-b941-585f-af1e-098f874e1495
+
+	measure 'Cobertura Pesquisa' = DIVIDE([Respostas Pesquisa], [Chamados]) * 100
+		formatString: 0.0"%"
+		displayFolder: KPIs
+		lineageTag: 97f121c9-c971-5b26-9160-74701966de5d
+
+	measure 'CSAT Ajustado' = DIVIDE(SUMX(kpi_mensal, kpi_mensal[csat_ajustado_pct] * kpi_mensal[respostas_pesquisa]), SUM(kpi_mensal[respostas_pesquisa]))
+		formatString: 0.0"%"
+		displayFolder: KPIs
+		lineageTag: 95eb39b7-5c8a-52a1-9c6d-ea51385bbba7
+
+	measure 'Custo Referência' = MAX(visao_geral[custo_referencia_entrevista])
+		formatString: \R\$ #,0
+		displayFolder: KPIs
+		lineageTag: d3450e8b-fb4e-5e64-a431-e3cd63b24f8d
+
+	measure 'Diferença vs Referência' = IF([Período Completo], DIVIDE(MAX(visao_geral[diferenca_vs_referencia]), 1000000), BLANK())
+		formatString: +0.00" mi";-0.00" mi";0.00" mi"
+		displayFolder: KPIs
+		lineageTag: b60d9db8-1bec-5ae1-b11d-ec7ef28b19a9
+
+	measure 'Espera P90' =
+			VAR _fim = MAX(DimMes[Data])
+			RETURN CALCULATE(MAX(kpi_mensal[p90_espera_min]), DimMes[Data] = _fim)
+		formatString: 0.0" min"
+		displayFolder: KPIs
+		lineageTag: 04cad33e-da17-5cf6-a895-baf129262ecd
+
+	measure 'Referência 85' = 85
+		formatString: 0.0"%"
+		isHidden
+		displayFolder: Marketing
+		lineageTag: 5b8b32a8-d011-5a7a-adea-85dcc41552b7
+
+	measure 'Chamados Etapa' = SUM(etapa_mensal[chamados])
+		formatString: #,0
+		displayFolder: Etapas
+		lineageTag: 79511155-e513-589b-9903-d7b6bd61c761
+
+	measure 'TMA Etapa' = DIVIDE(SUMX(etapa_mensal, etapa_mensal[tma_min] * etapa_mensal[chamados]), SUM(etapa_mensal[chamados]))
+		formatString: 0.0" min"
+		displayFolder: Etapas
+		lineageTag: 57eeda63-9f02-5dd3-81ec-f17a23788f8f
+
+	measure 'Resolução Etapa' = DIVIDE(SUMX(etapa_mensal, etapa_mensal[pct_resolucao] * etapa_mensal[chamados]), SUM(etapa_mensal[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Etapas
+		lineageTag: 3c1ea491-b234-5674-947a-36d4ca218960
+
+	measure 'TME Etapa' = DIVIDE(SUMX(etapa_mensal, etapa_mensal[tme_min] * etapa_mensal[chamados]), SUM(etapa_mensal[chamados]))
+		formatString: 0.0" min"
+		displayFolder: Etapas
+		lineageTag: 5a113998-cdd1-5a17-856c-00680d8fb8c9
+
+	measure 'Abandono Etapa' = DIVIDE(SUMX(etapa_mensal, etapa_mensal[pct_abandono] * etapa_mensal[chamados]), SUM(etapa_mensal[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Etapas
+		lineageTag: 24321598-a390-528f-9784-effd27d151fa
+
+	measure 'CSAT Etapa' = DIVIDE(SUMX(etapa_mensal, etapa_mensal[csat_pct] * etapa_mensal[chamados]), SUM(etapa_mensal[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Etapas
+		lineageTag: 3190ea7e-c48b-58d7-9d9c-9f088cc0decc
+
+	measure 'TMA CS' = IF(ISFILTERED(DimEtapa[Etapa]), [TMA Etapa], [TMA Pond])
+		formatString: 0.0" min"
+		displayFolder: Customer Success
+		lineageTag: 274ed248-9de8-5e31-a7f0-a6b37f23e9cf
+
+	measure 'Resolução CS' = IF(ISFILTERED(DimEtapa[Etapa]), [Resolução Etapa], [Resolução Pond])
+		formatString: 0.0"%"
+		displayFolder: Customer Success
+		lineageTag: 2255a256-e1a7-52b1-913d-9d878dafc0b8
+
+	measure 'Abandono CS' = IF(ISFILTERED(DimEtapa[Etapa]), [Abandono Etapa], [Abandono])
+		formatString: 0.0"%"
+		displayFolder: Customer Success
+		lineageTag: b45e049e-3a54-541f-97b1-ac81644c12d5
+
+	measure 'TME CS' = IF(ISFILTERED(DimEtapa[Etapa]), [TME Etapa], [TME Pond])
+		formatString: 0.0" min"
+		displayFolder: Customer Success
+		lineageTag: 60db7545-ed12-523c-ae21-51a02b7bf3b6
+
+	measure 'Chamados Hora' = SUM(demanda_dia_hora[chamados])
+		formatString: #,0
+		displayFolder: Demanda
+		lineageTag: 0af17bb3-b9d9-5d45-a397-4f8bada06425
+
+	measure 'Abandono Hora' = DIVIDE(SUMX(demanda_dia_hora, demanda_dia_hora[pct_abandono] * demanda_dia_hora[chamados]), SUM(demanda_dia_hora[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Demanda
+		lineageTag: 905edd2f-b56a-580f-a599-9eedc7e9415f
+
+	measure 'TME Hora' = DIVIDE(SUMX(demanda_dia_hora, demanda_dia_hora[tme_min] * demanda_dia_hora[chamados]), SUM(demanda_dia_hora[chamados]))
+		formatString: 0.0" min"
+		displayFolder: Demanda
+		lineageTag: c365be0a-5d33-527a-93da-0dc02375131c
+
+	measure 'P90 Hora' = MAX(demanda_dia_hora[p90_espera_min])
+		formatString: 0.0" min"
+		displayFolder: Demanda
+		lineageTag: 1fa992e6-f329-5c68-bb29-7037133ce164
+
+	measure 'Valor Heatmap' = SWITCH(SELECTEDVALUE('Metrica Heatmap'[Metrica], "Volume"), "Volume", [Chamados Hora], "Sem início (proxy)", [Abandono Hora], "Espera média", [TME Hora])
+		formatString: #,0
+		displayFolder: Demanda
+		lineageTag: d93bd429-aa94-5742-b76e-8c2422a41699
+
+	measure 'Tempo de Casa' = AVERAGE(atendentes_desempenho[tempo_casa_meses_no_ultimo_chamado])
+		formatString: 0.0" meses"
+		displayFolder: Atendentes
+		lineageTag: 9b34f21c-95b3-5ce0-8930-cd40987f91bc
+
+	measure 'Resolução Atendente' = AVERAGE(atendentes_desempenho[pct_resolucao])
+		formatString: 0.0"%"
+		displayFolder: Atendentes
+		lineageTag: 428ad8cc-fc63-586f-ae30-2eb38d871a18
+
+	measure 'Chamados Atendente' = SUM(atendentes_desempenho[chamados])
+		formatString: #,0
+		displayFolder: Atendentes
+		lineageTag: 545f4f52-6328-5a58-b0cd-ab100a4d7155
+
+	measure 'Atendentes Amostra Suficiente' = CALCULATE(COUNTROWS(atendentes_desempenho), ALL(atendentes_desempenho), atendentes_desempenho[amostra_suficiente] = TRUE()) & " de " & CALCULATE(COUNTROWS(atendentes_desempenho), ALL(atendentes_desempenho))
+		displayFolder: Atendentes
+		lineageTag: c61dba1e-43cf-57cb-b7c4-edaaa6ee3af2
+
+	measure 'Chamados Funil' = SUM(funil_atendimento[chamados])
+		formatString: #,0
+		displayFolder: Funil
+		lineageTag: de136d32-d064-5bcf-bc3a-b95725cbc503
+
+	measure 'Pct Chamados Funil' = SUM(funil_atendimento[pct_chamados])
+		formatString: 0.0"%"
+		displayFolder: Funil
+		lineageTag: 3f0ac82d-ebbc-5958-b159-6748cda4be63
+
+	measure 'Pct Custo Funil' = SUM(funil_atendimento[pct_custo])
+		formatString: 0.0"%"
+		displayFolder: Funil
+		lineageTag: 218cba38-7135-5e71-b1be-055e802744ee
+
+	measure 'Custo Total Funil' = SUM(funil_atendimento[custo_total])
+		formatString: \R\$ #,0
+		displayFolder: Funil
+		lineageTag: adefd17d-4087-5a1f-93e6-7436ff744315
+
+	measure 'Custo Médio Funil' = DIVIDE(SUMX(funil_atendimento, funil_atendimento[custo_medio] * funil_atendimento[chamados]), SUM(funil_atendimento[chamados]))
+		formatString: \R\$ #,0.00
+		displayFolder: Funil
+		lineageTag: 5a3b58f4-7a73-5ef5-8c7e-69e1a010bd8b
+
+	measure 'Custo por Resolução Funil' = DIVIDE(SUMX(funil_atendimento, funil_atendimento[custo_por_resolucao] * funil_atendimento[chamados]), SUM(funil_atendimento[chamados]))
+		formatString: \R\$ #,0.00
+		displayFolder: Funil
+		lineageTag: ed5d4645-7942-538b-83bc-78d92c207c5c
+
+	measure 'Resolução Funil' = DIVIDE(SUMX(funil_atendimento, funil_atendimento[pct_resolucao] * funil_atendimento[chamados]), SUM(funil_atendimento[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Funil
+		lineageTag: a6a6401e-f018-59c9-92dc-3401548d7d0d
+
+	measure 'Abandono Funil' = DIVIDE(SUMX(funil_atendimento, funil_atendimento[pct_abandono] * funil_atendimento[chamados]), SUM(funil_atendimento[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Funil
+		lineageTag: 43e53407-103d-5d92-a30a-ea06887b7ae9
+
+	measure 'CSAT Funil' = DIVIDE(SUMX(funil_atendimento, funil_atendimento[csat_pct] * funil_atendimento[chamados]), SUM(funil_atendimento[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Funil
+		lineageTag: b83f6d20-ca66-5355-a7cb-910a0f29a0df
+
+	measure 'Chegam ao Humano' = CALCULATE(SUM(funil_atendimento[pct_chamados]), funil_atendimento[etapa_funil] IN {"Nível 1", "Nível 2"})
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: 4f37aa7b-4071-5005-af6f-a7814cffe2dd
+
+	measure 'Resolução Autosserviço' = CALCULATE([Resolução Funil], funil_atendimento[etapa_funil] = "Autosserviço")
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: fb64bc0a-627f-5d41-ad40-18e4bb8542f2
+
+	measure 'Abandono Autosserviço' = CALCULATE([Abandono Funil], funil_atendimento[etapa_funil] = "Autosserviço")
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: d91b56aa-514f-5eb1-a2af-fc825b71242d
+
+	measure 'Resolução Chatbot' = CALCULATE([Resolução Funil], funil_atendimento[canal] = "CHATBOT")
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: 725282fe-d4b3-5b5a-b10c-d2b6c0c17358
+
+	measure 'Resolução URA' = CALCULATE([Resolução Funil], funil_atendimento[canal] = "URA")
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: db640b4b-c48e-519c-985e-e75f6618aa48
+
+	measure 'Problemas Técnicos' = CALCULATE(SUM(motivos_pareto[pct_chamados]), motivos_pareto[categoria] = "Atendimento")
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: 44a4d60a-b840-5a86-9f05-10fe697ebbef
+
+	measure 'Maior Inconsistência' = MAXX(FILTER(qualidade_dados, NOT qualidade_dados[informativo]), qualidade_dados[pct_chamados])
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: 9fa68fca-ab0d-5ef3-9106-b84b4947191f
+
+	measure 'Maior Inconsistência Nome' =
+			VAR _t = TOPN(1, FILTER(qualidade_dados, NOT qualidade_dados[informativo]), qualidade_dados[pct_chamados], DESC)
+			RETURN MAXX(_t, qualidade_dados[indicador_rotulo])
+		isHidden
+		displayFolder: Tecnologia
+		lineageTag: 1366f4d2-9495-5fab-b6c6-1a4af80d5511
+
+	measure 'Limite Qualidade' = 5
+		formatString: 0
+		isHidden
+		displayFolder: Tecnologia
+		lineageTag: 20644916-6dba-4c4f-b1c5-eeea6b3b14e7
+
+	measure 'Pct Dados' =
+			VAR _p = SUM(qualidade_dados[pct_chamados])
+			VAR _inf = COUNTROWS(FILTER(qualidade_dados, qualidade_dados[informativo])) > 0
+			RETURN IF(NOT _inf && _p > [Limite Qualidade], _p)
+		formatString: 0.0"%"
+		displayFolder: Tecnologia
+		lineageTag: 5adde3fc-2c5a-597f-b84a-21a0f6f461d7
+
+	measure 'Pct Auto Com Atendente' =
+			VAR _q = CALCULATE(SUM(qualidade_dados[pct_chamados]), qualidade_dados[indicador] = "autosservico_com_atendente")
+			VAR _a = CALCULATE(SUM(funil_atendimento[pct_chamados]), REMOVEFILTERS(funil_atendimento), funil_atendimento[etapa_funil] = "Autosserviço")
+			RETURN DIVIDE(_q, _a) * 100
+		formatString: 0.0"%"
+		isHidden
+		displayFolder: Tecnologia
+		lineageTag: 7c9edbce-f826-4974-8c4f-498b9ccbfa66
+
+	measure 'Nota Atendente' = "O campo atendente vem preenchido em " & FORMAT([Pct Auto Com Atendente], "0.0") & "% dos chamados de autosserviço, onde não deveria haver atendente humano; até confirmarmos o significado do campo, trate os números por atendente como indicativos. A tabela mostra associação, não um ranking de desempenho. A coluna vs média do nível usa só atendentes com amostra suficiente."
+		isHidden
+		displayFolder: Customer Success
+		lineageTag: ec9fb4b7-bccb-48c5-941c-5543f569e6c7
+
+	measure 'Qtd Dados' = SUM(qualidade_dados[qtd])
+		formatString: #,0
+		displayFolder: Tecnologia
+		lineageTag: fbe23d83-b299-59c8-b96b-60744ba064ff
+
+	measure 'Chamados Perfil' = SUM(perfil_cliente[chamados])
+		formatString: #,0
+		displayFolder: Tecnologia
+		lineageTag: 53779d34-5fb0-5ca8-aaf0-6629474f814b
+
+	measure 'Chamados Motivo' = SUM(motivos_pareto[chamados])
+		formatString: #,0
+		displayFolder: Motivos
+		lineageTag: 1c777f86-eefa-58be-963c-b9a6a726d703
+
+	measure 'Pct Chamados Motivo' = SUM(motivos_pareto[pct_chamados])
+		formatString: 0.0"%"
+		displayFolder: Motivos
+		lineageTag: 2ae011f3-51c0-568b-821e-3599ed1bed13
+
+	measure 'Custo Total Motivo' = SUM(motivos_pareto[custo_total])
+		formatString: \R\$ #,0
+		displayFolder: Motivos
+		lineageTag: 5e9ee44b-a1c3-55be-a0e4-6586f40c3def
+
+	measure 'Custo Médio Motivo' = DIVIDE(SUMX(motivos_pareto, motivos_pareto[custo_medio] * motivos_pareto[chamados]), SUM(motivos_pareto[chamados]))
+		formatString: \R\$ #,0.00
+		displayFolder: Motivos
+		lineageTag: 608199d3-64f6-5a31-9ba4-09feaf8e003a
+
+	measure 'Resolução Motivo' = DIVIDE(SUMX(motivos_pareto, motivos_pareto[pct_resolucao] * motivos_pareto[chamados]), SUM(motivos_pareto[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Motivos
+		lineageTag: 1c744df1-1782-5a7d-beb9-08a33e1d4331
+
+	measure 'Reincidência Motivo' = DIVIDE(SUMX(motivos_pareto, motivos_pareto[pct_reincidencia] * motivos_pareto[chamados]), SUM(motivos_pareto[chamados]))
+		formatString: 0.0"%"
+		displayFolder: Motivos
+		lineageTag: 7dbc3daf-6f5a-5690-8e7a-aade8a08b2c1
+
+	measure 'CSAT Driver' = MAX(satisfacao_drivers[csat_pct])
+		formatString: 0.0"%"
+		displayFolder: Marketing
+		lineageTag: b41fe66e-c54e-50a8-aa25-604709a286d6
+
+	measure 'Respostas Driver' = SUM(satisfacao_drivers[respostas])
+		formatString: #,0
+		displayFolder: Marketing
+		lineageTag: 43d3561d-983c-5b0a-a73d-ea0593f9ac47
+
+	measure 'CSAT 2025' = MAX(comparativo_yoy[csat_pct_2025])
+		formatString: 0.0"%"
+		displayFolder: Marketing
+		lineageTag: badbad26-4175-50b7-b5bd-a1096c2906f2
+
+	measure 'CSAT 2026' = IF(MAX(comparativo_yoy[chamados_2026]) > 0, MAX(comparativo_yoy[csat_pct_2026]), BLANK())
+		formatString: 0.0"%"
+		displayFolder: Marketing
+		lineageTag: a119c434-b3c9-5707-8603-bade4a9a0138
+
+	measure 'CSAT YoY pp' =
+			VAR _t = FILTER(comparativo_yoy, comparativo_yoy[chamados_2026] > 0 && NOT ISBLANK(comparativo_yoy[csat_pct_2026]) && NOT ISBLANK(comparativo_yoy[csat_pct_2025]))
+			RETURN DIVIDE(SUMX(_t, (comparativo_yoy[csat_pct_2026] - comparativo_yoy[csat_pct_2025]) * comparativo_yoy[chamados_2026]), SUMX(_t, comparativo_yoy[chamados_2026]))
+		formatString: +0.0" p.p.";-0.0" p.p.";0.0" p.p."
+		displayFolder: Marketing
+		lineageTag: 22f8fbee-ee7c-515b-b926-72fb157236c6
+
+	measure 'CSAT YoY Média' =
+			VAR _t = FILTER(comparativo_yoy, comparativo_yoy[chamados_2026] > 0 && NOT ISBLANK(comparativo_yoy[csat_pct_2026]) && NOT ISBLANK(comparativo_yoy[csat_pct_2025]))
+			RETURN AVERAGEX(_t, comparativo_yoy[csat_pct_2026] - comparativo_yoy[csat_pct_2025])
+		formatString: +0.0" p.p.";-0.0" p.p.";0.0" p.p."
+		isHidden
+		displayFolder: Marketing
+		lineageTag: b0f2d57e-19e9-5b86-995b-c5cf33873962
+
+	measure 'Premissa A Valor' = SELECTEDVALUE('Premissa A'[Premissa A], 0.2)
+		formatString: 0%
+		displayFolder: Oportunidades
+		lineageTag: d4d41fc3-ba05-5c85-8439-8f555945051e
+
+	measure 'Premissa B Valor' = SELECTEDVALUE('Premissa B'[Premissa B], 0.3)
+		formatString: 0%
+		displayFolder: Oportunidades
+		lineageTag: ca0ed797-56b3-57d1-9271-bd1b7b847611
+
+	measure 'Meses Simulação' = MAX(visao_geral[meses_no_periodo])
+		formatString: 0
+		isHidden
+		displayFolder: Oportunidades
+		lineageTag: a584dd70-9095-5a69-bda8-cdd0bb8b24a1
+
+	measure 'Chamados Base' = SUM(simulacao_ganhos[chamados_base])
+		formatString: #,0
+		displayFolder: Oportunidades
+		lineageTag: 1f97bb19-0ec7-5c51-8adb-c06e7c7495ce
+
+	measure 'Chamados Evitados' = SUMX(simulacao_ganhos, simulacao_ganhos[chamados_base] * IF(simulacao_ganhos[cenario_cod] = "A", [Premissa A Valor], [Premissa B Valor]))
+		formatString: #,0
+		displayFolder: Oportunidades
+		lineageTag: ca5133f0-f710-5a77-820c-48811ea54ed7
+
+	measure 'Economia Período' = SUMX(simulacao_ganhos, simulacao_ganhos[chamados_base] * IF(simulacao_ganhos[cenario_cod] = "A", [Premissa A Valor], [Premissa B Valor]) * simulacao_ganhos[ganho_unitario])
+		formatString: \R\$ #,0
+		displayFolder: Oportunidades
+		lineageTag: 71916f1f-0a3f-5cd7-8e0c-bbfec5280e21
+
+	measure 'Economia Anualizada' = DIVIDE([Economia Período], [Meses Simulação]) * 12
+		formatString: \R\$ #,0
+		displayFolder: Oportunidades
+		lineageTag: 4d45a1ed-cad6-551b-9d28-f10306b9967f
+
+	measure 'Economia Anual A' = CALCULATE([Economia Anualizada], simulacao_ganhos[cenario_cod] = "A")
+		formatString: \R\$ #,0
+		displayFolder: Oportunidades
+		lineageTag: 1f8a8081-f366-5e3f-8cc9-f37ac5c13e23
+
+	measure 'Economia Anual B' = CALCULATE([Economia Anualizada], simulacao_ganhos[cenario_cod] = "B")
+		formatString: \R\$ #,0
+		displayFolder: Oportunidades
+		lineageTag: a6839bc2-ca7c-506d-9ced-b7b1243d2f71
+
+	measure 'Chamados Evitados A' = CALCULATE([Chamados Evitados], simulacao_ganhos[cenario_cod] = "A")
+		formatString: #,0
+		isHidden
+		displayFolder: Oportunidades
+		lineageTag: 3236eb09-4496-592f-9d05-b907fedeeb6c
+
+	measure 'Chamados Evitados B' = CALCULATE([Chamados Evitados], simulacao_ganhos[cenario_cod] = "B")
+		formatString: #,0
+		isHidden
+		displayFolder: Oportunidades
+		lineageTag: 2316f514-7fc2-5d75-97b4-2b9da0ec56c6
+
+	measure 'Ganho Unitário' = AVERAGE(simulacao_ganhos[ganho_unitario])
+		formatString: \R\$ #,0.00
+		displayFolder: Oportunidades
+		lineageTag: 6d40ba45-f312-56c5-b426-d886738dd671
+
+	measure 'Delta Chamados' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Chamados], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Chamados], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 0f9a3f39-a41e-54bd-91bb-63eb744a6799
+
+	measure 'Delta Chamados Texto' =
+			VAR _d = [Delta Chamados]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%") & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: ee0df645-dd15-5abd-b03a-26981e467fc8
+
+	measure 'Delta Chamados Cor' =
+			VAR _d = [Delta Chamados]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", "#5f7f84")
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 9a91a24c-0093-536e-8863-2acb729af481
+
+	measure 'Delta Custo Total' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Custo Total], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Custo Total], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 389bf0fb-3f40-5a1d-b30a-8c612b4db4f3
+
+	measure 'Delta Custo Total Texto' =
+			VAR _d = [Delta Custo Total]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 5f6ff0a2-6520-5761-8271-3816956664d7
+
+	measure 'Delta Custo Total Cor' =
+			VAR _d = [Delta Custo Total]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 51eee75d-3aba-58cf-aeb1-56782e9d9752
+
+	measure 'Delta Custo Médio' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Custo Médio], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Custo Médio], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: e66b28d0-a48d-5bea-b681-dbf989a32180
+
+	measure 'Delta Custo Médio Texto' =
+			VAR _d = [Delta Custo Médio]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 8ad98ccc-5911-5667-bcd7-15f905f722f7
+
+	measure 'Delta Custo Médio Cor' =
+			VAR _d = [Delta Custo Médio]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 16959fdc-db67-5ff9-bd9f-aa1a2a7c6878
+
+	measure 'Delta CSAT' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([CSAT], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([CSAT], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: c7a388ac-f897-5615-bf32-fc9d4a2d563e
+
+	measure 'Delta CSAT Texto' =
+			VAR _d = [Delta CSAT]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & " p.p." & IF((_d > 0) = TRUE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 25ba20c0-407f-5181-880d-7fe1011e0dc1
+
+	measure 'Delta CSAT Cor' =
+			VAR _d = [Delta CSAT]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = TRUE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: c5eb0c87-b445-56e9-b604-03222e3ed302
+
+	measure 'Delta Resolução' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Resolução], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Resolução], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: fdc64343-a4dc-544c-8770-eec9b45ee356
+
+	measure 'Delta Resolução Texto' =
+			VAR _d = [Delta Resolução]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & " p.p." & IF((_d > 0) = TRUE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: b451c7b5-f1fa-5b12-932a-2a2562751cac
+
+	measure 'Delta Resolução Cor' =
+			VAR _d = [Delta Resolução]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = TRUE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 0e8fa3bf-2e54-54ac-baea-3031d82a451a
+
+	measure 'Delta Abandono' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Abandono], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Abandono], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: e14a5dbc-0e12-5d80-95cf-a3d789c40eaf
+
+	measure 'Delta Abandono Texto' =
+			VAR _d = [Delta Abandono]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & " p.p." & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: d54f778b-191a-52a6-bc91-ac5fe6a88865
+
+	measure 'Delta Abandono Cor' =
+			VAR _d = [Delta Abandono]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 926955fe-d25b-5787-9477-efe4487eae80
+
+	measure 'Delta TME' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([TME], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([TME], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 4b58b805-1b52-5e28-bbd0-e484092b665a
+
+	measure 'Delta TME Texto' =
+			VAR _d = [Delta TME]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: ba2cd216-dce9-5b68-98b8-6487f33515b5
+
+	measure 'Delta TME Cor' =
+			VAR _d = [Delta TME]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 036da73c-b7c0-5ff9-8445-faa3447a1a08
+
+	measure 'Delta TMA' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([TMA], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([TMA], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: ee56b8d6-feb4-59a4-bf8e-c559424f0b81
+
+	measure 'Delta TMA Texto' =
+			VAR _d = [Delta TMA]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 8be46d0d-3391-5d95-8da1-d7d2748d8c74
+
+	measure 'Delta TMA Cor' =
+			VAR _d = [Delta TMA]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 49621f5c-25ef-50f3-b569-589c996969af
+
+	measure 'Delta Custo por Resolução' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Custo por Resolução], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Custo por Resolução], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 3819e539-a7a1-52ec-9731-0efdc2ff4bf7
+
+	measure 'Delta Custo por Resolução Texto' =
+			VAR _d = [Delta Custo por Resolução]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 5e3a1897-66bc-56e3-b828-b27467972113
+
+	measure 'Delta Custo por Resolução Cor' =
+			VAR _d = [Delta Custo por Resolução]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: f67e2d7f-29d4-50b8-877b-100d6f35a584
+
+	measure 'Delta TMA CS' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([TMA CS], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([TMA CS], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: f670a48f-8e98-5f57-a012-26dfeacb67fc
+
+	measure 'Delta TMA CS Texto' =
+			VAR _d = [Delta TMA CS]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 8d46e604-9a2f-58d9-8e96-357c60de6cf2
+
+	measure 'Delta TMA CS Cor' =
+			VAR _d = [Delta TMA CS]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: cfdc165b-0783-5ab2-bc04-d7877973b7a9
+
+	measure 'Delta Resolução CS' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Resolução CS], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Resolução CS], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 744c83bc-0382-5a77-9fb7-1700120fb808
+
+	measure 'Delta Resolução CS Texto' =
+			VAR _d = [Delta Resolução CS]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & " p.p." & IF((_d > 0) = TRUE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 0588afb4-0a9a-5bf2-b2e8-c3532499a218
+
+	measure 'Delta Resolução CS Cor' =
+			VAR _d = [Delta Resolução CS]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = TRUE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 2021696a-4755-57d9-8d4f-e0fa48c85dfd
+
+	measure 'Delta Abandono CS' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Abandono CS], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Abandono CS], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 4fc849e9-2113-5a0f-8470-7c36f852bb76
+
+	measure 'Delta Abandono CS Texto' =
+			VAR _d = [Delta Abandono CS]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & " p.p." & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 4f04e52e-90b0-57ff-a296-b8d99c96e2f2
+
+	measure 'Delta Abandono CS Cor' =
+			VAR _d = [Delta Abandono CS]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 76178d75-51ae-5d51-ad70-de47164207e6
+
+	measure 'Delta TME CS' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([TME CS], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([TME CS], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: e0e9ee6d-e150-5643-8ea0-a0d23c7daddc
+
+	measure 'Delta TME CS Texto' =
+			VAR _d = [Delta TME CS]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: d86aadca-bbdd-5f91-82e7-44497bba27a9
+
+	measure 'Delta TME CS Cor' =
+			VAR _d = [Delta TME CS]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 7550e466-0e87-5451-847f-37ad4d96d940
+
+	measure 'Delta Espera P90' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Espera P90], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Espera P90], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 8c8a3e6c-dc53-572c-be69-de447fa8ad24
+
+	measure 'Delta Espera P90 Texto' =
+			VAR _d = [Delta Espera P90]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = FALSE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 56a4b12d-3cdd-578b-a580-ab68ec02172d
+
+	measure 'Delta Espera P90 Cor' =
+			VAR _d = [Delta Espera P90]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = FALSE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: daec1931-00b0-5266-b2c3-7af9671bb7de
+
+	measure 'Delta Nota Média' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Nota Média], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Nota Média], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), DIVIDE(_b - _a, ABS(_a)) * 100)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: ded414af-f416-5853-ae47-dab504f5a97b
+
+	measure 'Delta Nota Média Texto' =
+			VAR _d = [Delta Nota Média]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & "%" & IF((_d > 0) = TRUE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: e8566dcd-2de8-51f0-8584-8c605d2eed28
+
+	measure 'Delta Nota Média Cor' =
+			VAR _d = [Delta Nota Média]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = TRUE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 37f6dbd6-549a-57cd-b644-177ed2e61421
+
+	measure 'Delta Cobertura Pesquisa' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _ant = EDATE(_fim, -1)
+			VAR _a = CALCULATE([Cobertura Pesquisa], DimMes[Data] = _ant)
+			VAR _b = CALCULATE([Cobertura Pesquisa], DimMes[Data] = _fim)
+			RETURN IF(_ant < _ini || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Deltas
+		lineageTag: 6f9b601c-7f85-578d-9403-2da623ce8145
+
+	measure 'Delta Cobertura Pesquisa Texto' =
+			VAR _d = [Delta Cobertura Pesquisa]
+			VAR _ref = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = EDATE(MAX(DimMes[Data]), -1))
+			RETURN IF(ISBLANK(_d), "Sem mês anterior no período", IF(ABS(_d) < 0.05, "● estável", IF(_d > 0, "▲ +", "▼ −") & FORMAT(ABS(_d), "0.0") & " p.p." & IF((_d > 0) = TRUE(), " · melhora", " · piora")) & " · vs " & _ref)
+		displayFolder: Deltas
+		lineageTag: 0b9c3c01-1b34-5334-827c-9e46967c4278
+
+	measure 'Delta Cobertura Pesquisa Cor' =
+			VAR _d = [Delta Cobertura Pesquisa]
+			RETURN IF(ISBLANK(_d) || ABS(_d) < 0.05, "#5f7f84", IF((_d > 0) = TRUE(), "#14793a", "#b3322e"))
+		isHidden
+		displayFolder: Deltas
+		lineageTag: d94c0684-4db1-5f33-845d-cc5a433c1eb8
+
+	measure 'Título Chamados' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Chamados], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Chamados], DimMes[Data] = _fim)
+			VAR _d = DIVIDE(_b - _a, ABS(_a)) * 100
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "O volume de chamados"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & "%" & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: ab579d26-a320-5b67-b6b2-8791c2271655
+
+	measure 'Título Custo' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Custo Total], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Custo Total], DimMes[Data] = _fim)
+			VAR _d = DIVIDE(_b - _a, ABS(_a)) * 100
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "O custo mensal"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & "%" & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: 3bd7f803-e786-5c40-842a-8d69053360aa
+
+	measure 'Título CSAT' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([CSAT], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([CSAT], DimMes[Data] = _fim)
+			VAR _d = _b - _a
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "O CSAT"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & " p.p." & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: bf8639ad-fb6e-55b3-ad9f-f7bea43b9d82
+
+	measure 'Título Resolução' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Resolução], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Resolução], DimMes[Data] = _fim)
+			VAR _d = _b - _a
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "A resolução"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & " p.p." & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: 7ab72bf0-d778-5a09-80cb-53db0d0b7d08
+
+	measure 'Título Abandono' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Abandono], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Abandono], DimMes[Data] = _fim)
+			VAR _d = _b - _a
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "A taxa de chamados sem início de atendimento (proxy de abandono)"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & " p.p." & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: 4e4c5051-fec9-5136-9a89-e901c06fa22e
+
+	measure 'Título Custo Médio' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Custo Médio], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Custo Médio], DimMes[Data] = _fim)
+			VAR _d = DIVIDE(_b - _a, ABS(_a)) * 100
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "O custo por chamado"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & "%" & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: ea3e42a1-e7dd-5f9d-985d-5bb144202c2c
+
+	measure 'Título TMA Etapa' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _foco = SELECTEDVALUE(DimEtapa[Etapa], "Nível 2")
+			VAR _a = CALCULATE([TMA Etapa], DimMes[Data] = _ini, DimEtapa[Etapa] = _foco)
+			VAR _b = CALCULATE([TMA Etapa], DimMes[Data] = _fim, DimEtapa[Etapa] = _foco)
+			VAR _d = DIVIDE(_b - _a, ABS(_a)) * 100
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "O TMA" & " (" & _foco & ")"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & "%" & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: 5947a41e-0905-58cc-90fa-f920725e7c68
+
+	measure 'Título Resolução Etapa' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _foco = SELECTEDVALUE(DimEtapa[Etapa], "Nível 2")
+			VAR _a = CALCULATE([Resolução Etapa], DimMes[Data] = _ini, DimEtapa[Etapa] = _foco)
+			VAR _b = CALCULATE([Resolução Etapa], DimMes[Data] = _fim, DimEtapa[Etapa] = _foco)
+			VAR _d = _b - _a
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "A resolução" & " (" & _foco & ")"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & " p.p." & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: 847f5d2c-e031-5b1c-82a1-15dd795f2acd
+
+	measure 'Título TME Etapa' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _foco = SELECTEDVALUE(DimEtapa[Etapa], "Nível 2")
+			VAR _a = CALCULATE([TME Etapa], DimMes[Data] = _ini, DimEtapa[Etapa] = _foco)
+			VAR _b = CALCULATE([TME Etapa], DimMes[Data] = _fim, DimEtapa[Etapa] = _foco)
+			VAR _d = DIVIDE(_b - _a, ABS(_a)) * 100
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "A espera média" & " (" & _foco & ")"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & "%" & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: e2b7abfa-0936-59b6-b2c0-e7840a05f292
+
+	measure 'Título Abandono Etapa' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _foco = SELECTEDVALUE(DimEtapa[Etapa], "Nível 2")
+			VAR _a = CALCULATE([Abandono Etapa], DimMes[Data] = _ini, DimEtapa[Etapa] = _foco)
+			VAR _b = CALCULATE([Abandono Etapa], DimMes[Data] = _fim, DimEtapa[Etapa] = _foco)
+			VAR _d = _b - _a
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _n = "A taxa de chamados sem início de atendimento (proxy de abandono)" & " (" & _foco & ")"
+			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & " p.p." & " entre " & _ri & " e " & _rf))
+		displayFolder: Títulos
+		lineageTag: b9005933-d513-5c73-a1e7-bddfc0f5622b
+
+	measure 'Título Funil Exec' =
+			VAR _c = CALCULATE([Pct Chamados Funil], funil_atendimento[etapa_funil] = "Nível 2")
+			VAR _k = CALCULATE([Pct Custo Funil], funil_atendimento[etapa_funil] = "Nível 2")
+			RETURN "O Nível 2 recebe " & FORMAT(_c, "0.0") & "% dos chamados e responde por " & FORMAT(_k, "0.0") & "% do custo"
+		displayFolder: Títulos
+		lineageTag: d5ec19be-ff1a-5ce8-80d1-291b364c525b
+
+	measure 'Título Canal Custo' =
+			VAR _n2 = DIVIDE(CALCULATE(SUM(funil_atendimento[custo_total]), funil_atendimento[etapa_funil] = "Nível 2"), CALCULATE(SUM(funil_atendimento[chamados]), funil_atendimento[etapa_funil] = "Nível 2"))
+			VAR _as = DIVIDE(CALCULATE(SUM(funil_atendimento[custo_total]), funil_atendimento[etapa_funil] = "Autosserviço"), CALCULATE(SUM(funil_atendimento[chamados]), funil_atendimento[etapa_funil] = "Autosserviço"))
+			RETURN "Um chamado no Nível 2 custa " & FORMAT(DIVIDE(_n2, _as), "0.0") & " vezes o de um chamado no autosserviço"
+		displayFolder: Títulos
+		lineageTag: 86d5b750-8ce8-5ce3-8667-d20008169119
+
+	measure 'Título Pareto Custo' =
+			VAR _t = ADDCOLUMNS(VALUES(motivos_pareto[motivo]), "cT", CALCULATE(SUM(motivos_pareto[custo_total])))
+			VAR _tot = SUMX(_t, [cT])
+			VAR _r = ADDCOLUMNS(_t, "cAc", VAR _x = [cT] RETURN SUMX(FILTER(_t, [cT] >= _x), [cT]))
+			VAR _need = FILTER(_r, [cAc] - [cT] < 0.8 * _tot)
+			VAR _k = COUNTROWS(_need)
+			VAR _p = DIVIDE(MAXX(_need, [cAc]), _tot) * 100
+			RETURN "Os " & _k & " motivos mais caros somam " & FORMAT(_p, "0") & "% do custo"
+		displayFolder: Títulos
+		lineageTag: 150e0363-51d7-5088-bcf2-a39aab8fe0d9
+
+	measure 'Título Heatmap' =
+			VAR _m = SELECTEDVALUE('Metrica Heatmap'[Metrica], "Volume")
+			VAR _t = ADDCOLUMNS(SUMMARIZE(demanda_dia_hora, demanda_dia_hora[nome_dia], demanda_dia_hora[hora_abertura]), "v", [Valor Heatmap])
+			VAR _top = TOPN(1, _t, [v], DESC)
+			VAR _dia = MAXX(_top, demanda_dia_hora[nome_dia])
+			VAR _h = MAXX(_top, demanda_dia_hora[hora_abertura])
+			VAR _v = MAXX(_top, [v])
+			VAR _fv = SWITCH(_m, "Volume", FORMAT(_v, "#,0") & " chamados", "Sem início (proxy)", FORMAT(_v, "0.0") & "%", FORMAT(_v, "0.0") & " min")
+			RETURN "O pico de " & IF(_m = "Sem início (proxy)", "chamados sem início de atendimento (proxy de abandono)", LOWER(_m)) & " ocorre " & LOWER(_dia) & ", às " & _h & "h (" & _fv & ")"
+		displayFolder: Títulos
+		lineageTag: e1ba55c4-571d-5e67-8fda-3d5b43fb84d1
+
+	measure 'Título Reincidência' =
+			VAR _t = ADDCOLUMNS(VALUES(motivos_pareto[motivo_rotulo]), "r", [Reincidência Motivo])
+			VAR _top = TOPN(1, _t, [r], DESC)
+			RETURN MAXX(_top, motivos_pareto[motivo_rotulo]) & " tem a maior reincidência: " & FORMAT(MAXX(_top, [r]), "0.0") & "% voltam em até 7 dias"
+		displayFolder: Títulos
+		lineageTag: 6c064ef8-d7ad-5eaa-8720-6b1c4a630b89
+
+	measure 'Título Canal Resolução' =
+			VAR _cb = [Resolução Chatbot]
+			VAR _ur = [Resolução URA]
+			RETURN "O chatbot resolve " & FORMAT(_cb, "0.0") & "% dos chamados e a URA " & FORMAT(_ur, "0.0") & "%"
+		displayFolder: Títulos
+		lineageTag: a0c5642c-55a6-5008-9e92-cf5eb8f8cc49
+
+	measure 'Título Categorias' = RETURN "Problemas técnicos nos canais são " & FORMAT([Problemas Técnicos], "0.0") & "% dos chamados"
+		displayFolder: Títulos
+		lineageTag: 9ca1dbc5-50a9-5e92-ae18-b69aa6e2bf55
+
+	measure 'Título Idade' =
+			VAR _ho = CALCULATE(SUM(perfil_cliente[pct_da_dimensao]), perfil_cliente[dimensao] = "faixa_etaria", perfil_cliente[valor] = "65+", perfil_cliente[etapa_funil] <> "Autosserviço")
+			VAR _hy = CALCULATE(SUM(perfil_cliente[pct_da_dimensao]), perfil_cliente[dimensao] = "faixa_etaria", perfil_cliente[valor] = "25-34", perfil_cliente[etapa_funil] <> "Autosserviço")
+			RETURN "Entre 65+, " & FORMAT(_ho, "0") & "% dos chamados chegam ao humano; entre 25-34, " & FORMAT(_hy, "0") & "%"
+		displayFolder: Títulos
+		lineageTag: f879a84d-30f5-5f4b-87c0-6c57ed8c1b8f
+
+	measure 'Título Região' =
+			VAR _t = ADDCOLUMNS(CALCULATETABLE(VALUES(perfil_cliente[valor_rotulo]), perfil_cliente[dimensao] = "regiao"), "h", CALCULATE(SUM(perfil_cliente[pct_da_dimensao]), perfil_cliente[etapa_funil] <> "Autosserviço"))
+			VAR _hi = TOPN(1, _t, [h], DESC)
+			VAR _lo = TOPN(1, _t, [h], ASC)
+			RETURN IF(MAXX(_hi, [h]) - MAXX(_lo, [h]) < 1, "Não há diferença relevante entre as regiões no percentual de chamados que chegam ao humano (de " & FORMAT(MAXX(_lo, [h]), "0.0") & "% a " & FORMAT(MAXX(_hi, [h]), "0.0") & "%)", "A região " & MAXX(_hi, perfil_cliente[valor_rotulo]) & " tem o maior percentual no humano (" & FORMAT(MAXX(_hi, [h]), "0") & "%); " & MAXX(_lo, perfil_cliente[valor_rotulo]) & ", o menor (" & FORMAT(MAXX(_lo, [h]), "0") & "%)")
+		displayFolder: Títulos
+		lineageTag: e21b62e9-d6ad-50fd-a62a-98e45cd87bea
+
+	measure 'Título Qualidade' =
+			VAR _n = COUNTX(VALUES(qualidade_dados[indicador_rotulo]), [Pct Dados])
+			RETURN IF(_n > 0, _n & " indicadores de qualidade afetam mais de " & [Limite Qualidade] & "% dos chamados", "Nenhum indicador de qualidade passa de " & [Limite Qualidade] & "% dos chamados")
+		displayFolder: Títulos
+		lineageTag: fff5f18f-90de-509e-996a-672bad0990cc
+
+	measure 'Título Impacto' =
+			VAR _a = CALCULATE(MAX(impacto_indicadores[valor_a]), impacto_indicadores[indicador] = "TME (min)", LEFT(impacto_indicadores[metodo_a], 5) = "bruto")
+			VAR _b = CALCULATE(MAX(impacto_indicadores[valor_b]), impacto_indicadores[indicador] = "TME (min)", LEFT(impacto_indicadores[metodo_a], 5) = "bruto")
+			RETURN "Tratar os tempos muda o TME de " & FORMAT(_a, "0.0") & " para " & FORMAT(_b, "0.0") & " min"
+		displayFolder: Títulos
+		lineageTag: 39f1f518-b9bc-5384-b438-ffb8707fdadc
+
+	measure 'Título YoY' =
+			VAR _d = [CSAT YoY pp]
+			RETURN IF(ISBLANK(_d), "CSAT de 2026 contra 2025, mês a mês", "Mês a mês, o CSAT de 2026 está " & FORMAT(ABS(_d), "0.0") & " p.p. " & IF(_d < 0, "abaixo", "acima") & " do de 2025")
+		displayFolder: Títulos
+		lineageTag: 30df8f1c-d1d8-52d0-bbc0-246b19417f47
+
+	measure 'Título Cobertura' = RETURN "A pesquisa é respondida em " & FORMAT([Cobertura Pesquisa], "0") & "% dos chamados"
+		displayFolder: Títulos
+		lineageTag: bbb26a7f-5a33-55bf-b5fb-cdf5e9161c2f
+
+	measure 'Título Ajuste' =
+			VAR _d = AVERAGEX(FILTER(kpi_mensal, NOT ISBLANK(kpi_mensal[csat_pct]) && NOT ISBLANK(kpi_mensal[csat_ajustado_pct])), kpi_mensal[csat_ajustado_pct] - kpi_mensal[csat_pct])
+			RETURN "Recuperar notas inválidas mudaria o CSAT em " & IF(_d >= 0, "+", "−") & FORMAT(ABS(_d), "0.0") & " p.p. em média"
+		displayFolder: Títulos
+		lineageTag: 8b050f5f-4c99-5fc3-91fc-3d3ee4b34c69
+
+	measure 'Título Drivers' =
+			VAR _a = CALCULATE(MAX(satisfacao_drivers[csat_pct]), satisfacao_drivers[dimensao] = "faixa_espera", satisfacao_drivers[valor] = "1) até 5 min")
+			VAR _b = CALCULATE(MAX(satisfacao_drivers[csat_pct]), satisfacao_drivers[dimensao] = "faixa_espera", satisfacao_drivers[valor] = "5) mais de 60 min")
+			RETURN "A avaliação vai de " & FORMAT(_a, "0") & "% (até 5 min) a " & FORMAT(_b, "0") & "% (mais de 60 min) conforme a espera cresce"
+		displayFolder: Títulos
+		lineageTag: 76d15366-f423-51c7-91ab-b41c8086cc24
+
+	measure 'Título Ranking Oportunidades' =
+			VAR _t = ADDCOLUMNS(VALUES(simulacao_ganhos[iniciativa]), "a", [Economia Anualizada])
+			VAR _top = TOPN(1, _t, [a], DESC)
+			VAR _v = MAXX(_top, [a])
+			RETURN MAXX(_top, simulacao_ganhos[iniciativa]) & " é a iniciativa de maior ganho: " & IF(_v >= 1000000, "R$ " & FORMAT(_v / 1000000, "0.00") & " mi", IF(_v >= 10000, "R$ " & FORMAT(_v / 1000, "0.0") & " mil", "R$ " & FORMAT(_v, "#,0"))) & " por ano"
+		displayFolder: Títulos
+		lineageTag: 74d3d4e5-67d8-50f2-9901-6af3a62fdc73
+
+	measure 'Título Critério Prioridade' = "Critério: economia anualizada = chamados base × premissa × ganho unitário ÷ meses × 12. Esforço e prazo não estão nos dados."
+		isHidden
+		displayFolder: Títulos
+		lineageTag: 04476196-c020-5c85-9e9f-403c34d23b1c
+
+	measure 'Alerta 1 Delta' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([CSAT], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([CSAT], DimMes[Data] = _fim)
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			RETURN IF(_ini = _fim || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Alertas
+		lineageTag: cb4c90ad-28b3-50fd-9443-c95121223500
+
+	measure 'Alerta 1 Texto' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([CSAT], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([CSAT], DimMes[Data] = _fim)
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _d = [Alerta 1 Delta]
+			RETURN IF(ISBLANK(_d), BLANK(), "O CSAT " & IF(_d >= 0, "subiu ", "caiu ") & FORMAT(ABS(_d), "0.0") & " p.p. entre " & _ri & " e " & _rf & " (" & FORMAT(_a, "0.0") & "% → " & FORMAT(_b, "0.0") & "%).")
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 1720cd0e-bbfb-5949-9291-a7f6227c2ce8
+
+	measure 'Alerta 1 Nível' =
+			VAR _d = [Alerta 1 Delta]
+			RETURN IF(_d <= -2, 0, IF(_d < 0, 1, 3))
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: df8366b5-f692-542c-9e08-40bdcc824d7c
+
+	measure 'Alerta 2 Delta' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Resolução Etapa], DimMes[Data] = _ini, DimEtapa[Etapa] = "Nível 2")
+			VAR _b = CALCULATE([Resolução Etapa], DimMes[Data] = _fim, DimEtapa[Etapa] = "Nível 2")
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			RETURN IF(_ini = _fim || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 163c4405-5519-5fa3-a3b4-593a685bea36
+
+	measure 'Alerta 2 Texto' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Resolução Etapa], DimMes[Data] = _ini, DimEtapa[Etapa] = "Nível 2")
+			VAR _b = CALCULATE([Resolução Etapa], DimMes[Data] = _fim, DimEtapa[Etapa] = "Nível 2")
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _d = [Alerta 2 Delta]
+			RETURN IF(ISBLANK(_d), BLANK(), "A resolução no Nível 2 " & IF(_d >= 0, "subiu ", "caiu ") & FORMAT(ABS(_d), "0.0") & " p.p. entre " & _ri & " e " & _rf & " (" & FORMAT(_a, "0.0") & "% → " & FORMAT(_b, "0.0") & "%).")
+		isHidden
+		displayFolder: Alertas
+		lineageTag: d9a498a2-b340-5989-a6f9-6f90257386b4
+
+	measure 'Alerta 2 Nível' =
+			VAR _d = [Alerta 2 Delta]
+			RETURN IF(_d <= -2, 0, IF(_d < 0, 1, 3))
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: adebb8bc-d3b2-5cc4-be4d-d37f703d9ab3
+
+	measure 'Alerta 3 Delta' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Abandono], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Abandono], DimMes[Data] = _fim)
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			RETURN IF(_ini = _fim || ISBLANK(_a) || ISBLANK(_b), BLANK(), _b - _a)
+		formatString: 0.00
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 8aa1f162-2323-5cbb-b0e9-684c2e657edd
+
+	measure 'Alerta 3 Texto' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Abandono], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Abandono], DimMes[Data] = _fim)
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _d = [Alerta 3 Delta]
+			RETURN IF(ISBLANK(_d) || _d < 1, BLANK(), "A taxa de chamados sem início de atendimento (proxy de abandono) subiu " & FORMAT(_d, "0.0") & " p.p. entre " & _ri & " e " & _rf & " (" & FORMAT(_a, "0.0") & "% → " & FORMAT(_b, "0.0") & "%).")
+		isHidden
+		displayFolder: Alertas
+		lineageTag: a0aa7854-925e-56a6-8513-4baf546dd2a8
+
+	measure 'Alerta 3 Nível' = 1
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: baabd138-6a66-5320-81a9-38b6456b0579
+
+	measure 'Alerta 4 Texto' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Custo Total], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Custo Total], DimMes[Data] = _fim)
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _ci = _a
+			VAR _cf = _b
+			VAR _vi = CALCULATE([Chamados], DimMes[Data] = _ini)
+			VAR _vf = CALCULATE([Chamados], DimMes[Data] = _fim)
+			VAR _cu = DIVIDE(_cf - _ci, ABS(_ci)) * 100
+			VAR _vo = DIVIDE(_vf - _vi, ABS(_vi)) * 100
+			RETURN IF(_ini = _fim || ISBLANK(_cu) || ISBLANK(_vo), BLANK(), "O custo mensal variou " & FORMAT(_cu, "+0.0;-0.0") & "% e o volume " & FORMAT(_vo, "+0.0;-0.0") & "% entre " & _ri & " e " & _rf & ".")
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 7909088c-70c9-5924-8ae1-dd333a6ac48e
+
+	measure 'Alerta 4 Nível' =
+			VAR _ini = MIN(DimMes[Data])
+			VAR _fim = MAX(DimMes[Data])
+			VAR _a = CALCULATE([Custo Total], DimMes[Data] = _ini)
+			VAR _b = CALCULATE([Custo Total], DimMes[Data] = _fim)
+			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
+			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
+			VAR _vi = CALCULATE([Chamados], DimMes[Data] = _ini)
+			VAR _vf = CALCULATE([Chamados], DimMes[Data] = _fim)
+			VAR _cu = DIVIDE(_b - _a, ABS(_a)) * 100
+			VAR _vo = DIVIDE(_vf - _vi, ABS(_vi)) * 100
+			RETURN IF(_cu > _vo + 5, 1, 2)
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 0df7b8da-3fa3-5fbf-9351-6e155b049fc6
+
+	measure 'Alerta 5 Texto' =
+			VAR _k = CALCULATE([Pct Custo Funil], funil_atendimento[etapa_funil] = "Nível 2")
+			VAR _c = CALCULATE([Pct Chamados Funil], funil_atendimento[etapa_funil] = "Nível 2")
+			RETURN "O Nível 2 concentra " & FORMAT(_k, "0.0") & "% do custo com " & FORMAT(_c, "0.0") & "% dos chamados."
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 80b10207-bed5-5aed-9117-fad909970d91
+
+	measure 'Alerta 5 Nível' =
+			VAR _k = CALCULATE([Pct Custo Funil], funil_atendimento[etapa_funil] = "Nível 2")
+			VAR _c = CALCULATE([Pct Chamados Funil], funil_atendimento[etapa_funil] = "Nível 2")
+			RETURN IF(_k > _c * 1.5, 1, 2)
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 3245b5ed-12ae-54f3-8401-e57228531d7e
+
+	measure 'Alerta 6 Texto' =
+			VAR _t = TOPN(1, FILTER(funil_atendimento, NOT ISBLANK(funil_atendimento[pct_abandono])), funil_atendimento[pct_abandono], DESC)
+			RETURN "O canal " & MAXX(_t, funil_atendimento[canal_rotulo]) & " tem a maior taxa de chamados sem início de atendimento (proxy de abandono): " & FORMAT(MAXX(_t, funil_atendimento[pct_abandono]), "0.0") & "%."
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 79e03ad6-f866-5ef4-bce8-cc57087fd11a
+
+	measure 'Alerta 6 Nível' = 1
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 189f9875-feec-5fe9-9306-b3c4d75f6365
+
+	measure 'Alerta 7 Texto' =
+			VAR _v = [Maior Inconsistência]
+			VAR _ind = MAXX(TOPN(1, FILTER(qualidade_dados, NOT qualidade_dados[informativo]), qualidade_dados[pct_chamados], DESC), qualidade_dados[indicador])
+			RETURN IF(ISBLANK(_v) || _v <= 0, BLANK(), IF(_ind = "autosservico_com_atendente", "O campo atendente vem preenchido em " & FORMAT([Pct Auto Com Atendente], "0.0") & "% dos chamados de autosserviço; trate os números por atendente como indicativos.", "Maior inconsistência de dados: " & LOWER([Maior Inconsistência Nome]) & ", em " & FORMAT(_v, "0.0") & "% dos chamados."))
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 79385a17-faf7-5b60-bb42-8d4e158d13ce
+
+	measure 'Alerta 7 Nível' = IF([Maior Inconsistência] >= 5, 1, 2)
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 59a10240-5fa9-55ac-86e9-6e22a32442d5
+
+	measure 'Alerta 8 Texto' =
+			VAR _a = [Economia Anual A]
+			VAR _b = [Economia Anual B]
+			RETURN "Nas premissas do grupo, a economia anualizada estimada é de " & IF(_a >= 1000000, "R$ " & FORMAT(_a / 1000000, "0.00") & " mi", IF(_a >= 10000, "R$ " & FORMAT(_a / 1000, "0.0") & " mil", "R$ " & FORMAT(_a, "#,0"))) & " (A) e " & IF(_b >= 1000000, "R$ " & FORMAT(_b / 1000000, "0.00") & " mi", IF(_b >= 10000, "R$ " & FORMAT(_b / 1000, "0.0") & " mil", "R$ " & FORMAT(_b, "#,0"))) & " (B). Os cenários se sobrepõem (98% da base de A já está em B): não somar."
+		isHidden
+		displayFolder: Alertas
+		lineageTag: ccd40493-5eb5-55ff-a7d2-be2fd602f159
+
+	measure 'Alerta 8 Nível' = 2
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: f8d08f2c-826f-582d-b71b-6aed208ebb1f
+
+	measure 'Alerta Texto' = SWITCH(SELECTEDVALUE(Alertas[id]), 1, [Alerta 1 Texto], 2, [Alerta 2 Texto], 3, [Alerta 3 Texto], 4, [Alerta 4 Texto], 5, [Alerta 5 Texto], 6, [Alerta 6 Texto], 7, [Alerta 7 Texto], 8, [Alerta 8 Texto])
+		displayFolder: Alertas
+		lineageTag: b03593ab-965c-5ed6-bfd6-09f00f523415
+
+	measure 'Alerta Nível' = SWITCH(SELECTEDVALUE(Alertas[id]), 1, [Alerta 1 Nível], 2, [Alerta 2 Nível], 3, [Alerta 3 Nível], 4, [Alerta 4 Nível], 5, [Alerta 5 Nível], 6, [Alerta 6 Nível], 7, [Alerta 7 Nível], 8, [Alerta 8 Nível])
+		formatString: 0
+		isHidden
+		displayFolder: Alertas
+		lineageTag: 0ed60b49-81d9-5c69-b85f-af3c93901215
+
+	measure 'Alerta Prioridade' = IF(ISBLANK([Alerta Texto]), BLANK(), SWITCH([Alerta Nível], 0, "Prioridade alta", 1, "Observar", 2, "Informativo", "Positivo"))
+		displayFolder: Alertas
+		lineageTag: e3e5eb22-6ecf-5f2d-b7ab-92cb6b35f9ca
+
+	measure 'Alerta Cor' = SWITCH([Alerta Nível], 0, "#b3322e", 1, "#8f5d00", 2, "#0f515c", "#14793a")
+		isHidden
+		displayFolder: Alertas
+		lineageTag: e2f05b87-8984-5f4e-80a8-cdae4d65757c
+
+	measure Evidência =
+			VAR _op = SELECTEDVALUE(Oportunidades[Oportunidade])
+			VAR _app = CALCULATE(SUM(motivos_pareto[chamados]), motivos_pareto[motivo] = "Problema com aplicativo")
+			VAR _appp = CALCULATE(SUM(motivos_pareto[pct_chamados]), motivos_pareto[motivo] = "Problema com aplicativo")
+			VAR _n2i = MIN(DimMes[Data])
+			VAR _n2f = MAX(DimMes[Data])
+			VAR _r0 = CALCULATE([Resolução Etapa], DimMes[Data] = _n2i, DimEtapa[Etapa] = "Nível 2")
+			VAR _r1 = CALCULATE([Resolução Etapa], DimMes[Data] = _n2f, DimEtapa[Etapa] = "Nível 2")
+			VAR _l0 = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _n2i)
+			VAR _l1 = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _n2f)
+			VAR _pk = TOPN(1, ADDCOLUMNS(SUMMARIZE(demanda_dia_hora, demanda_dia_hora[nome_dia], demanda_dia_hora[hora_abertura]), "c", [Chamados Hora], "a", [Abandono Hora]), [c], DESC)
+			VAR _ho = CALCULATE(SUM(perfil_cliente[pct_da_dimensao]), perfil_cliente[dimensao] = "faixa_etaria", perfil_cliente[valor] = "65+", perfil_cliente[etapa_funil] <> "Autosserviço")
+			VAR _hy = CALCULATE(SUM(perfil_cliente[pct_da_dimensao]), perfil_cliente[dimensao] = "faixa_etaria", perfil_cliente[valor] = "25-34", perfil_cliente[etapa_funil] <> "Autosserviço")
+			VAR _eb = [Economia Anual B]
+			RETURN SWITCH(_op,
+			"Melhorar app, site e URA", "“Problema com aplicativo”: " & FORMAT(_app, "#,0") & " chamados (" & FORMAT(_appp, "0.0") & "%).",
+			"Capacitar o Nível 2", "Resolução no Nível 2: " & FORMAT(_r1 - _r0, "+0.0;-0.0") & " p.p. entre " & _l0 & " e " & _l1 & ".",
+			"Reforçar a escala nos picos", "Maior volume: " & LOWER(MAXX(_pk, demanda_dia_hora[nome_dia])) & ", " & MAXX(_pk, demanda_dia_hora[hora_abertura]) & "h, com " & FORMAT(MAXX(_pk, [c]), "#,0") & " chamados e taxa de chamados sem início de atendimento (proxy de abandono) de " & FORMAT(MAXX(_pk, [a]), "0.0") & "%.",
+			"Reduzir reincidência", "Cenário B: " & IF(_eb >= 1000000, "R$ " & FORMAT(_eb / 1000000, "0.00") & " mi", IF(_eb >= 10000, "R$ " & FORMAT(_eb / 1000, "0.0") & " mil", "R$ " & FORMAT(_eb, "#,0"))) & " por ano com " & FORMAT([Premissa B Valor] * 100, "0") & "% menos reincidência.",
+			"Apoiar quem não usa o chatbot", "Chegam ao humano: " & FORMAT(_ho, "0") & "% entre 65+ e " & FORMAT(_hy, "0") & "% entre 25-34 (associação com idade).",
+			BLANK())
+		displayFolder: Oportunidades
+		lineageTag: 3465de66-8f00-5913-aeb5-2dd5a869ff9f
+
+	measure 'Sub Economia A' = FORMAT([Chamados Evitados A], "#,0") & " chamados evitados no período · premissa " & FORMAT([Premissa A Valor], "0%")
+		isHidden
+		displayFolder: Oportunidades
+		lineageTag: 07d24bb7-bcb0-5f28-9fde-9a86cef1a302
+
+	measure 'Sub Economia B' = FORMAT([Chamados Evitados B], "#,0") & " chamados evitados no período · premissa " & FORMAT([Premissa B Valor], "0%")
+		isHidden
+		displayFolder: Oportunidades
+		lineageTag: ca19fb1b-ba1b-5c78-91f5-9993415aa994
+
+	measure 'Sub Chatbot' = "URA: " & FORMAT([Resolução URA], "0.0") & "%"
+		isHidden
+		displayFolder: Tecnologia
+		lineageTag: e354ee9c-45dd-5c55-be16-d0be9f391ab2
+
+	column Coluna
+		dataType: int64
+		isHidden
+		lineageTag: 0aa77061-b711-53fe-9434-25c99a36334d
+		summarizeBy: none
+		sourceColumn: [Coluna]
+
+		annotation SummarizationSetBy = User
+
+	partition Medidas = calculated
+		mode: import
+		source = DATATABLE("Coluna", INTEGER, {{0}})
+
+	annotation PBI_ResultType = Table
+

@@ -105,6 +105,7 @@ Notas e limitações:
     WHERE m.criticidade = 'baixa' AND m.id_motivo > 0
       AND ca.etapa_funil IN ('Nível 1', 'Nível 2')
     ```
+- **Diferença de centavos entre o painel e a gold.** O painel recalcula a economia a partir do ganho unitário já arredondado a 2 casas e mostra R$ 30.863 (A) e R$ 258.065 (B), cerca de R$ 5 acima de `simulacao_ganhos_gold` (R$ 30.858,20 e R$ 258.059,77). Em R$ mil coincidem: 30,9 e 258,1.
 - O cálculo usa o **volume médio do período** (~6.940 chamados/mês). Como o volume de jul/26 (9.596) é 38% maior, no ritmo atual a economia seria maior, o que torna esta estimativa conservadora quanto a volume.
 - **Não inclui custo de implantação** (desenvolvimento do autosserviço, treinamento, revisão de scripts); o payback depende dele. Estimar esse custo exige dados que o grupo não tem.
 - A reincidência é medida pelos dados (mesmo cliente e motivo em até 7 dias), mas **nem todo recontato é evitável**. Neste conjunto todos os chamados têm id de cliente (a regra de elegibilidade não exclui ninguém), e a medida só compara com o chamado anterior imediato do mesmo cliente e motivo.

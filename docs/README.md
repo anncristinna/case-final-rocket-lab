@@ -10,7 +10,7 @@ Executivo. Cada item do enunciado aponta para o arquivo que o responde.
 |---|---|
 | Arquitetura medalhão: camadas de ingestão, tratamento e consolidação, com rastreabilidade, qualidade e integridade | [`tecnico/arquitetura-medalhao.md`](tecnico/arquitetura-medalhao.md) e o código em [`../medalhao/`](../medalhao/) |
 | Notebooks documentados, em Databricks Free Edition | [`../medalhao/`](../medalhao/) (4 notebooks) + [`tecnico/notebooks-e-jobs.md`](tecnico/notebooks-e-jobs.md) |
-| Painel de indicadores consolidado | [`tecnico/painel-indicadores.md`](tecnico/painel-indicadores.md) (modelo, relacionamentos, medidas) + pacote em `data/powerbi/` (fora do git) |
+| Painel de indicadores consolidado | [`tecnico/painel-indicadores.md`](tecnico/painel-indicadores.md) (7 páginas, parâmetro `PastaCSV`, conferência dos cartões) + projeto PBIP em [`../powerbi/`](../powerbi/) + pacote CSV em `data/powerbi/` (fora do git) |
 | Jobs automáticos entre os notebooks; pipeline idempotente | [`tecnico/notebooks-e-jobs.md`](tecnico/notebooks-e-jobs.md) e as provas em [`tecnico/evidencias/`](tecnico/evidencias/) (YAML do Job, manifestos, validação) |
 
 Apoio: [`databricks-estrutura.md`](databricks-estrutura.md) (pastas, Volume, permissões, troubleshooting) e

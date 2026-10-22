@@ -1,0 +1,33 @@
+table Def_Tabelas
+	lineageTag: 8e7f90f1-05ae-5e35-9c6c-5200de697637
+
+	column Tabela
+		dataType: string
+		lineageTag: 4fa3c285-1818-58c1-bd86-d06896536408
+		summarizeBy: none
+		sourceColumn: [Tabela]
+
+		annotation SummarizationSetBy = User
+
+	column Granularidade
+		dataType: string
+		lineageTag: ea4cb160-dd2b-59ba-9da6-242eb5fe3e5e
+		summarizeBy: none
+		sourceColumn: [Granularidade]
+
+		annotation SummarizationSetBy = User
+
+	column 'Filtra por período'
+		dataType: string
+		lineageTag: 2b527505-11c2-5095-8ce1-5c5498dd1657
+		summarizeBy: none
+		sourceColumn: [Filtra por período]
+
+		annotation SummarizationSetBy = User
+
+	partition Def_Tabelas = calculated
+		mode: import
+		source = DATATABLE("Tabela", STRING, "Granularidade", STRING, "Filtra por período", STRING, {{"visao_geral", "1 linha, período completo", "Não"}, {"kpi_mensal", "1 linha por mês", "Sim"}, {"comparativo_yoy", "1 linha por mês do ano, 2025 e 2026 lado a lado", "Não"}, {"funil_atendimento", "1 linha por canal, período completo", "Não"}, {"etapa_mensal", "mês × etapa do funil", "Sim"}, {"motivos_pareto", "1 linha por motivo", "Não"}, {"motivo_etapa", "motivo × etapa do funil", "Não"}, {"demanda_dia_hora", "dia da semana × hora de abertura", "Não"}, {"atendentes_desempenho", "1 linha por atendente", "Não"}, {"satisfacao_drivers", "fator × valor, só chamados com nota", "Não"}, {"perfil_cliente", "faixa etária ou região × etapa", "Não"}, {"qualidade_dados", "1 linha por indicador de qualidade", "Não"}, {"impacto_indicadores", "indicador × método de cálculo", "Não"}, {"simulacao_ganhos", "cenário × motivo (o painel recalcula os totais)", "Não"}})
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,158 @@
+table kpi_mensal
+	lineageTag: 5a31e188-29b1-548f-aab3-912240a44829
+
+	column ano_mes
+		dataType: string
+		lineageTag: 20ae624d-4a59-5214-a773-7dbddce874f2
+		summarizeBy: none
+		sourceColumn: ano_mes
+
+		annotation SummarizationSetBy = User
+
+	column chamados
+		dataType: int64
+		formatString: #,0
+		lineageTag: 3bb82820-7804-59e3-b0e9-fdfb9316637f
+		summarizeBy: none
+		sourceColumn: chamados
+
+		annotation SummarizationSetBy = User
+
+	column abandonados
+		dataType: int64
+		formatString: #,0
+		lineageTag: d93bfa11-5820-5d24-b3ec-a7f6cf72d567
+		summarizeBy: none
+		sourceColumn: abandonados
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: fb5f31f9-a83f-566a-878e-a32da383bc1a
+		summarizeBy: none
+		sourceColumn: pct_abandono
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: e1f49ba8-8382-5480-9c99-67e0e0f8344b
+		summarizeBy: none
+		sourceColumn: pct_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column tme_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: ca3d6a08-8a6f-574a-8cd2-3cefa263a4ce
+		summarizeBy: none
+		sourceColumn: tme_min
+
+		annotation SummarizationSetBy = User
+
+	column p90_espera_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: fdef5a05-4def-54f0-ad31-f3aa971f21ef
+		summarizeBy: none
+		sourceColumn: p90_espera_min
+
+		annotation SummarizationSetBy = User
+
+	column tma_min
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: 19aeb13c-0fe5-539e-8da3-19ad1b7e79ec
+		summarizeBy: none
+		sourceColumn: tma_min
+
+		annotation SummarizationSetBy = User
+
+	column custo_total
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: c54798bc-b55f-5180-8895-25de9f1e9777
+		summarizeBy: none
+		sourceColumn: custo_total
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: b446bddd-2d33-5f83-8347-d9e292f9ec1e
+		summarizeBy: none
+		sourceColumn: custo_medio
+
+		annotation SummarizationSetBy = User
+
+	column custo_por_resolucao
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: d4a8dceb-5a0a-55b4-89c9-f4830cc6e49f
+		summarizeBy: none
+		sourceColumn: custo_por_resolucao
+
+		annotation SummarizationSetBy = User
+
+	column respostas_pesquisa
+		dataType: int64
+		formatString: #,0
+		lineageTag: 2cbeae7a-850b-5f2d-bd48-b6263afbaca6
+		summarizeBy: none
+		sourceColumn: respostas_pesquisa
+
+		annotation SummarizationSetBy = User
+
+	column cobertura_pesquisa_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 1c2c1104-13f1-5704-93a8-993f2248b60d
+		summarizeBy: none
+		sourceColumn: cobertura_pesquisa_pct
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: daf59405-d0da-5222-9a7e-a80d119a000c
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	column nota_media
+		dataType: double
+		formatString: 0.00
+		lineageTag: 813a202b-5094-5e55-b6ae-7692c1865536
+		summarizeBy: none
+		sourceColumn: nota_media
+
+		annotation SummarizationSetBy = User
+
+	column csat_ajustado_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 3df9831a-b33b-5582-b9a8-f13db2b88b23
+		summarizeBy: none
+		sourceColumn: csat_ajustado_pct
+
+		annotation SummarizationSetBy = User
+
+	partition kpi_mensal = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\kpi_mensal.csv"), [Delimiter=",", Columns=16, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"ano_mes", type text}, {"chamados", Int64.Type}, {"abandonados", Int64.Type}, {"pct_abandono", type number}, {"pct_resolucao", type number}, {"tme_min", type number}, {"p90_espera_min", type number}, {"tma_min", type number}, {"custo_total", type number}, {"custo_medio", type number}, {"custo_por_resolucao", type number}, {"respostas_pesquisa", Int64.Type}, {"cobertura_pesquisa_pct", type number}, {"csat_pct", type number}, {"nota_media", type number}, {"csat_ajustado_pct", type number}}, "en-US")
+				in
+					Tipos
+
+	annotation PBI_ResultType = Table
+

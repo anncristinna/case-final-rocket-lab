@@ -1,0 +1,7 @@
+expression PastaCSV = "C:\caminho\para\exportacao\analiticas" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 9489b152-6d7b-5492-99ea-37c3e37f6225
+
+	annotation PBI_ResultType = Text
+
+	annotation PBI_NavigationStepName = Navegação
+

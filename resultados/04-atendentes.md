@@ -1,7 +1,7 @@
 # 04 — Atendentes e capacidade
 
 Fonte: `atendentes_desempenho_gold` (25 atendentes) e `dim_atendente_gold`. Atendentes aparecem por `id_atendente` e
-nível; a decisão sobre exibir o nome no material do Comitê está em aberto (ver
+nível neste arquivo; no painel os nomes são mantidos, por decisão do grupo (base fictícia; ver
 [`../docs/tecnico/arquitetura-medalhao.md`](../docs/tecnico/arquitetura-medalhao.md)).
 
 > ⚠️ **Leia estes números como indicativos.** A atribuição chamado → atendente tem problemas de origem (detalhes em

@@ -1,0 +1,24 @@
+relationship 5d7e85eb-e470-5f2d-93bb-09fda29a89c6
+	fromColumn: kpi_mensal.ano_mes
+	toColumn: DimMes.ano_mes
+
+relationship 3678adbc-af62-5116-bc4f-53f20d76a618
+	fromColumn: etapa_mensal.ano_mes
+	toColumn: DimMes.ano_mes
+
+relationship 86dd48e4-68d6-5dde-8ec1-e92af15a3aae
+	fromColumn: etapa_mensal.etapa_funil
+	toColumn: DimEtapa.Etapa
+
+relationship a41bfe0f-6610-5b89-a9ee-c27484284c7b
+	fromColumn: funil_atendimento.etapa_funil
+	toColumn: DimEtapa.Etapa
+
+relationship 2df1a5b9-7a98-5b4e-8250-cad739ed633d
+	fromColumn: motivo_etapa.etapa_funil
+	toColumn: DimEtapa.Etapa
+
+relationship acea148e-acc5-5931-bb79-2e4bcd1473e6
+	fromColumn: perfil_cliente.etapa_funil
+	toColumn: DimEtapa.Etapa
+

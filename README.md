@@ -20,8 +20,8 @@ O mapa completo "item do enunciado → arquivo" está em [`docs/README.md`](docs
 
 - O volume de chamados mais que dobrou (+120%) em 18 meses; o CSAT caiu de 86% para 57% e a espera do Nível 2 foi de 5 para 22 min.
 - Custo total de **R$ 1,45 mi**, puxado por volume (custo por chamado estável em ~R$ 11); 43% dos chamados no humano = 93,65% do custo.
-- Recomendações: resolver na primeira interação os 5 motivos críticos (**R$ 258 mil/ano**, premissa de 30%), deflexão dos motivos simples
-  (**R$ 31 mil/ano**, premissa de 20%; **não somar com a anterior**, que já contém quase toda a base dela: líquido de R$ 258 a 279 mil/ano, estimativa derivada da sobreposição conferida no Databricks), capacidade e escala do Nível 2, e governança de dados. Detalhes em
+- Recomendações: resolver na primeira interação os 5 motivos críticos (**R$ 258,1 mil/ano**, premissa de 30%), deflexão dos motivos simples
+  (**R$ 30,9 mil/ano**, premissa de 20%; **não somar com a anterior**, que já contém quase toda a base dela: líquido de R$ 258 a 279 mil/ano, estimativa derivada da sobreposição conferida no Databricks), capacidade e escala do Nível 2, e governança de dados. Detalhes em
   [`docs/analitico/propostas-e-priorizacao.md`](docs/analitico/propostas-e-priorizacao.md).
 
 ## Estrutura
@@ -37,6 +37,8 @@ O mapa completo "item do enunciado → arquivo" está em [`docs/README.md`](docs
 │   ├── Silver_To_Gold.ipynb         modelo em estrela + 14 tabelas analíticas → *_gold
 │   ├── Gold_To_CSV.ipynb            exporta a gold para o Power BI (Volume)
 │   └── modelagem/                   diagramas da silver e da gold; guia da gold (PDF)
+├── powerbi/                         painel Power BI em formato PBIP (texto): relatório com 7 páginas e modelo semântico; sem dados
+│   └── painel-v-credit/             Painel_Atendimento_VCredit.pbip, .Report e .SemanticModel
 ├── resultados/                      números da análise, um arquivo por frente (01 a 07)
 ├── docs/
 │   ├── README.md                    mapa: item do enunciado → arquivo
@@ -44,7 +46,7 @@ O mapa completo "item do enunciado → arquivo" está em [`docs/README.md`](docs
 │   ├── analitico/                   confiabilidade, propostas, oportunidades, roteiro da apresentação
 │   ├── convencoes-git.md            branches, commits (Conventional Commits) e Pull Requests
 │   └── databricks-estrutura.md      pastas, permissões e troubleshooting no workspace
-└── data/                            fora do git (só o README): raw/ (8 CSVs) e powerbi/ (pacote do painel)
+└── data/                            fora do git (só o README): raw/ (8 CSVs) e powerbi/ (pacote CSV exportado pelo Job)
 ```
 
 ## Grupo
@@ -58,8 +60,8 @@ Yuri, Cris, Juan, Richard, Milton, Gabriel, Anna.
 2. Para ler o que foi feito: [`docs/README.md`](docs/README.md), depois [`resultados/README.md`](resultados/README.md).
 3. Para rodar: importe os 4 notebooks de `medalhao/` em `Shared/case-final-rocket-lab/medalhao/` no Databricks e execute na ordem
    (passo a passo em [`docs/databricks-estrutura.md`](docs/databricks-estrutura.md)). Os CSVs originais ficam em `data/raw/` (local, fora do git).
-4. Para o painel: descompacte `data/powerbi/pacote_powerbi.zip` e siga
-   [`docs/tecnico/painel-indicadores.md`](docs/tecnico/painel-indicadores.md).
+4. Para o painel: descompacte o `pacote_powerbi.zip` do Job (por exemplo em `data/powerbi/`), abra `powerbi/painel-v-credit/Painel_Atendimento_VCredit.pbip` no Power BI Desktop
+   e aponte o parâmetro `PastaCSV` para a pasta `analiticas`; passo a passo em [`docs/tecnico/painel-indicadores.md`](docs/tecnico/painel-indicadores.md).
 
 ## Regras rápidas
 

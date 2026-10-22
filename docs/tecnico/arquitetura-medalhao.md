@@ -151,5 +151,4 @@ Para volumes maiores, o caminho é:
 | Tipos em `dim_cliente_gold` | `data_cadastro` vira `date`, `dia_vencimento_fatura` vira `int` | A silver entrega string |
 | Fonte da verdade dos tempos | Só os timestamps de `chamados_hora`; `chamados.tempo_atendimento` nunca entra em indicador | Campo truncado (seção "Fonte da verdade dos tempos") |
 
-Pendente: decidir se o material do Comitê mostra o nome real do atendente ou um rótulo anônimo
-(`anonimizar_atendente`). Ver também [`../analitico/confiabilidade-dos-dados.md`](../analitico/confiabilidade-dos-dados.md).
+Decisão do grupo: nomes dos atendentes mantidos no material do Comitê (base fictícia); `anonimizar_atendente` fica `false`. Ver também [`../analitico/confiabilidade-dos-dados.md`](../analitico/confiabilidade-dos-dados.md).

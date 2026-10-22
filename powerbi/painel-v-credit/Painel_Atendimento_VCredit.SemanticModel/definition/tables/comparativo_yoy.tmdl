@@ -1,0 +1,151 @@
+table comparativo_yoy
+	lineageTag: 0ea57f79-fd4b-5ca5-a91a-1e32253808f3
+
+	column mes
+		dataType: int64
+		formatString: 0
+		lineageTag: fcfc0ba7-f1b5-5329-ae29-f245d7216efb
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = User
+
+	column nome_mes
+		dataType: string
+		lineageTag: 1b089cc2-e358-5200-a1b7-c18010b8d8d2
+		summarizeBy: none
+		sourceColumn: nome_mes
+		sortByColumn: mes
+
+		annotation SummarizationSetBy = User
+
+	column chamados_2025
+		dataType: int64
+		formatString: #,0
+		lineageTag: a5ed4450-dca2-5930-ab73-8346a7c86b48
+		summarizeBy: none
+		sourceColumn: chamados_2025
+
+		annotation SummarizationSetBy = User
+
+	column chamados_2026
+		dataType: int64
+		formatString: #,0
+		lineageTag: ec4464ef-1c8b-5122-89ea-f1e26b91387c
+		summarizeBy: none
+		sourceColumn: chamados_2026
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct_2025
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: ac24e3d1-8b0a-51bb-ad24-3c5d44db483d
+		summarizeBy: none
+		sourceColumn: csat_pct_2025
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct_2026
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: e1d704b1-0374-5ae0-b993-e43ed8a100c2
+		summarizeBy: none
+		sourceColumn: csat_pct_2026
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono_2025
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: ada65523-8b4f-528d-9264-bd89809978c2
+		summarizeBy: none
+		sourceColumn: pct_abandono_2025
+
+		annotation SummarizationSetBy = User
+
+	column pct_abandono_2026
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 23537432-188f-521f-a028-169ee08434c7
+		summarizeBy: none
+		sourceColumn: pct_abandono_2026
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao_2025
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: 860178be-9dd6-57bf-bc06-0ef22c1f4e42
+		summarizeBy: none
+		sourceColumn: pct_resolucao_2025
+
+		annotation SummarizationSetBy = User
+
+	column pct_resolucao_2026
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: aa0c85af-a548-571b-a8f4-cf8e4e2399f3
+		summarizeBy: none
+		sourceColumn: pct_resolucao_2026
+
+		annotation SummarizationSetBy = User
+
+	column tme_min_2025
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: f213711c-0eee-514b-a10a-226e2182a73d
+		summarizeBy: none
+		sourceColumn: tme_min_2025
+
+		annotation SummarizationSetBy = User
+
+	column tme_min_2026
+		dataType: double
+		formatString: 0.0" min"
+		lineageTag: 201efa16-218e-51cf-9754-bcbf62306a35
+		summarizeBy: none
+		sourceColumn: tme_min_2026
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio_2025
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 585d0351-d076-5e34-a0fb-aa7efc901de2
+		summarizeBy: none
+		sourceColumn: custo_medio_2025
+
+		annotation SummarizationSetBy = User
+
+	column custo_medio_2026
+		dataType: double
+		formatString: \R\$ #,0.00
+		lineageTag: 388fdf64-7f72-5250-a3db-c7e5d8bec6ef
+		summarizeBy: none
+		sourceColumn: custo_medio_2026
+
+		annotation SummarizationSetBy = User
+
+	column nome_mes_curto
+		dataType: string
+		lineageTag: 388be61c-d651-5a8f-90f3-69c3f2e7bd39
+		summarizeBy: none
+		sourceColumn: nome_mes_curto
+		sortByColumn: mes
+
+		annotation SummarizationSetBy = User
+
+	partition comparativo_yoy = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\comparativo_yoy.csv"), [Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"mes", Int64.Type}, {"nome_mes", type text}, {"chamados_2025", Int64.Type}, {"chamados_2026", Int64.Type}, {"csat_pct_2025", type number}, {"csat_pct_2026", type number}, {"pct_abandono_2025", type number}, {"pct_abandono_2026", type number}, {"pct_resolucao_2025", type number}, {"pct_resolucao_2026", type number}, {"tme_min_2025", type number}, {"tme_min_2026", type number}, {"custo_medio_2025", type number}, {"custo_medio_2026", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "nome_mes_curto", each Text.Start([nome_mes], 3), type text)
+				in
+					Extra1
+
+	annotation PBI_ResultType = Table
+

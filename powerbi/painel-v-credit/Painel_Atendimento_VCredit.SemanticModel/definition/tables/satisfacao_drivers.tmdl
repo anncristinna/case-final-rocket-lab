@@ -1,0 +1,67 @@
+table satisfacao_drivers
+	lineageTag: 7e6b32b1-787d-5fc9-a114-003c2c82afb5
+
+	column dimensao
+		dataType: string
+		lineageTag: 894fa690-e69e-50e1-b9d7-b5205e2f3eef
+		summarizeBy: none
+		sourceColumn: dimensao
+
+		annotation SummarizationSetBy = User
+
+	column valor
+		dataType: string
+		lineageTag: 5706263b-565e-536f-b647-343ba2474bd4
+		summarizeBy: none
+		sourceColumn: valor
+
+		annotation SummarizationSetBy = User
+
+	column respostas
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 2f2a02ec-c8dc-53db-aa68-27a7c29ac85f
+		summarizeBy: none
+		sourceColumn: respostas
+
+		annotation SummarizationSetBy = User
+
+	column csat_pct
+		dataType: double
+		formatString: 0.0"%"
+		lineageTag: e75ff5d2-644a-5ca0-8092-ec6167c83ed8
+		summarizeBy: none
+		sourceColumn: csat_pct
+
+		annotation SummarizationSetBy = User
+
+	column nota_media
+		dataType: double
+		formatString: 0.00
+		lineageTag: e517aa13-2786-5723-b58f-4f31b5f31c39
+		summarizeBy: none
+		sourceColumn: nota_media
+
+		annotation SummarizationSetBy = User
+
+	column valor_rotulo
+		dataType: string
+		lineageTag: 4dd05482-13a4-533b-b345-50591856fee7
+		summarizeBy: none
+		sourceColumn: valor_rotulo
+
+		annotation SummarizationSetBy = User
+
+	partition satisfacao_drivers = m
+		mode: import
+		source =
+				let
+					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\satisfacao_drivers.csv"), [Delimiter=",", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+					Tipos = Table.TransformColumnTypes(Cabecalho, {{"dimensao", type text}, {"valor", type text}, {"respostas", type number}, {"csat_pct", type number}, {"nota_media", type number}}, "en-US"),
+					Extra1 = Table.AddColumn(Tipos, "valor_rotulo", each if [dimensao] = "canal" then (if [valor] = "URA" then "URA" else Text.Proper([valor])) else [valor], type text)
+				in
+					Extra1
+
+	annotation PBI_ResultType = Table
+

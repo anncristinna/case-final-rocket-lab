@@ -1,140 +1,101 @@
 # Painel de indicadores consolidado (Power BI)
 
-Entregável técnico: *painel de indicadores consolidado, com as principais métricas que ilustram o resultado dos
-tratamentos*. O Databricks Free Edition não integra com o Power BI; o caminho previsto pelo enunciado é exportar a
-camada gold em CSV e importar no Power BI Desktop. É o que faz o `Gold_To_CSV.ipynb`.
+Entregável técnico: *painel de indicadores consolidado, com as principais métricas que ilustram o resultado dos tratamentos*. O Databricks Free
+Edition não integra com o Power BI; o caminho previsto pelo enunciado é exportar a camada gold em CSV e importar no Power BI Desktop. O
+`Gold_To_CSV.ipynb` faz a exportação e o painel lê as **14 tabelas analíticas** dessa exportação.
 
-> ⚠️ O pacote do Power BI (`data/powerbi/pacote_powerbi.zip`, fora do git) traz **só os CSVs**. O arquivo `.pbix` embute dados e também fica fora do git.
-> **Onde o `.pbix` será entregue:** drive compartilhado do grupo (link: _a preencher_). No repositório entram só o **PDF exportado** das páginas e os
-> **prints**, em `docs/tecnico/evidencias/painel/` (a criar quando o painel ficar pronto). Antes de versionar, confira que as páginas não mostram
-> nomes de atendentes nem qualquer dado de cliente.
+## O que é e onde está
 
-## Conteúdo do pacote (`exp_20261022_012729`, exportado em 22/10/2026 01:27 UTC)
+| Item | Onde |
+|---|---|
+| **Projeto PBIP** (texto, versionável) | [`../../powerbi/painel-v-credit/`](../../powerbi/painel-v-credit/): `Painel_Atendimento_VCredit.pbip` abre o projeto |
+| Relatório (páginas e visuais, em JSON) | `Painel_Atendimento_VCredit.Report/definition/` (7 páginas) |
+| Modelo semântico (tabelas, medidas, relacionamentos, parâmetro, em TMDL) | `Painel_Atendimento_VCredit.SemanticModel/definition/` |
+| **Arquivo `.pbix`** | Disponível no drive do grupo. **Não** é versionado, porque embute dados |
+| **PDF do painel** (7 páginas, versão de 22/10/2026) | [`evidencias/painel/painel-atendimento-v-credit.pdf`](evidencias/painel/painel-atendimento-v-credit.pdf) |
+| Dados (CSV, cache `.abf`, `localSettings.json`) | **Não vão para o git**: o `.gitignore` bloqueia CSV, `.pbix`, `.zip`, o cache (`cache.abf`) e as configurações locais (`localSettings.json`) do Power BI |
 
-| Pasta | Arquivos | Linhas |
+O PBIP guarda só definição, sem dados. Quem abre o projeto precisa apontar o parâmetro `PastaCSV` para uma exportação e **atualizar** para carregar os dados.
+
+## Fonte de dados: as 14 tabelas analíticas
+
+O parâmetro **`PastaCSV`** (texto) deve apontar para a pasta `analiticas` de uma exportação do Job (por exemplo
+`exportacao_powerbi/exp_<timestamp>/analiticas`, ou a pasta `analiticas` do `pacote_powerbi.zip` descompactado; `<timestamp>` é o `pacote_id` do
+`_manifesto`). Cada tabela lê `<PastaCSV>\<nome>.csv` (UTF-8, vírgula; o `Text.TrimEnd` aceita a pasta com ou sem `\` no fim). No repositório o
+valor é um caminho genérico (`C:\caminho\para\exportacao\analiticas`) e **precisa ser trocado** em cada máquina.
+
+| CSV | Granularidade | Filtra por período |
 |---|---|---|
-| `modelo/` | `fato_atendimento` (47 colunas) | 131.838 |
-| | `dim_calendario` (sem o membro `-1`), `dim_hora`, `dim_faixa_espera`, `dim_canal`, `dim_motivo`, `dim_atendente`, `dim_cliente` | 730 / 25 / 6 / 5 / 15 / 28 / 47.706 |
-| `analiticas/` | As 14 tabelas analíticas da gold | ver [`../../resultados/`](../../resultados/) |
-| raiz | `_manifesto.csv`, `_manifesto.json` | id do pacote, versão Delta de origem, checksum por tabela |
+| `visao_geral.csv` | 1 linha, período completo | Não |
+| `kpi_mensal.csv` | 1 linha por mês | Sim |
+| `comparativo_yoy.csv` | 1 linha por mês do ano, 2025 e 2026 lado a lado | Não |
+| `funil_atendimento.csv` | 1 linha por canal, período completo | Não |
+| `etapa_mensal.csv` | mês × etapa do funil | Sim |
+| `motivos_pareto.csv` | 1 linha por motivo | Não |
+| `motivo_etapa.csv` | motivo × etapa do funil | Não |
+| `demanda_dia_hora.csv` | dia da semana × hora de abertura | Não |
+| `atendentes_desempenho.csv` | 1 linha por atendente | Não |
+| `satisfacao_drivers.csv` | fator × valor, só chamados com nota | Não |
+| `perfil_cliente.csv` | faixa etária ou região × etapa | Não |
+| `qualidade_dados.csv` | 1 linha por indicador de qualidade | Não |
+| `impacto_indicadores.csv` | indicador × método de cálculo | Não |
+| `simulacao_ganhos.csv` | cenário × motivo (o painel recalcula os totais) | Não |
 
-Formato: UTF-8, vírgula, cabeçalho, aspas duplas, ponto decimal, datas `yyyy-MM-dd`, timestamps `yyyy-MM-dd HH:mm:ss`,
-booleanos `true`/`false`, nulo = campo vazio.
+Além delas, o modelo tem tabelas calculadas dentro do próprio painel: `DimMes` e `DimEtapa` (eixos compartilhados), `Medidas`, `Alertas`,
+`Metrica Heatmap`, `Premissa A` e `Premissa B` (seletores das premissas dos cenários), `Oportunidades`, `Def_Indicadores` e `Def_Tabelas`.
 
-### O que o modelo de consumo muda em relação à gold
+## As 7 páginas
 
-| Tabela | Ajuste | Motivo |
-|---|---|---|
-| `fato_atendimento` | Junta `qualidade_chamado_gold` por `id_chamado` (1 para 1, validado); acrescenta `cliente_mapeado` e `recontato_elegivel` | Um único relacionamento no Power BI, sem ambiguidade |
-| `dim_calendario` | Remove a linha `id_data = -1` | Habilita inteligência temporal; chamados sem data continuam na fato |
-| `dim_cliente` | Acrescenta o membro `SEM_CADASTRO` (hash fixo) | Os 1.330 chamados (1,0%) com `id_cliente` sem cadastro não somem do relatório |
+| # | Página | Público | O que responde |
+|---|---|---|---|
+| 1 | **Visão executiva** | Comitê Executivo | Oito cartões (chamados, custo total, custo médio, resolução, TME, TMA, CSAT e a taxa de chamados sem início de atendimento), evolução mensal, custo no funil e "pontos de atenção". O que mudou ao longo dos meses, onde o custo se concentra e o que pede atenção imediata |
+| 2 | **Financeiro** | Gerente Financeiro | O custo total cresce mais rápido que o volume? Qual etapa e quais motivos concentram o custo? Quanto custa cada resolução? Traz a diferença contra os R$ 1,4 mi da entrevista e a economia anual dos cenários A e B. Avisa que **não há receita** nas tabelas |
+| 3 | **Customer Success** | Coordenadora de Customer Success | O TMA subiu e a resolução caiu, em qual etapa? Quando a demanda aperta e a espera sobe (mapa de calor)? Quais atendentes e motivos pedem apoio? Inclui o desempenho por atendente contra a média do nível (só com amostra suficiente) |
+| 4 | **Tecnologia e dados** | Diretor de Tecnologia | O chatbot e a URA resolvem a maior parte? Que perfis mais chegam ao humano? Quais inconsistências existem (o gráfico mostra só os defeitos acima de 5% dos chamados; indicadores informativos ficam de fora) e quanto o tratamento muda os indicadores (`qualidade_dados` e `impacto_indicadores`)? Registra a decisão de privacidade (hash SHA-256 sem segredo) |
+| 5 | **Marketing e CSAT** | Diretora de Marketing | O CSAT de 2026 difere do de 2025? Quanto dos chamados responde à pesquisa? Que fatores (espera, reincidência, resolução, etapa, canal, motivo, faixa horária) se associam a notas baixas? Lê como associação, não causalidade |
+| 6 | **Oportunidades** | Comitê Executivo | Quais iniciativas trazem mais ganho, com quais premissas e o que ainda falta medir. Seletores das premissas de deflexão (A) e de redução de reincidência (B); sem seleção valem 20% e 30% |
+| 7 | **Definições** | Todos | Como cada indicador é calculado, de qual tabela vem e a granularidade de cada tabela |
 
-## Relacionamentos (todos 1 → N, dimensão → fato)
+Cada página tem um quadro "Sobre esta página" (objetivo, público, perguntas e ações possíveis), e as páginas 1, 2, 3 e 5 têm filtro de período.
 
-| Dimensão | Chave | Coluna na fato |
-|---|---|---|
-| `dim_calendario` | `id_data` | `id_data` |
-| `dim_hora` | `id_hora` | `id_hora` |
-| `dim_faixa_espera` | `id_faixa_espera` | `id_faixa_espera` |
-| `dim_canal` | `id_canal` | `id_canal` |
-| `dim_motivo` | `id_motivo` | `id_motivo` |
-| `dim_atendente` | `id_atendente` | `id_atendente` |
-| `dim_cliente` | `id_cliente_hash` | `id_cliente_hash` |
+## Como abrir
 
-Chaves negativas (`-1`, `-2`, `-3`) são membros desconhecidos, por desenho; elas mantêm 100% dos chamados na fato.
+1. Baixe uma exportação do Job (`pacote_powerbi.zip` do Volume `exportacao_powerbi`) e descompacte **fora do repositório**.
+2. No Power BI Desktop, **abra o arquivo** `powerbi/painel-v-credit/Painel_Atendimento_VCredit.pbip`. Se o Desktop não abrir o formato, habilite o recurso de projeto (`.pbip`) em *Opções → Recursos em versão prévia*.
+3. **Transformar dados → Gerenciar parâmetros → `PastaCSV`**: informe a pasta `analiticas` descompactada.
+4. **Atualizar**. Confira os cartões abaixo.
+5. Para entregar, salve também como `.pbix` no drive do grupo e exporte PDF e prints das páginas.
 
-## Medidas (definições do projeto)
+Não baixe o zip entre 12:00 e 12:10 (nem entre 00:00 e 00:10): o Job regrava o pacote nesses horários.
 
-| Indicador | Definição | Coluna / observação |
-|---|---|---|
-| Chamados | Contagem de `id_chamado` | |
-| Taxa de resolução | Chamados `resolvido = true` ÷ chamados com `resolvido` informado | 50,88% (os não informados ficam fora da conta) |
-| TME | Média de `tempo_espera_seg` ÷ 60 | Só chamados atendidos, com sequência de horários válida |
-| TMA | Média de `tempo_atendimento_seg` ÷ 60 | Idem; **nunca** o campo `tempo_atendimento` de `chamados` |
-| Abandono | Média de `abandonado` | Sem horário de início de atendimento |
-| CSAT | Notas ≥ 4 ÷ chamados com nota válida (1 a 5) | Média de `satisfeito`; versão `satisfeito_ajustado` usa `nota_ajustada` |
-| Custo | Soma de `custo` | Só lançamentos > 0 |
-| Custo por chamado | `custo` ÷ chamados com custo válido | R$ 11,18 |
-| Reincidência (7d) | Média de `reincidente_7d` (usar `recontato_elegivel = true` como base) | Mesmo cliente e motivo em até 7 dias |
+## Conferência dos cartões (período completo)
 
-## Painel mínimo da entrega (2 páginas)
-
-Importe os CSVs com a localidade **Inglês (Estados Unidos)**: o pacote usa ponto decimal e datas `yyyy-MM-dd`. Se a localidade ficar em pt-BR, `1450617.85`
-vira `145061785`. Os nomes de tabela abaixo são os dos arquivos; adapte as medidas se renomear (por exemplo, `fAtendimento`).
-
-### Página 1: Visão geral
-
-- **Tabelas:** `fato_atendimento`, `dim_calendario`, `dim_canal` (relacionamentos 1 → N de `dim_calendario[id_data]` e `dim_canal[id_canal]` para a fato).
-- **Visuais:** cartões (Chamados, Taxa de resolução, TME, TMA, CSAT, Abandono, Custo e Custo por chamado); linha mensal por `dim_calendario[ano_mes]`
-  (chamados em colunas, CSAT e TME em linhas); barras por `dim_canal[etapa_funil]` com % dos chamados, % do custo e CSAT.
-- **Conferência:** os cartões têm que bater com `analiticas/visao_geral.csv`.
+No período completo, os cartões leem `visao_geral` (valores exatos). Com filtro de período, o painel usa a média dos meses ponderada pelos chamados (CSAT, pelas
+respostas), que é uma aproximação. O formato do cartão pode exibir o valor arredondado.
 
 | Cartão | Valor esperado |
 |---|---|
 | Chamados | 131.838 |
+| Custo total | R$ 1.450.617,85 |
+| Custo médio por chamado | R$ 11,18 |
 | Taxa de resolução | 50,88% |
 | TME | 3,60 min |
 | TMA | 11,03 min |
 | CSAT | 71,57% |
-| Abandono | 2,59% |
-| Custo | R$ 1.450.617,85 |
-| Custo por chamado | R$ 11,18 |
+| SEM INÍCIO DE ATENDIMENTO (PROXY), cartão das páginas 1 e 3 | 2,59% |
+| Economia anual, cenário A (páginas 2 e 6) | R$ 30,9 mil (o cartão mostra R$ 30.863) |
+| Economia anual, cenário B (páginas 2 e 6) | R$ 258,1 mil (o cartão mostra R$ 258.065) |
 
-### Página 2: Qualidade e tratamentos
+Os oito primeiros são os valores de `visao_geral.csv` (pacote `exp_20261022_012729`) e os dois cenários vêm de `simulacao_ganhos.csv`; com a mesma base eles devem se repetir em qualquer exportação nova. **Os cenários A e B se sobrepõem (98% da base de A já está em B): não somar.**
+Se o custo aparecer 100 vezes maior (por exemplo `145061785`), a localidade de leitura do CSV está errada: use inglês (Estados Unidos) para números e datas.
 
-- **Tabelas:** `analiticas/impacto_indicadores.csv` e `analiticas/qualidade_dados.csv`, sem relacionamento com o modelo.
-- **Visuais:**
-  - **Impacto dos tratamentos** (tabela, não gráfico, porque cada linha tem unidade diferente): `indicador`, `metodo_a`, `valor_a`, `metodo_b`, `valor_b`, `diferenca`. Destaque para o TME (−1.211,93 min bruto contra 3,60 min tratado) e para o CSAT (71,57% contra 70,96% com nota ajustada).
-  - **Inconsistências** (barras por `grupo` e `indicador`, valor `pct_chamados`, com `qtd` na dica): as linhas marcadas `(informativo)` não são erro; **os indicadores se sobrepõem, não some**.
-- **Mensagem da página:** o tratamento muda muito o custo e o TME, e pouco o TMA, o CSAT e a resolução.
+## Limitações
 
-### Medidas DAX (proposta, ainda não testada no Power BI)
-
-Use `COUNTROWS(FILTER(...))` com `ISBLANK` nos denominadores. Em DAX, `BLANK() = FALSE()` é verdadeiro, e um filtro `<> BLANK()` descartaria os `false`.
-Valide cada medida contra a tabela de valores esperados acima.
-
-```dax
-Chamados = COUNTROWS(fato_atendimento)
-
-Taxa de resolução =
-DIVIDE(
-    COUNTROWS(FILTER(fato_atendimento, fato_atendimento[resolvido] = TRUE())),
-    COUNTROWS(FILTER(fato_atendimento, NOT ISBLANK(fato_atendimento[resolvido])))
-)
-
-TME (min) = DIVIDE(AVERAGE(fato_atendimento[tempo_espera_seg]), 60)
-
-TMA (min) = DIVIDE(AVERAGE(fato_atendimento[tempo_atendimento_seg]), 60)
-
-Abandono =
-DIVIDE(
-    COUNTROWS(FILTER(fato_atendimento, fato_atendimento[abandonado] = TRUE())),
-    [Chamados]
-)
-
-CSAT =
-DIVIDE(
-    COUNTROWS(FILTER(fato_atendimento, fato_atendimento[satisfeito] = TRUE())),
-    COUNTROWS(FILTER(fato_atendimento, NOT ISBLANK(fato_atendimento[satisfeito])))
-)
-
-Custo = SUM(fato_atendimento[custo])
-
-Custo por chamado =
-DIVIDE(
-    [Custo],
-    COUNTROWS(FILTER(fato_atendimento, NOT ISBLANK(fato_atendimento[custo])))
-)
-```
-
-`recontato_elegivel` hoje vale `true` para os 131.838 chamados (todos têm id de cliente, motivo mapeado e abertura conhecida), então filtrar por ele não exclui ninguém nesta base.
-
-## Páginas adicionais (opcionais, mesma história da apresentação)
-
-3. **Motivos**: Pareto, reincidência e custo por motivo. Fonte: `motivos_pareto`, `motivo_etapa`.
-4. **Satisfação**: CSAT por faixa de espera, etapa e reincidência. Fonte: `satisfacao_drivers`.
-5. **Operação**: demanda por dia e hora e atendentes. Fonte: `demanda_dia_hora`, `atendentes_desempenho`.
-6. **Funil por etapa ao longo do tempo**: `etapa_mensal`.
-7. **Simulação de ganhos**: cenários A e B com as premissas visíveis (e a ressalva de que **não se somam**). Fonte: `simulacao_ganhos`.
-
-Cada página corresponde a um arquivo de [`../../resultados/`](../../resultados/), que traz os números de conferência.
+- **Só as 14 tabelas agregadas, sem estrela.** O painel não usa as tabelas do modelo (`modelo/fato_atendimento.csv` e dimensões) e, por isso, não detalha por chamado. Os únicos relacionamentos são entre as tabelas mensais e de etapa e as dimensões `DimMes` e `DimEtapa`; as demais tabelas se ligam por medidas.
+- **Cenários A e B não somam.** 98,1% da base do cenário A (12.172 de 12.411 chamados) já está na base do B (conferido no Databricks em 22/10/2026). Cada cartão mostra um cenário; somar os dois conta a mesma economia duas vezes. As premissas de 20% e 30% são hipóteses do grupo.
+- **Abandono é um proxy.** O indicador conta chamados **sem hora de início de atendimento**; não confirma que o cliente desistiu. Por isso os cartões, eixos, títulos e alertas se chamam "sem início de atendimento (proxy)"; no mapa de calor a métrica é "Sem início (proxy)". Só os **nomes internos** das medidas e das colunas ainda usam "abandono" (`Abandono`, `Abandono CS`, `pct_abandono` etc.), e a definição na página 7 explica a equivalência.
+- **Sem receita.** Não dá para dizer se o custo acompanha a receita, a preocupação do Gerente Financeiro.
+- **Valores de período parcial são aproximados** (média de médias ponderada).
+- **Nomes de atendentes mantidos; base fictícia.** A página "Customer Success" mostra `rotulo_atendente` (`anonimizar_atendente = false`, o padrão do `Gold_To_CSV`). Decisão do grupo, registrada aqui para não parecer esquecimento.
+- **Campo atendente em chamados de autosserviço.** Vem preenchido em 99,4% dos chamados de URA e chatbot, onde não deveria haver atendente humano. Até confirmarmos o significado do campo (pergunta à V-Credit, em [`../analitico/confiabilidade-dos-dados.md`](../analitico/confiabilidade-dos-dados.md)), os números por atendente são indicativos e a tabela da página "Customer Success" é uma associação, não um ranking de desempenho.
+- **Prevenção (site e app)** não existe nos dados; o painel não a mostra.

@@ -15,7 +15,7 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 | 8-11 | **Onde dói** | Funil: 43% dos chamados no humano = 93,65% do custo; 5 motivos = 60% do custo; Nível 2: TME 22 min, CSAT 12% | `resultados/02`, `03` |
 | 11-13 | **Por quê** | Equipe sem crescimento no cadastro (entradas e saídas se compensam) para demanda humana ×2,5; espera derruba o CSAT (83% → 49% → 10%); reincidência 53% a 58% nos motivos críticos | `resultados/04`, `05` |
 | 13-14 | **O que não é a causa** | Região: nenhum efeito; idade: efeito pequeno | `resultados/06` |
-| 14-18 | **Recomendações** | P1 (R$ 258 mil/ano), P2 (R$ 31 mil/ano; **não somar**, P2 está quase todo dentro de P1), P3 (espera ≤ 5 min; CSAT teto ~82%), P4 (governança) e o critério de priorização | `propostas-e-priorizacao.md` |
+| 14-18 | **Recomendações** | P1 (R$ 258,1 mil/ano), P2 (R$ 30,9 mil/ano; **não somar**, P2 está quase todo dentro de P1), P3 (espera ≤ 5 min; CSAT teto ~82%), P4 (governança) e o critério de priorização | `propostas-e-priorizacao.md` |
 | 18-20 | **Próximos passos** | Sequência (agora / 30-90 dias / 90+), piloto de P1 e o que precisamos do Comitê | `oportunidades-e-aprendizados.md` |
 
 ## Resposta direta a cada executivo
@@ -33,9 +33,10 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 |---|---|
 | De onde vêm os 20% e 30%? | São **hipóteses**, com sensibilidade em 10%/20%/30% (`07-custos-e-simulacao`); por isso propomos piloto |
 | A economia inclui o custo de implantar? | Não; é um limite explícito (`07`). Para P2 o ganho direto é pequeno; o valor é CSAT e capacidade |
-| Por que não só contratar? | O quadro está parado, mas P1 e P2 reduzem a necessidade; contratação (P3) vem com dados de escala |
+| Por que não só contratar? | O cadastro não mostra aumento da equipe, mas P1 e P2 reduzem a necessidade; contratação (P3) vem com dados de escala |
 | Dá para confiar no CSAT? | Só com ressalva: 39% sem pesquisa e cobertura caindo; provável superestimativa (`confiabilidade`) |
-| E o desempenho individual dos atendentes? | Indicativo apenas: 12% dos chamados estão fora do vínculo e o autosserviço traz atendente (`resultados/04`) |
+| E o desempenho individual dos atendentes? | Indicativo apenas: 12% dos chamados estão fora do vínculo e o campo atendente vem preenchido em 99,4% dos chamados de autosserviço (`resultados/04`); pergunta em aberto à V-Credit |
+| O que o `ID_Atendente` representa em chamados de URA e chatbot? | Ainda não sabemos: o campo vem preenchido em 99,4% desses chamados, onde não deveria haver atendente humano. É pergunta em aberto à V-Credit (`confiabilidade`, perguntas em aberto) |
 | O pipeline reproduz o mesmo resultado? | Sim, idempotente; checksum por tabela no manifesto (`tecnico/notebooks-e-jobs.md`) |
 | E a Prevenção (site e app)? | Não há dados dela; ficou como oportunidade com telemetria (`oportunidades`) |
 | O que é o `SEM_CADASTRO`? | 1.330 chamados (1%) com cliente inexistente na base; ficam visíveis no painel em vez de sumir |
@@ -44,7 +45,7 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 
 - [x] Prova de idempotência feita e registrada em [`../tecnico/notebooks-e-jobs.md`](../tecnico/notebooks-e-jobs.md) (evidências em `../tecnico/evidencias/`).
 - [ ] Não baixar o `pacote_powerbi.zip` entre 12:00 e 12:10 (nem entre 00:00 e 00:10), quando o Job regrava o pacote.
-- [ ] Decidir `anonimizar_atendente` (nome real ou "Atendente <id>") e regerar o pacote se for `true`.
-- [ ] Anexar prints do painel (as 2 páginas mínimas, mais as opcionais que ficarem prontas) e do Job no Databricks.
+- [x] Nomes dos atendentes mantidos (base fictícia): `anonimizar_atendente` fica `false`, sem regerar o pacote.
+- [ ] Anexar prints das 7 páginas do painel e do Job no Databricks.
 - [ ] Conferir cada número do deck contra o arquivo de `resultados/` correspondente.
 - [ ] Ensaiar em 18 min (deixar 2 min de folga).

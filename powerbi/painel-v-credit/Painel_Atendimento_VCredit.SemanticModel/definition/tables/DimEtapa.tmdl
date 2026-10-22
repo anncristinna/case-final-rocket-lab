@@ -1,0 +1,31 @@
+table DimEtapa
+	lineageTag: ac7392d7-1e78-5dff-a04e-caafaab57f10
+
+	column Etapa
+		dataType: string
+		lineageTag: c4a97365-0340-50b7-99ea-24e2f2241a00
+		summarizeBy: none
+		sourceColumn: Etapa
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = User
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: c2be0294-2ca9-5b32-b239-91584b4d3a49
+		summarizeBy: none
+		sourceColumn: Ordem
+
+		annotation SummarizationSetBy = User
+
+	partition DimEtapa = m
+		mode: import
+		source =
+				let
+					Fonte = #table(type table [Etapa = text, Ordem = Int64.Type], {{"Autosserviço", 1}, {"Nível 1", 2}, {"Nível 2", 3}})
+				in
+					Fonte
+
+	annotation PBI_ResultType = Table
+

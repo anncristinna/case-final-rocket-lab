@@ -1,0 +1,27 @@
+table 'Metrica Heatmap'
+	lineageTag: e2c62a98-7841-5660-8b22-c4e905034541
+
+	column Metrica
+		dataType: string
+		lineageTag: 271824f0-6212-53d8-9b0e-964a4c385a15
+		summarizeBy: none
+		sourceColumn: [Metrica]
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = User
+
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: 552f38bc-747f-5122-a7f9-3ec3ca8e0dc7
+		summarizeBy: none
+		sourceColumn: [Ordem]
+
+		annotation SummarizationSetBy = User
+
+	partition 'Metrica Heatmap' = calculated
+		mode: import
+		source = DATATABLE("Metrica", STRING, "Ordem", INTEGER, {{"Volume", 1}, {"Sem início (proxy)", 2}, {"Espera média", 3}})
+
+	annotation PBI_ResultType = Table
+
