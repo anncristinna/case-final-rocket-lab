@@ -432,9 +432,7 @@
             },
             "text": {
               "expr": {
-                "Literal": {
-                  "Value": "'A coluna vs média do nível usa só atendentes com amostra suficiente. Ordene clicando nos títulos das colunas.'"
-                }
+                "Measure": {"Expression": {"SourceRef": {"Entity": "Medidas"}}, "Property": "Nota Atendente"}
               }
             },
             "fontColor": {

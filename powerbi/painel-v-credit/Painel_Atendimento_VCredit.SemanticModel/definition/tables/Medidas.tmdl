@@ -342,6 +342,20 @@ table Medidas
 		displayFolder: Tecnologia
 		lineageTag: 5adde3fc-2c5a-597f-b84a-21a0f6f461d7
 
+	measure 'Pct Auto Com Atendente' =
+			VAR _q = CALCULATE(SUM(qualidade_dados[pct_chamados]), qualidade_dados[indicador] = "autosservico_com_atendente")
+			VAR _a = CALCULATE(SUM(funil_atendimento[pct_chamados]), REMOVEFILTERS(funil_atendimento), funil_atendimento[etapa_funil] = "Autosserviço")
+			RETURN DIVIDE(_q, _a) * 100
+		formatString: 0.0"%"
+		isHidden
+		displayFolder: Tecnologia
+		lineageTag: 7c9edbce-f826-4974-8c4f-498b9ccbfa66
+
+	measure 'Nota Atendente' = "O campo atendente vem preenchido em " & FORMAT([Pct Auto Com Atendente], "0.0") & "% dos chamados de autosserviço, onde não deveria haver atendente humano; até confirmarmos o significado do campo, trate os números por atendente como indicativos. A tabela mostra associação, não um ranking de desempenho. A coluna vs média do nível usa só atendentes com amostra suficiente."
+		isHidden
+		displayFolder: Customer Success
+		lineageTag: ec9fb4b7-bccb-48c5-941c-5543f569e6c7
+
 	measure 'Qtd Dados' = SUM(qualidade_dados[qtd])
 		formatString: #,0
 		displayFolder: Tecnologia
@@ -1316,7 +1330,8 @@ table Medidas
 
 	measure 'Alerta 7 Texto' =
 			VAR _v = [Maior Inconsistência]
-			RETURN IF(ISBLANK(_v) || _v <= 0, BLANK(), "Maior inconsistência de dados: " & LOWER([Maior Inconsistência Nome]) & ", em " & FORMAT(_v, "0.0") & "% dos chamados.")
+			VAR _ind = MAXX(TOPN(1, FILTER(qualidade_dados, NOT qualidade_dados[informativo]), qualidade_dados[pct_chamados], DESC), qualidade_dados[indicador])
+			RETURN IF(ISBLANK(_v) || _v <= 0, BLANK(), IF(_ind = "autosservico_com_atendente", "O campo atendente vem preenchido em " & FORMAT([Pct Auto Com Atendente], "0.0") & "% dos chamados de autosserviço, onde não deveria haver atendente humano; até confirmarmos o significado do campo, trate os números por atendente como indicativos.", "Maior inconsistência de dados: " & LOWER([Maior Inconsistência Nome]) & ", em " & FORMAT(_v, "0.0") & "% dos chamados."))
 		isHidden
 		displayFolder: Alertas
 		lineageTag: 79385a17-faf7-5b60-bb42-8d4e158d13ce

@@ -58,7 +58,7 @@ table qualidade_dados
 					Fonte = Csv.Document(File.Contents(Text.TrimEnd(PastaCSV, "\") & "\qualidade_dados.csv"), [Delimiter=",", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
 					Cabecalho = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
 					Tipos = Table.TransformColumnTypes(Cabecalho, {{"grupo", type text}, {"indicador", type text}, {"qtd", Int64.Type}, {"pct_chamados", type number}}, "en-US"),
-					Extra1 = Table.AddColumn(Tipos, "indicador_rotulo", each if [indicador] = "abandonado_sem_inicio_(informativo)" then "Sem início de atendimento (proxy)" else let t = Text.Replace([indicador], "_", " ") in Text.Upper(Text.Start(t, 1)) & Text.Middle(t, 1), type text),
+					Extra1 = Table.AddColumn(Tipos, "indicador_rotulo", each if [indicador] = "abandonado_sem_inicio_(informativo)" then "Sem início de atendimento (proxy)" else if [indicador] = "autosservico_com_atendente" then "Autosserviço com atendente informado" else let t = Text.Replace([indicador], "_", " ") in Text.Upper(Text.Start(t, 1)) & Text.Middle(t, 1), type text),
 					Extra2 = Table.AddColumn(Extra1, "informativo", each Text.Contains([indicador], "informativo") or [indicador] = "chamado_sem_pesquisa", type logical)
 				in
 					Extra2
