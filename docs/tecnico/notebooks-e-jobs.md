@@ -91,8 +91,7 @@ versões Delta 6 e 7 sem essas colunas, `EXCEPT ALL` nos dois sentidos deu **0 d
 
 **Limites da evidência**
 - A prova cobre reexecução sobre os **mesmos CSVs de entrada**. Não testa mudança de entrada nem carga incremental (o enunciado não exige).
-- A foto do item (b) lista 47 tabelas `_raw/_silver/_gold`. O Job escreve 41; as outras 6 (`canal_*_gold`) não têm notebook em `medalhao/`
-  e, como o Job não as regrava, comparam iguais sem passar pelo pipeline. A origem delas ainda precisa ser documentada ou elas devem ser removidas.
+- A foto do item (b) foi tirada antes da limpeza do schema e lista 47 tabelas `_raw/_silver/_gold`: 6 delas eram testes de análise anteriores à gold final (`canal_*_gold`) e já foram removidas. Hoje o schema tem 23 tabelas `_gold`, todas criadas por `Silver_To_Gold`.
 
 **Escalabilidade.** Todas as tabelas são regravadas por inteiro (`overwrite`), adequado ao volume atual (cerca de 130 mil chamados). Para
 volumes maiores, o caminho é carga incremental com `MERGE` e particionamento por data.

@@ -55,6 +55,7 @@ Garantias de integridade:
 
 - **Nenhum chamado se perde**: todos os joins da fato são `LEFT`; o que não casa vira membro desconhecido (chave `-1`, e `-1/-2/-3` em atendente), nunca linha descartada. O notebook confere `n_fato == n_chamados` e **interrompe** se houver chave órfã ou duplicada.
 - **Funil**: `dim_canal.etapa_funil` mapeia URA/Chatbot → Autosserviço, Atendimento Inicial → Nível 1, Atendimento Especializado → Nível 2. A etapa Prevenção (site/app) não existe nos dados.
+- **Catálogo**: o schema `dados_vcredit.default` tem 23 tabelas `_gold`, todas criadas por `Silver_To_Gold` (6 tabelas de teste anteriores à gold final foram removidas).
 
 ## Gold → CSV — `Gold_To_CSV.ipynb`
 
@@ -83,13 +84,6 @@ Quatro colunas existem só para rastrear a execução e **mudam a cada rodada po
 | `_ingestion_ts` | Todas as tabelas `*_raw` | Hora da ingestão |
 | `_treatment_ts` | `canais_silver` | `current_timestamp()` do tratamento; **não** é levada para a gold |
 | `versao_bronze` | `chamados_hora_silver` | Versão Delta de `chamados_hora_raw` usada no tratamento (sobe a cada ingestão) |
-
-## Tabelas no catálogo fora do pipeline
-
-O Job escreve **41** tabelas (8 `*_raw`, 10 `*_silver` com a `base_silver` e 23 `*_gold`). O schema `dados_vcredit.default` tem **47** tabelas
-`*_raw/_silver/_gold`: as 6 a mais são `canal_escalonamento_gold`, `canal_faixa_espera_gold`, `canal_faixa_horaria_gold`,
-`canal_kpi_mensal_gold`, `canal_perfil_gold` e `canal_qualidade_gold`. **Nenhum dos 4 notebooks de `medalhao/` as cria** e o `Gold_To_CSV` não as exporta.
-Origem a confirmar com o grupo: ou o notebook que as gera entra em `medalhao/` (e na contagem desta documentação), ou as tabelas são removidas.
 
 ## Fonte da verdade dos tempos
 
