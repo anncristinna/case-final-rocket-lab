@@ -52,8 +52,7 @@ para 12 em 12 horas (`20 0 0/12 * * ?`), que é o definitivo; a execução agend
 
 **Limites e riscos conhecidos**
 - Sem retentativa nem notificação por e-mail: uma falha só aparece ao abrir o Job. Como cada notebook grava tabela por tabela, uma falha no meio deixa camadas em estados diferentes até a próxima execução.
-- Cada execução regrava o `pacote_powerbi.zip` no Volume. Não baixe o pacote entre 00:00 e 00:10 nem entre 12:00 e 12:10.
-- O Job regrava as tabelas a cada 12 h: para apresentações e demonstrações, pause o agendamento antes.
+- Cada execução regrava o `pacote_powerbi.zip` no Volume: **não baixe o zip entre 12:00 e 12:10** (nem entre 00:00 e 00:10).
 
 ## Idempotência: evidência
 
