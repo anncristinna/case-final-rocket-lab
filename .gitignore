@@ -1,14 +1,19 @@
 # --- Dados do case (confidenciais, propriedade intelectual da Visagio) ---
-# NUNCA versionar as bases. Elas ficam só no Volume do Databricks e localmente.
+# NUNCA versionar as bases, nem derivados em nível de chamado (ex.: o pacote CSV do Power BI).
+# Tudo que é dado fica em data/ e fora do git; só o README.md de data/ é versionado.
+data/*
+!data/README.md
+!data/raw/
 data/raw/*
 !data/raw/.gitkeep
 *.csv
 *.CSV
 *.xlsx
 *.parquet
-# Notebooks de referência soltos em data/ (ex.: o original do Juan) costumam trazer
-# caminho/e-mail pessoal no base_path — nunca versionar a partir daqui.
-data/*.ipynb
+*.zip
+*.pbix
+# Exceção: manifestos e comparação de idempotência (só nomes de tabela, contagens e checksums; sem dado pessoal)
+!docs/tecnico/evidencias/**/*.csv
 
 # --- Segredos ---
 .env

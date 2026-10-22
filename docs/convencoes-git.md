@@ -7,7 +7,7 @@ Regras de colaboração do grupo. O fluxo com o Databricks (sem Git folder por e
 - **Nunca** trabalhe direto na `main` — abra Pull Request e peça revisão de outra pessoa do grupo.
 - Exceção já usada: como o repositório estava vazio, o primeiro push (reorganização inicial) foi direto
   na `main`. Isso não se repete: toda mudança a partir de agora passa por branch + PR.
-- Antes de pushar: sem CSV, sem dado pessoal (CPF/nome/e-mail) em output de célula.
+- Antes de pushar: sem CSV, sem `.zip`/`.pbix` com dados (o pacote do Power BI fica em `data/powerbi/`, fora do git), sem dado pessoal (CPF/nome/e-mail) em output de célula.
 
 ## Branches
 
@@ -32,7 +32,7 @@ Exemplos: `feat: adiciona analise de custo por canal`, `update: refina faixas de
 
 - Título no mesmo padrão do commit (`tipo: descrição`); descrição curta do que mudou e por quê.
 - Peça revisão de **pelo menos 1 outra pessoa** do grupo antes do merge — especialmente se tocar em
-  regra de limpeza (atualize `docs/achados_analise_geral.md` no mesmo PR) ou em definição de KPI (`CLAUDE.md`).
+  regra de limpeza (atualize `docs/analitico/confiabilidade-dos-dados.md` e, se mudar número, o arquivo de `resultados/` correspondente no mesmo PR) ou em definição de KPI (`CLAUDE.md`).
 - Antes de abrir o PR, confira: `git status --ignored` sem CSV/segredo e nenhuma saída de célula com dado pessoal.
 - PR pequeno e focado numa tabela/tarefa — mais fácil de revisar que um PR com o trabalho de várias pessoas juntas.
 - Prefira *squash merge* para manter o histórico da `main` limpo (um commit por PR).
