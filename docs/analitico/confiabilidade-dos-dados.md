@@ -83,11 +83,3 @@ Leitura: o tratamento **muda muito** o custo (R$ 42 mi → R$ 1,45 mi) e o TME (
 5. **Chave única**: impedir `id_chamado` e `id_custo` duplicados na extração.
 6. **Cadastro de clientes**: 1% dos chamados aponta para cliente inexistente; reconciliar as duas bases.
 7. **Visão única**: manter o pipeline medalhão como fonte única de indicadores (hoje os números vivem em bases dispersas, como relatou o Diretor de Tecnologia).
-
-## A confirmar no Databricks
-
-Falta conferir por consulta só estes números (o restante da seção "Fonte da verdade dos tempos" já foi conferido em 22/10/2026):
-
-| Item | Onde aparece | Query de conferência |
-|---|---|---|
-| Média do campo nos chamados com duração ≥ 1.000 s (1,6 s contra 2.030 s), valores máximos (999 s contra 9.000 s) e chamados em que o campo é maior que os timestamps (0) | [`arquitetura-medalhao.md`](../tecnico/arquitetura-medalhao.md), seção "Fonte da verdade dos tempos" | Query na mesma seção (colunas `media_campo_ge_1000s`, `media_timestamp_ge_1000s`, `max_campo_s`, `max_timestamp_s` e `campo_maior_que_timestamp`) |
