@@ -21,7 +21,7 @@ table 'Metrica Heatmap'
 
 	partition 'Metrica Heatmap' = calculated
 		mode: import
-		source = DATATABLE("Metrica", STRING, "Ordem", INTEGER, {{"Volume", 1}, {"Abandono", 2}, {"Espera média", 3}})
+		source = DATATABLE("Metrica", STRING, "Ordem", INTEGER, {{"Volume", 1}, {"Sem início (proxy)", 2}, {"Espera média", 3}})
 
 	annotation PBI_ResultType = Table
 

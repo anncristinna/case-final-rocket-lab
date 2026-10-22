@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Tempo de atendimento, resolução, espera e abandono por etapa, pico de demanda e desempenho dos atendentes.",
+                    "value": "Tempo de atendimento, resolução, espera e chamados sem início por etapa, pico de demanda e desempenho dos atendentes.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "11pt",

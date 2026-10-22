@@ -217,7 +217,7 @@ table Medidas
 		displayFolder: Demanda
 		lineageTag: 1fa992e6-f329-5c68-bb29-7037133ce164
 
-	measure 'Valor Heatmap' = SWITCH(SELECTEDVALUE('Metrica Heatmap'[Metrica], "Volume"), "Volume", [Chamados Hora], "Abandono", [Abandono Hora], "Espera média", [TME Hora])
+	measure 'Valor Heatmap' = SWITCH(SELECTEDVALUE('Metrica Heatmap'[Metrica], "Volume"), "Volume", [Chamados Hora], "Sem início (proxy)", [Abandono Hora], "Espera média", [TME Hora])
 		formatString: #,0.0
 		displayFolder: Demanda
 		lineageTag: d93bd429-aa94-5742-b76e-8c2422a41699
@@ -947,7 +947,7 @@ table Medidas
 			VAR _d = _b - _a
 			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
 			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
-			VAR _n = "O abandono"
+			VAR _n = "A taxa de chamados sem início de atendimento (proxy de abandono)"
 			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & " p.p." & " entre " & _ri & " e " & _rf))
 		displayFolder: Títulos
 		lineageTag: 4e4c5051-fec9-5136-9a89-e901c06fa22e
@@ -1016,7 +1016,7 @@ table Medidas
 			VAR _d = _b - _a
 			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
 			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
-			VAR _n = "O abandono" & " (" & _foco & ")"
+			VAR _n = "A taxa de chamados sem início de atendimento (proxy de abandono)" & " (" & _foco & ")"
 			RETURN IF(ISBLANK(_d) || _ini = _fim, _n, IF(ABS(_d) < 0.05, _n & " ficou estável entre " & _ri & " e " & _rf, _n & IF(_d > 0, " subiu ", " caiu ") & FORMAT(ABS(_d), "0.0") & " p.p." & " entre " & _ri & " e " & _rf))
 		displayFolder: Títulos
 		lineageTag: b9005933-d513-5c73-a1e7-bddfc0f5622b
@@ -1053,8 +1053,8 @@ table Medidas
 			VAR _dia = MAXX(_top, demanda_dia_hora[nome_dia])
 			VAR _h = MAXX(_top, demanda_dia_hora[hora_abertura])
 			VAR _v = MAXX(_top, [v])
-			VAR _fv = SWITCH(_m, "Volume", FORMAT(_v, "#,0") & " chamados", "Abandono", FORMAT(_v, "0.0") & "%", FORMAT(_v, "0.0") & " min")
-			RETURN "O pico de " & LOWER(_m) & " ocorre " & LOWER(_dia) & ", às " & _h & "h (" & _fv & ")"
+			VAR _fv = SWITCH(_m, "Volume", FORMAT(_v, "#,0") & " chamados", "Sem início (proxy)", FORMAT(_v, "0.0") & "%", FORMAT(_v, "0.0") & " min")
+			RETURN "O pico de " & IF(_m = "Sem início (proxy)", "chamados sem início de atendimento (proxy de abandono)", LOWER(_m)) & " ocorre " & LOWER(_dia) & ", às " & _h & "h (" & _fv & ")"
 		displayFolder: Títulos
 		lineageTag: e1ba55c4-571d-5e67-8fda-3d5b43fb84d1
 
@@ -1229,7 +1229,7 @@ table Medidas
 			VAR _ri = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _ini)
 			VAR _rf = CALCULATE(MAX(DimMes[Rotulo]), ALL(DimMes), DimMes[Data] = _fim)
 			VAR _d = [Alerta 3 Delta]
-			RETURN IF(ISBLANK(_d) || _d < 1, BLANK(), "O abandono subiu " & FORMAT(_d, "0.0") & " p.p. entre " & _ri & " e " & _rf & " (" & FORMAT(_a, "0.0") & "% → " & FORMAT(_b, "0.0") & "%).")
+			RETURN IF(ISBLANK(_d) || _d < 1, BLANK(), "A taxa de chamados sem início de atendimento (proxy de abandono) subiu " & FORMAT(_d, "0.0") & " p.p. entre " & _ri & " e " & _rf & " (" & FORMAT(_a, "0.0") & "% → " & FORMAT(_b, "0.0") & "%).")
 		isHidden
 		displayFolder: Alertas
 		lineageTag: a0aa7854-925e-56a6-8513-4baf546dd2a8
@@ -1294,7 +1294,7 @@ table Medidas
 
 	measure 'Alerta 6 Texto' =
 			VAR _t = TOPN(1, FILTER(funil_atendimento, NOT ISBLANK(funil_atendimento[pct_abandono])), funil_atendimento[pct_abandono], DESC)
-			RETURN "O canal " & MAXX(_t, funil_atendimento[canal_rotulo]) & " tem a maior taxa de abandono: " & FORMAT(MAXX(_t, funil_atendimento[pct_abandono]), "0.0") & "%."
+			RETURN "O canal " & MAXX(_t, funil_atendimento[canal_rotulo]) & " tem a maior taxa de chamados sem início de atendimento (proxy de abandono): " & FORMAT(MAXX(_t, funil_atendimento[pct_abandono]), "0.0") & "%."
 		isHidden
 		displayFolder: Alertas
 		lineageTag: 79e03ad6-f866-5ef4-bce8-cc57087fd11a
@@ -1368,7 +1368,7 @@ table Medidas
 			RETURN SWITCH(_op,
 			"Melhorar app, site e URA", "“Problema com aplicativo”: " & FORMAT(_app, "#,0") & " chamados (" & FORMAT(_appp, "0.0") & "%).",
 			"Capacitar o Nível 2", "Resolução no Nível 2: " & FORMAT(_r1 - _r0, "+0.0;-0.0") & " p.p. entre " & _l0 & " e " & _l1 & ".",
-			"Reforçar a escala nos picos", "Maior volume: " & LOWER(MAXX(_pk, demanda_dia_hora[nome_dia])) & ", " & MAXX(_pk, demanda_dia_hora[hora_abertura]) & "h, com " & FORMAT(MAXX(_pk, [c]), "#,0") & " chamados e abandono de " & FORMAT(MAXX(_pk, [a]), "0.0") & "%.",
+			"Reforçar a escala nos picos", "Maior volume: " & LOWER(MAXX(_pk, demanda_dia_hora[nome_dia])) & ", " & MAXX(_pk, demanda_dia_hora[hora_abertura]) & "h, com " & FORMAT(MAXX(_pk, [c]), "#,0") & " chamados e taxa de chamados sem início de atendimento (proxy de abandono) de " & FORMAT(MAXX(_pk, [a]), "0.0") & "%.",
 			"Reduzir reincidência", "Cenário B: " & IF(_eb >= 1000000, "R$ " & FORMAT(_eb / 1000000, "0.00") & " mi", IF(_eb >= 10000, "R$ " & FORMAT(_eb / 1000, "0.0") & " mil", "R$ " & FORMAT(_eb, "#,0"))) & " por ano com " & FORMAT([Premissa B Valor] * 100, "0") & "% menos reincidência.",
 			"Apoiar quem não usa o chatbot", "Chegam ao humano: " & FORMAT(_ho, "0") & "% entre 65+ e " & FORMAT(_hy, "0") & "% entre 25-34 (associação com idade).",
 			BLANK())
