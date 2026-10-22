@@ -83,8 +83,10 @@ respostas), que é uma aproximação. O formato do cartão pode exibir o valor a
 | TMA | 11,03 min |
 | CSAT | 71,57% |
 | SEM INÍCIO DE ATENDIMENTO (PROXY), cartão das páginas 1 e 3 | 2,59% |
+| Economia anual, cenário A (páginas 2 e 6) | R$ 30,9 mil (o cartão mostra R$ 30.863) |
+| Economia anual, cenário B (páginas 2 e 6) | R$ 258,1 mil (o cartão mostra R$ 258.065) |
 
-Esses são os valores de `visao_geral.csv` (pacote `exp_20261022_012729`); com a mesma base eles devem se repetir em qualquer exportação nova.
+Os oito primeiros são os valores de `visao_geral.csv` (pacote `exp_20261022_012729`) e os dois cenários vêm de `simulacao_ganhos.csv`; com a mesma base eles devem se repetir em qualquer exportação nova. **Os cenários A e B se sobrepõem (98% da base de A já está em B): não somar.**
 Se o custo aparecer 100 vezes maior (por exemplo `145061785`), a localidade de leitura do CSV está errada: use inglês (Estados Unidos) para números e datas.
 
 ## Limitações

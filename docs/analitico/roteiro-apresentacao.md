@@ -15,7 +15,7 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 | 8-11 | **Onde dói** | Funil: 43% dos chamados no humano = 93,65% do custo; 5 motivos = 60% do custo; Nível 2: TME 22 min, CSAT 12% | `resultados/02`, `03` |
 | 11-13 | **Por quê** | Equipe sem crescimento no cadastro (entradas e saídas se compensam) para demanda humana ×2,5; espera derruba o CSAT (83% → 49% → 10%); reincidência 53% a 58% nos motivos críticos | `resultados/04`, `05` |
 | 13-14 | **O que não é a causa** | Região: nenhum efeito; idade: efeito pequeno | `resultados/06` |
-| 14-18 | **Recomendações** | P1 (R$ 258 mil/ano), P2 (R$ 31 mil/ano; **não somar**, P2 está quase todo dentro de P1), P3 (espera ≤ 5 min; CSAT teto ~82%), P4 (governança) e o critério de priorização | `propostas-e-priorizacao.md` |
+| 14-18 | **Recomendações** | P1 (R$ 258,1 mil/ano), P2 (R$ 30,9 mil/ano; **não somar**, P2 está quase todo dentro de P1), P3 (espera ≤ 5 min; CSAT teto ~82%), P4 (governança) e o critério de priorização | `propostas-e-priorizacao.md` |
 | 18-20 | **Próximos passos** | Sequência (agora / 30-90 dias / 90+), piloto de P1 e o que precisamos do Comitê | `oportunidades-e-aprendizados.md` |
 
 ## Resposta direta a cada executivo
