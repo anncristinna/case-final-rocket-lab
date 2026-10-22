@@ -30,6 +30,7 @@ localmente → *Workspace → Import* → testar → trazer a versão final de v
   - `docs/analitico/`: `confiabilidade-dos-dados.md`, `propostas-e-priorizacao.md`,
     `oportunidades-e-aprendizados.md` e `roteiro-apresentacao.md`.
   - `docs/convencoes-git.md` e `docs/databricks-estrutura.md`: processo do grupo.
+  - `docs/pdf/`: os 3 PDFs finais (apresentação, documentação da solução, documentação técnica) e o `README.md` deles; a fonte editável é `docs/` e `resultados/`.
 - `data/`: tudo que é dado, **fora do git** (só `data/README.md` é versionado): `raw/` (8 CSVs originais) e
   `powerbi/` (`pacote_powerbi.zip`, saída do `Gold_To_CSV`).
 

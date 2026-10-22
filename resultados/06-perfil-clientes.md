@@ -18,7 +18,7 @@ Fonte: `perfil_cliente_gold` (36 linhas: dimensão × valor × etapa do funil), 
 
 Leitura:
 
-- Os mais velhos usam menos o autosserviço (55,4% contra 58,2% de 25-34) e resolvem menos nele (43,9% contra 49,1%), e a diferença é gradual. Isso **dá algum apoio** à fala do Diretor de Tecnologia sobre analfabetismo digital, mas o efeito é **modesto** (~5 p.p. na resolução do autosserviço), e a satisfação é praticamente igual em todas as faixas.
+- Os mais velhos usam menos o autosserviço (55,4% contra 58,2% de 25-34) e resolvem menos nele (43,9% contra 49,1%), e a diferença é gradual. Isso **dá algum apoio** à fala do Diretor de Tecnologia sobre baixa familiaridade digital, mas o efeito é **modesto** (~5 p.p. na resolução do autosserviço), e a satisfação é praticamente igual em todas as faixas.
 - A faixa 18-24 tem só 85 chamados (a base de clientes é concentrada em idades mais altas); não dá para tirar conclusão estatística dela.
 - O perfil de idade **não explica** o gargalo do funil: ele existe para todas as idades.
 
