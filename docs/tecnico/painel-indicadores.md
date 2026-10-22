@@ -11,7 +11,7 @@ Edition não integra com o Power BI; o caminho previsto pelo enunciado é export
 | **Projeto PBIP** (texto, versionável) | [`../../powerbi/painel-v-credit/`](../../powerbi/painel-v-credit/): `Painel_Atendimento_VCredit.pbip` abre o projeto |
 | Relatório (páginas e visuais, em JSON) | `Painel_Atendimento_VCredit.Report/definition/` (7 páginas) |
 | Modelo semântico (tabelas, medidas, relacionamentos, parâmetro, em TMDL) | `Painel_Atendimento_VCredit.SemanticModel/definition/` |
-| **Arquivo `.pbix`** | Disponível no drive do grupo. **Não** é versionado, porque embute dados |
+| **Arquivo `.pbix`** | [Abrir no Drive do grupo](https://drive.google.com/file/d/1kBBOkG1CdT-JyfscHtUAHNDIfskkBqhB/view?usp=sharing). **Não** é versionado, porque embute dados |
 | **PDF do painel** (7 páginas, versão de 22/10/2026) | [`evidencias/painel/painel-atendimento-v-credit.pdf`](evidencias/painel/painel-atendimento-v-credit.pdf) |
 | Dados (CSV, cache `.abf`, `localSettings.json`) | **Não vão para o git**: o `.gitignore` bloqueia CSV, `.pbix`, `.zip`, o cache (`cache.abf`) e as configurações locais (`localSettings.json`) do Power BI |
 
@@ -98,4 +98,5 @@ Se o custo aparecer 100 vezes maior (por exemplo `145061785`), a localidade de l
 - **Valores de período parcial são aproximados** (média de médias ponderada).
 - **Nomes de atendentes mantidos; base fictícia.** A página "Customer Success" mostra `rotulo_atendente` (`anonimizar_atendente = false`, o padrão do `Gold_To_CSV`). Decisão do grupo, registrada aqui para não parecer esquecimento.
 - **Campo atendente em chamados de autosserviço.** Vem preenchido em 99,4% dos chamados de URA e chatbot, onde não deveria haver atendente humano. Até confirmarmos o significado do campo (pergunta à V-Credit, em [`../analitico/confiabilidade-dos-dados.md`](../analitico/confiabilidade-dos-dados.md)), os números por atendente são indicativos e a tabela da página "Customer Success" é uma associação, não um ranking de desempenho.
+- **Tabelas e gráficos com rolagem aparecem cortados no PDF.** Nos 3 gráficos de linha pequenos da Visão executiva, o último mês (jul/26) fica fora da janela do PDF; os valores de jul/26 estão nos alertas e no painel interativo (CSAT 56,7%, sem início 3,8%). O painel interativo mostra todas as linhas e todos os meses.
 - **Prevenção (site e app)** não existe nos dados; o painel não a mostra.
