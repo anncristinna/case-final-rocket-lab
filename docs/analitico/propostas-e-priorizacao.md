@@ -41,7 +41,7 @@ apresentação. A **sequência de execução** não é só a ordem de nota: habi
 | Jornada de ~160 h/mês e ocupação do Nível 1 e 2 | Claude Code | Premissa, a validar |
 | Contagem de atendentes vigentes (13 e 7) | Claude Code, a partir do cadastro | Frágil (12% dos chamados fora do vínculo) |
 | Teto de CSAT (~82,2%) | Claude Code | Estimativa, a validar |
-| Líquido P1 + P2 (R$ 258 a 279 mil/ano) | Claude Code | A confirmar com query |
+| Líquido P1 + P2 (R$ 258 a 279 mil/ano) | Claude Code | Estimativa derivada; a sobreposição (98,1%) foi conferida no Databricks em 22/10/2026 |
 | Metas dos KPIs | Claude Code | A validar pelo grupo e pelo Comitê |
 
 ## P1 — Resolver na primeira interação os cinco motivos críticos (**ganho quantificado**)
@@ -92,7 +92,7 @@ resolvem 49% a 77% no autosserviço, mas ainda geram **12.411 chamados no atendi
 **tirar volume do Nível 1** e melhorar a experiência (CSAT de 74% a 85% nesses motivos), não cortar custo.
 **Custo de implantação não está incluído** e pode consumir boa parte da economia.
 
-**P1 + P2: não somar.** 98,1% da base de P2 (12.172 de 12.411 chamados) já é reincidente e, portanto, já está na base de P1: os dois atacam o mesmo problema (recontato por falha de resolução). Líquido da sobreposição: **R$ 258 a 279 mil/ano**, estimativa do Claude Code **a confirmar** com a query de [`07-custos-e-simulacao.md`](../../resultados/07-custos-e-simulacao.md). Os R$ 288,9 mil (soma simples) são só um teto.
+**P1 + P2: não somar.** 98,1% da base de P2 (12.172 de 12.411 chamados) já é reincidente e, portanto, já está na base de P1: os dois atacam o mesmo problema (recontato por falha de resolução). Líquido da sobreposição: **R$ 258 a 279 mil/ano**, estimativa derivada do Claude Code (a sobreposição foi conferida no Databricks em 22/10/2026; query em [`07-custos-e-simulacao.md`](../../resultados/07-custos-e-simulacao.md)). Os R$ 288,9 mil (soma simples) são só um teto.
 
 ## P3 — Capacidade e escala: espera até 5 minutos (**ganho qualitativo com teto estimado**)
 

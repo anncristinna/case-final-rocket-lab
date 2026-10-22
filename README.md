@@ -21,7 +21,7 @@ O mapa completo "item do enunciado → arquivo" está em [`docs/README.md`](docs
 - O volume de chamados mais que dobrou (+120%) em 18 meses; o CSAT caiu de 86% para 57% e a espera do Nível 2 foi de 5 para 22 min.
 - Custo total de **R$ 1,45 mi**, puxado por volume (custo por chamado estável em ~R$ 11); 43% dos chamados no humano = 93,65% do custo.
 - Recomendações: resolver na primeira interação os 5 motivos críticos (**R$ 258 mil/ano**, premissa de 30%), deflexão dos motivos simples
-  (**R$ 31 mil/ano**, premissa de 20%; **não somar com a anterior**, que já contém quase toda a base dela: líquido de R$ 258 a 279 mil/ano, a confirmar), capacidade e escala do Nível 2, e governança de dados. Detalhes em
+  (**R$ 31 mil/ano**, premissa de 20%; **não somar com a anterior**, que já contém quase toda a base dela: líquido de R$ 258 a 279 mil/ano, estimativa derivada da sobreposição conferida no Databricks), capacidade e escala do Nível 2, e governança de dados. Detalhes em
   [`docs/analitico/propostas-e-priorizacao.md`](docs/analitico/propostas-e-priorizacao.md).
 
 ## Estrutura

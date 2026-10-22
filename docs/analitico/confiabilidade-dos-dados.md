@@ -34,9 +34,9 @@ volume, 2% inflado e o CSAT, contaminado por notas impossíveis. **Três pontos 
 | 1 | `id_chamado` duplicado em `chamados` (cópias idênticas) | 2.636 (134.474 → 131.838) | Remoção das cópias exatas na silver | Volume e todos os totais inflados em ~2% se não removido |
 | 2 | `id_custo` duplicado em `custos` (idênticos) | 781 | Remoção por `id_custo` | Custo duplicado |
 | 3 | `custo` em formatos mistos (`9,99`, `R$ 9,99`, `9.99reais`, negativos) | Toda a coluna | Só dígitos, vírgula e ponto; vírgula = decimal brasileiro; sem vírgula, o ponto já é decimal | **Remover todo ponto (erro do notebook exploratório inicial) levava o total a R$ 42,2 mi; o correto é R$ 1,45 mi (29× menor)** |
-| 4 | Custo ≤ 0 (negativo ou zero) | 544 em `qualidade_dados` (`custo_invalido_ou_nao_positivo`, 0,41% dos **chamados**). Divisão 271 negativos / 273 zeros e unidade (chamados ou lançamentos): **a confirmar** | Ficam na silver (`custo_com_problema`), fora da soma da gold | Total R$ 1.450.617,85 (só valores > 0) |
+| 4 | Custo ≤ 0 (negativo ou zero) | **544 chamados** (`qualidade_dados` e `custo_com_problema` em `qualidade_chamado_gold`, 0,41% dos chamados). Em `custos_silver` (130.288 lançamentos) são **544 lançamentos**: 271 negativos e 273 zeros, 0 nulos, em 544 chamados distintos (conferido no Databricks em 22/10/2026) | Ficam na silver (`custo_com_problema`), fora da soma da gold | Total R$ 1.450.617,85 (só valores > 0) |
 | 5 | Chamados sem nenhum custo | 1.550 (1,18%) | Custo nulo (não zero) | Custo médio por chamado: R$ 11,18 (só com custo) contra R$ 11,00 (diluído em todos) |
-| 6 | `tempo_atendimento` de `chamados` truncado para durações ≥ 1.000 s | Campo todo | **Nunca usado**; tempos vêm dos timestamps de `chamados_hora` | Subestimaria o TMA humano em várias vezes (valores preliminares, a confirmar, em [`../tecnico/arquitetura-medalhao.md`](../tecnico/arquitetura-medalhao.md)) |
+| 6 | `tempo_atendimento` de `chamados` truncado para durações ≥ 1.000 s | Campo todo | **Nunca usado**; tempos vêm dos timestamps de `chamados_hora` | Subestimaria o TMA humano: média de 216,6 s no campo contra 662,3 s pelos timestamps, ~3,1 vezes menos (conferido no Databricks em 22/10/2026; ver [`../tecnico/arquitetura-medalhao.md`](../tecnico/arquitetura-medalhao.md)) |
 | 7 | Ano de abertura errado (abertura posterior à finalização) | 198 (0,15%) | Corrigido pelo ano da finalização, só quando a cadeia de horários fica válida | **TME bruto médio de −1.211,9 min (negativo) contra 3,6 min tratado** |
 | 8 | Virada de dia não registrada (atendimento cruza a meia-noite) | 1 | Soma 1 dia à finalização (regra restrita, auditável) | Desprezível |
 | 9 | Chamado sem horário de início | 3.414 (2,59%) | Marcado como **abandonado** (informativo); fora de TME/TMA | Abandono antes invisível (o notebook exploratório não usava `chamados_hora`) |
@@ -86,10 +86,8 @@ Leitura: o tratamento **muda muito** o custo (R$ 42 mi → R$ 1,45 mi) e o TME (
 
 ## A confirmar no Databricks
 
-Estes números ainda não foram conferidos por consulta no workspace. Até rodar as queries, valem como **a confirmar**:
+Falta conferir por consulta só estes números (o restante da seção "Fonte da verdade dos tempos" já foi conferido em 22/10/2026):
 
 | Item | Onde aparece | Query de conferência |
 |---|---|---|
-| 544 com custo ≤ 0, divisão 271 negativos / 273 zeros e unidade (chamados ou lançamentos) | Tabela de inconsistências, linha 4 | `SELECT COUNT_IF(custo < 0) AS negativos, COUNT_IF(custo = 0) AS zeros, COUNT(DISTINCT id_chamado) AS chamados FROM dados_vcredit.default.custos_silver WHERE custo <= 0` |
-| Números da fonte da verdade dos tempos (média do campo truncado contra a dos timestamps) | [`arquitetura-medalhao.md`](../tecnico/arquitetura-medalhao.md), seção "Fonte da verdade dos tempos" | Query na mesma seção |
-| Sobreposição entre os cenários A e B (12.172 de 12.411) | [`07-custos-e-simulacao.md`](../../resultados/07-custos-e-simulacao.md) | Query na mesma seção |
+| Média do campo nos chamados com duração ≥ 1.000 s (1,6 s contra 2.030 s), valores máximos (999 s contra 9.000 s) e chamados em que o campo é maior que os timestamps (0) | [`arquitetura-medalhao.md`](../tecnico/arquitetura-medalhao.md), seção "Fonte da verdade dos tempos" | Query na mesma seção (colunas `media_campo_ge_1000s`, `media_timestamp_ge_1000s`, `max_campo_s`, `max_timestamp_s` e `campo_maior_que_timestamp`) |

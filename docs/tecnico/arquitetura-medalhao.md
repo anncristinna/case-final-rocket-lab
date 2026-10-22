@@ -94,19 +94,25 @@ tratados na silver (`chamados_hora_silver`). O campo `tempo_atendimento` de `cha
 
 **Por quê:** o campo está truncado para durações a partir de 1.000 s, então subestima o TMA humano.
 
-**Valores preliminares, a confirmar.** Foram calculados fora do Databricks, a partir do `chamados.csv` local e do `fato_atendimento.csv` do pacote. Até a
-query abaixo ser rodada, não devem ser citados como números finais:
+**Conferido no Databricks em 22/10/2026 (~03h).** `chamados_raw` tem 134.474 linhas e 131.838 `id_chamado` distintos; cruzando com `fato_atendimento_gold`, há 127.375 chamados com os dois valores:
 
-| Medida (preliminar) | Campo `chamados.tempo_atendimento` | Timestamps (`fato_atendimento_gold`) |
+| Medida | Campo `chamados.tempo_atendimento` | Timestamps (`fato_atendimento_gold`) |
 |---|---|---|
 | Chamados com os dois valores | 127.375 | 127.375 |
 | Média | 216,6 s (3,6 min) | 662,3 s (11,0 min) |
 | Chamados com duração ≥ 1.000 s | — | 27.987 (22,0%) |
-| Média nesses chamados | 1,6 s | 2.030 s |
-| Valor máximo | 999 s | 9.000 s |
-| Campo maior que os timestamps | 0 chamados | — |
 
-Query de conferência no Databricks (substituir a tabela acima pelos valores dela):
+O campo subestima o TMA em ~3,1 vezes (216,6 s contra 662,3 s).
+
+**Ainda preliminares (a confirmar):** as medidas abaixo vieram do `chamados.csv` local e do `fato_atendimento.csv` do pacote e ainda não foram reportadas por consulta no Databricks. Não as cite como números finais.
+
+| Medida (preliminar) | Campo `chamados.tempo_atendimento` | Timestamps (`fato_atendimento_gold`) |
+|---|---|---|
+| Média nos chamados com duração ≥ 1.000 s | 1,6 s | 2.030 s |
+| Valor máximo | 999 s | 9.000 s |
+| Chamados em que o campo é maior que os timestamps | 0 | — |
+
+Query de conferência no Databricks (as colunas `n`, `media_campo_s`, `media_timestamp_s` e `duracao_ge_1000s` conferem com a primeira tabela; as demais ainda faltam para fechar a segunda):
 
 ```sql
 WITH r AS (

@@ -22,7 +22,7 @@ Cada bloco responde a uma dor que o próprio Comitê trouxe nas entrevistas. **O
 
 | Quem | Dor | Resposta em uma frase |
 |---|---|---|
-| Gerente Financeiro | "Gasto de R$ 1,4 mi; precisamos cortar" | Confirmado (R$ 1,45 mi). O custo cresce com volume, não com preço; economia identificada: **R$ 258 a 279 mil/ano** (P1 + P2, líquido da sobreposição; estimativa a confirmar), com premissas explícitas |
+| Gerente Financeiro | "Gasto de R$ 1,4 mi; precisamos cortar" | Confirmado (R$ 1,45 mi). O custo cresce com volume, não com preço; economia identificada: **R$ 258 a 279 mil/ano** (P1 + P2, líquido da sobreposição; estimativa derivada, com a sobreposição conferida em 22/10), com premissas explícitas |
 | Coord. de Customer Success | "Resolução caiu, muitos desistem, falta priorização" | Resolução −6,7 p.p., abandono ×2,8 (Nível 2: 15%). **Priorizar o Nível 2 e os 5 motivos críticos** |
 | Diretor de Tecnologia | "Chatbot resolve; dados inconsistentes; segurança" | O chatbot resolve 49%. Inconsistências quantificadas e tratadas; CPF nunca exposto e hash na gold; pipeline medalhão idempotente |
 | Diretora de Marketing | "CSAT de 85% e piora recente, talvez externa" | 86% em jan/25, **56,7% em jul/26, queda contínua** e ligada à espera (não ao horário nem à região) |
