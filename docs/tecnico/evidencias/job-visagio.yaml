@@ -1,0 +1,39 @@
+resources:
+  jobs:
+    visagio_job:
+      name: "visagio - job "
+      schedule:
+        quartz_cron_expression: 20 0 0/12 * * ?
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: Landing_To_Bronze
+          notebook_task:
+            notebook_path: /Workspace/Shared/case-final-rocket-lab/medalhao/Landing_To_Bronze
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: Bronze_To_Silver
+          depends_on:
+            - task_key: Landing_To_Bronze
+          notebook_task:
+            notebook_path: /Workspace/Shared/case-final-rocket-lab/medalhao/Bronze_To_Silver
+            source: WORKSPACE
+        - task_key: Silver_To_Gold
+          depends_on:
+            - task_key: Bronze_To_Silver
+          notebook_task:
+            notebook_path: /Workspace/Shared/case-final-rocket-lab/medalhao/Silver_To_Gold
+            source: WORKSPACE
+        - task_key: Gold_To_CSV
+          depends_on:
+            - task_key: Silver_To_Gold
+          notebook_task:
+            notebook_path: /Workspace/Shared/case-final-rocket-lab/medalhao/Gold_To_CSV
+            source: WORKSPACE
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "6"
+      performance_target: PERFORMANCE_OPTIMIZED

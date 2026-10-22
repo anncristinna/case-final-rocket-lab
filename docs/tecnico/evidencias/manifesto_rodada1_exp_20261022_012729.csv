@@ -1,0 +1,23 @@
+pacote_id,exportado_em_utc,grupo,arquivo,tabelas_gold_origem,linhas,colunas,checksum_linhas,versao_delta_origem,timestamp_delta_origem,anonimizar_atendente
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/fato_atendimento.csv,fato_atendimento_gold+qualidade_chamado_gold,131838,47,-4679046429632531319894,2,2026-10-22 01:02:59,False
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/dim_calendario.csv,dim_calendario_gold,730,12,-37006662134686366265,2,2026-10-22 01:02:33,False
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/dim_hora.csv,dim_hora_gold,25,4,14548374442462001503,2,2026-10-22 01:02:36,False
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/dim_faixa_espera.csv,dim_faixa_espera_gold,6,3,-4432266017029327368,2,2026-10-22 01:02:39,False
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/dim_canal.csv,dim_canal_gold,5,6,5740838639742067926,2,2026-10-22 01:02:41,False
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/dim_motivo.csv,dim_motivo_gold,15,5,31322876822256974078,2,2026-10-22 01:02:46,False
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/dim_atendente.csv,dim_atendente_gold,28,7,-61044275305202243883,2,2026-10-22 01:02:49,False
+exp_20261022_012729,2026-10-22 01:27:54,modelo,modelo/dim_cliente.csv,dim_cliente_gold,47706,5,492962633352646657848,2,2026-10-22 01:02:53,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/visao_geral.csv,visao_geral_gold,1,16,-3740620754226838053,2,2026-10-22 01:03:21,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/kpi_mensal.csv,kpi_mensal_gold,19,16,23358094712235860787,2,2026-10-22 01:03:24,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/comparativo_yoy.csv,comparativo_yoy_gold,12,14,11879816078555340637,2,2026-10-22 01:03:27,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/funil_atendimento.csv,funil_atendimento_gold,4,15,-1590509996657603293,2,2026-10-22 01:03:30,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/etapa_mensal.csv,etapa_mensal_gold,57,9,384577054726799493,2,2026-10-22 01:03:33,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/motivos_pareto.csv,motivos_pareto_gold,14,15,5972080123154827394,2,2026-10-22 01:03:37,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/motivo_etapa.csv,motivo_etapa_gold,42,8,-48320626301577041927,2,2026-10-22 01:03:40,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/demanda_dia_hora.csv,demanda_dia_hora_gold,168,8,-164884260953227327430,2,2026-10-22 01:03:43,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/atendentes_desempenho.csv,atendentes_desempenho_gold,25,20,8522453941924241774,2,2026-10-22 01:03:47,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/satisfacao_drivers.csv,satisfacao_drivers_gold,28,5,-34476592531022083137,2,2026-10-22 01:03:53,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/perfil_cliente.csv,perfil_cliente_gold,36,9,-35447760014838303689,2,2026-10-22 01:03:58,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/qualidade_dados.csv,qualidade_dados_gold,27,4,-57495717890230691218,2,2026-10-22 01:04:01,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/impacto_indicadores.csv,impacto_indicadores_gold,7,8,-35104006847311391989,2,2026-10-22 01:04:06,False
+exp_20261022_012729,2026-10-22 01:27:54,analiticas,analiticas/simulacao_ganhos.csv,simulacao_ganhos_gold,20,9,17465196708709918560,2,2026-10-22 01:04:12,False
