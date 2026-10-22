@@ -14,7 +14,7 @@ e recomendações priorizadas e justificadas com dados para o Comitê Executivo.
 | **Técnico**: arquitetura medalhão, notebooks documentados, painel de indicadores, jobs idempotentes | Diretor de Tecnologia | **Quinta 22/10, 18h** | [`medalhao/`](medalhao/) + [`docs/tecnico/`](docs/tecnico/) |
 | **Analítico e de negócio**: confiabilidade dos dados, apresentação executiva, propostas priorizadas, oportunidades e aprendizados | Comitê Executivo | **Sexta 23/10** (20 min + 15 min de perguntas) | [`resultados/`](resultados/) + [`docs/analitico/`](docs/analitico/) |
 
-O mapa completo "item do enunciado → arquivo" está em [`docs/README.md`](docs/README.md).
+O mapa completo "item do enunciado → arquivo" está em [`docs/README.md`](docs/README.md). As versões finais em PDF (apresentação executiva, documentação da solução e documentação técnica) estão em [`docs/pdf/`](docs/pdf/README.md).
 
 ## O resultado em poucas linhas
 
@@ -44,6 +44,7 @@ O mapa completo "item do enunciado → arquivo" está em [`docs/README.md`](docs
 │   ├── README.md                    mapa: item do enunciado → arquivo
 │   ├── tecnico/                     arquitetura, notebooks e jobs, painel, histórico de revisões
 │   ├── analitico/                   confiabilidade, propostas, oportunidades, roteiro da apresentação
+│   ├── pdf/                         PDFs finais: apresentação executiva, documentação da solução e documentação técnica
 │   ├── convencoes-git.md            branches, commits (Conventional Commits) e Pull Requests
 │   └── databricks-estrutura.md      pastas, permissões e troubleshooting no workspace
 └── data/                            fora do git (só o README): raw/ (8 CSVs) e powerbi/ (pacote CSV exportado pelo Job)

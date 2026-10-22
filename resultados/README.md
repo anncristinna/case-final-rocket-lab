@@ -35,3 +35,5 @@ A confiabilidade dos dados (inconsistências, tratamento e impacto) está em
 - Não há nenhum dado pessoal de cliente. Atendentes aparecem por `id_atendente` e nível (no painel os nomes são mantidos por decisão do
   grupo, base fictícia; ver [`../docs/tecnico/arquitetura-medalhao.md`](../docs/tecnico/arquitetura-medalhao.md)).
 - Para reproduzir: rodar o job da pasta [`../medalhao/`](../medalhao/) e consultar a tabela gold indicada.
+
+Versão consolidada em PDF: [`../docs/pdf/02-Documentacao-da-Solucao-VCredit.pdf`](../docs/pdf/02-Documentacao-da-Solucao-VCredit.pdf).

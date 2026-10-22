@@ -32,3 +32,7 @@ custos e simulação) estão em [`../resultados/`](../resultados/), cada um cita
 
 - [`convencoes-git.md`](convencoes-git.md): branches, commits e Pull Requests.
 - [`databricks-estrutura.md`](databricks-estrutura.md): como o workspace está organizado.
+
+## 4. PDFs finais
+
+- [`pdf/`](pdf/README.md): apresentação executiva (14 slides), documentação da solução e documentação técnica, em PDF. A fonte editável é este diretório e [`../resultados/`](../resultados/).
